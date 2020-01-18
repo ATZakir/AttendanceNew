@@ -1,0 +1,87 @@
+﻿
+@{
+	ViewBag.Title = @Resources.ResourceNotice.LblNotice;
+	Layout = "~/Views/Shared/_AdminViewLayout.cshtml";
+}
+
+<div class="col-xs-12 col-sm-12" ng-controller="noticeDetail" style="height: 100%">
+
+	<div class="panel panel-default">
+		<div class="panel-heading text-lg text-bold text-uppercase">@Resources.ResourceNotice.LblNotice Detail</div>
+		<div class="panel-body  border-green pt pb">
+            <div class="container-fluid">
+	            <div class="row">
+		            <div class="col-md-7">
+			            <div class="notice-title">
+				            <h3>{{noticeFromDb.Title}}</h3>
+			            </div>
+			            <div class="notice-validity pb-3">
+				            <span class="notice-validity-label pr-1">Validity: </span>
+				            <span class="notice-validity-date">{{noticeFromDb.Validity}}</span>
+			            </div>
+			            <div class="notice-description">
+				            <p>{{noticeFromDb.Description}}</p>
+			            </div>
+
+		            </div>
+                    <div class="col-md-5">
+                        <div ng-if="noticeFromDb.FileType == 'pdf'">
+                            <object data="/Files/Notice/{{noticeFromDb.AttachFile}}" type="application/pdf" width="100%" style="min-height: 500px; max-height: 100%">
+                                <a href="/Files/Notice/{{noticeFromDb.AttachFile}}">Download File</a>
+                            </object>
+                        </div>
+
+	                    <div ng-if="noticeFromDb.FileType == 'image'">
+		                    <img ng-src="/Files/Notice/{{noticeFromDb.AttachFile}}" alt="Notice Doc"
+		                         class="img-thumbnail"/>
+	                    </div>
+                    </div>
+	            </div>
+            </div>
+			
+		</div>
+	</div>
+    @* <pre>{{noticeFromDb | json}}</pre> *@
+</div>
+
+
+@section scripts{
+	<script type="text/javascript">
+
+    app.factory('focus', function ($rootScope, $timeout) {
+        return function (name) {
+            $timeout(function () {
+                $rootScope.$broadcast('focusOn', name);
+            });
+        };
+    });
+    app.factory('noticeService', ['$http', function ($http) {
+
+        return {
+            getNotice: function (id) {
+                return $http.get('/Notice/GetNotice/' + id);
+            }
+        };
+	}]);
+    app.controller('noticeDetail', function ($scope, $timeout, $http, focus, $location, $anchorScroll, noticeService, $log, $ngBootbox) {
+        $scope.messageModalObj = {};
+        $scope.messageModalObj.message = '';
+        $scope.Validity = new Date();
+        loadNotice();
+        $scope.showModalforSearch = false;
+		$scope.editmode = false;
+
+        // Load notice
+        function loadNotice() {
+            $scope.noticeFromDb = [];
+            noticeService.getNotice(@ViewBag.NoticeId)
+                .then(function onSuccess(response) {
+                    $scope.noticeFromDb = response.data;
+                })
+                .catch(function onError(response) {
+                    $ngBootbox.alert('Notice Loading Error');
+                });
+        }
+
+    });</script>
+}

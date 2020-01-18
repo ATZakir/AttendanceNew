@@ -1,0 +1,604 @@
+﻿
+@{
+    ViewBag.Title = @Resources.ResourceTraining.LblTraining;
+    Layout = "~/Views/Shared/_AdminViewLayout.cshtml";
+}
+
+<div class="col-xs-12 col-sm-12" ng-controller="training2Ctrl">
+
+    @* ************ FORM - SECTION (Start)*************** *@
+    <div class="panel panel-default">
+        <div class="panel-heading text-lg text-bold text-uppercase">@Resources.ResourceTraining.LblTraining</div>
+        <div class="panel-body  border-green pt pb">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12">
+                    <div class="form-horizontal">
+                        <form name="form" novalidate>
+                            
+                            <div ng-show="level">
+                                <div class="form-group" show-errors id="searchdivid">
+                                    <div class=" padding-right-zero">
+                                        <label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+                                            <b class="starStyle">*</b> @Resources.ResourceCommon.LblDivisionName
+                                        </label>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-5 col-md-5">
+                                        <select data-ng-model="DivisionId" class="form-control"
+                                                data-ng-options="c.Id as c.Name for c in allDivisionFromDb | orderBy: 'Name'" name="DivisionId" ng-required="true" ng-change="GetAllDistrict(DivisionId)">
+                                            <option value="">@Resources.ResourceCommon.LblSelectDivision</option>
+                                        </select>
+                                        <b class="help-block" ng-if="form.DivisionId.$error.required">
+                                            @string.Format(Resources.ResourceCommon.VMsgRequired_Name, Resources.ResourceCommon.LblDivisionName)
+                                        </b>
+                                    </div>
+                                </div>
+                                <div class="form-group" show-errors id="searchdivid">
+                                    <div class=" padding-right-zero">
+                                        <label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+                                            <b class="starStyle">*</b> @Resources.ResourceCommon.LblDistrictName
+                                        </label>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-5 col-md-5">
+                                        <select data-ng-model="DistrictId" class="form-control"
+                                                data-ng-options="c.Id as c.Name for c in allDistrictFromDb | orderBy: 'Name'" name="DistrictId" ng-required="true" ng-change="GetAllUpazila(DistrictId)">
+                                            <option value="">@Resources.ResourceCommon.LblSelectDistrict</option>
+                                        </select>
+                                        <b class="help-block" ng-if="form.DistrictId.$error.required">
+                                            @string.Format(Resources.ResourceCommon.VMsgRequired_Name, Resources.ResourceCommon.LblDistrictName)
+                                        </b>
+                                    </div>
+                                </div>
+                                <div class="form-group" show-errors id="searchdivid">
+                                    <div class=" padding-right-zero">
+                                        <label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+                                            <b class="starStyle">*</b> @Resources.ResourceCommon.LblUpazilaName
+                                        </label>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-5 col-md-5">
+                                        <select data-ng-model="UpazilaId" class="form-control"
+                                                data-ng-options="c.Id as c.Name for c in allUpazilaFromDb | orderBy: 'Name'" name="UpazilaId" ng-required="true" ng-change="GetAllSchool(UpazilaId)">
+                                            <option value="">@Resources.ResourceCommon.LblSelectUpazila</option>
+                                        </select>
+                                        <b class="help-block" ng-if="form.DistrictId.$error.required">
+                                            @string.Format(Resources.ResourceCommon.VMsgRequired_Name, Resources.ResourceCommon.LblUpazilaName)
+                                        </b>
+                                    </div>
+                                </div>
+                                <div class="form-group" show-errors id="searchdivid">
+                                    <div class=" padding-right-zero">
+                                        <label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+                                            <b class="starStyle">*</b> @Resources.ResourceCommon.LblSchoolName
+                                        </label>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-5 col-md-5">
+                                        <select data-ng-model="SchoolId" class="form-control"
+                                                data-ng-options="c.Id as c.Name for c in allSchoolFromDb | orderBy: 'Name'" name="SchoolId" ng-required="true" ng-change="loadAllEmployee(SchoolId)">
+                                            <option value="">@Resources.ResourceCommon.LblSelectSchool</option>
+                                        </select>
+                                        <b class="help-block" ng-if="form.SchoolId.$error.required">
+                                            @string.Format(Resources.ResourceCommon.VMsgRequired_Name, Resources.ResourceCommon.LblSchoolName)
+                                        </b>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group" show-errors id="searchdivid">
+                                <div class=" padding-right-zero">
+                                    <label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+                                        <b class="starStyle">*</b> @Resources.ResourceTraining.LblEmployee
+                                    </label>
+                                </div>
+                                <div class="col-xs-12 col-sm-5 col-md-5">
+                                    <select data-ng-model="EmployeeId" class="form-control"
+                                            data-ng-options="c.Id as c.FullName for c in allEmployeeFromDb |                 orderBy: 'FullName'" name="EmployeeId" ng-required="tru">
+                                        <option value="">@Resources.ResourceTraining.LblSelectEmployee</option>
+                                    </select>
+                                    <b class="help-block" ng-if="form.EmployeeId.$error.required">
+                                        @string.Format(Resources.ResourceCommon.VMsgRequired_Name, Resources.ResourceTraining.LblEmployee)
+                                    </b>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class=" padding-right-zero">
+                                    <label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+                                        @Resources.ResourceTraining.LblTrainingType
+                                    </label>
+                                </div>
+                                <div class="col-xs-12 col-sm-5 col-md-5">
+                                    <select data-ng-model="TypeId" class="form-control"
+                                            data-ng-options="c.Id as c.Name for c in allTrainingTypeFromDb |                       orderBy: 'Name'" name="TypeId">
+                                        <option value="">
+                                            @Resources.ResourceTraining.LblSelectTrainingType
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="padding-right-zero">
+                                    <label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+                                        @Resources.ResourceTraining.LblDescription
+                                    </label>
+                                </div>
+                                <div class="col-xs-12 col-sm-5 col-md-5">
+                                    <textarea class="form-control" type="text" name="Description"
+                                          ng-model="Description" ng-maxlength="200"
+                                          rows="3" style="resize: none;"></textarea>
+                                    <b class="help-block" ng-if="form.Description.$error.maxlength">@Resources.ResourceCommon.VMsgToo_Large</b>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class=" padding-right-zero">
+                                    <label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+                                        @Resources.ResourceTraining.LblStartDate
+                                    </label>
+                                </div>
+                                <div class="col-xs-12 col-sm-5 col-md-5">
+                                    <input type="text" class="form-control" ng-model="StartDate"
+                                           data-date-format="dd-MMM-yyyy" data-autoclose="1"
+                                           data-container="body" bs-datepicker>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class=" padding-right-zero">
+                                    <label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+                                        @Resources.ResourceTraining.LblEndDate
+                                    </label>
+                                </div>
+                                <div class="col-xs-12 col-sm-5 col-md-5">
+                                    <input type="text" class="form-control" ng-model="EndDate"
+                                           data-date-format="dd-MMM-yyyy" data-autoclose="1"
+                                           data-container="body" bs-datepicker>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class=" padding-right-zero">
+                                    <label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+                                        @Resources.ResourceTraining.LblStatus
+                                    </label>
+                                </div>
+                                <div class="col-xs-12 col-sm-5 col-md-5">
+                                    <select data-ng-model="Status" class="form-control"
+                                            data-ng-options="c.Id as c.Name for c in allStatusFromStatic |                       orderBy: 'Name'" name="Status">
+                                        <option value="">
+                                            @Resources.ResourceTraining.LblSelectStatus
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-md-offset-3 col-sm-offset-3 col-xs-12 col-sm-8 col-md-8  padding-right-zero">
+                                    <input type="button" ng-click="addTraining()" class="btn btn-primary" value="@Resources.ResourceCommon.LblSave"/>
+                                    <input type="button" ng-click="reset()" class="btn btn-default" value="@Resources.ResourceCommon.LblReset"/>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @* ************ FORM - SECTION (End)*************** *@
+
+
+
+    @* ************ POP-UP MODEL (Start)*************** *@
+    <div class="row">
+        <div class="col-xs-12 col-sm-3 col-md-3">
+            <modal title='@Resources.ResourceCommon.MsgHeaderSuccess' visible="showModalforSearch">
+                <alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
+                <form name="form.update" role="form">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-12">
+                            <span>{{messageModalObj.message}}</span>
+                        </div>
+                    </div>
+                </form>
+            </modal>
+        </div>
+    </div>
+    @* ************ POP-UP MODEL (End)*************** *@
+
+
+
+    @* ************ TABLE - SECTION (Start)*************** *@
+    <div class="panel panel-default">
+        <div class="panel-heading text-lg text-bold text-uppercase">@Resources.ResourceTraining.LblTraining @Resources.ResourceCommon.lblList</div>
+        <div class="panel-body border-green  pt pb">
+            <div class="row mb">
+                <div class="col-sm-8 padding-left-zero">
+                    <div class="col-sm-4">
+                        <input type="text" ng-model="SearchText" placeholder='@Resources.ResourceCommon.TextBoxSearch_Watermark' class="form-control" />
+                    </div>
+                    <div class="col-sm-8 text-center-vertical">
+                        @Resources.ResourceCommon.lblFiltered <b>{{ filtered.length }}</b> of <b>{{ allTrainingFromDb.length}}</b> @Resources.ResourceTraining.LblTotalTraining
+                    </div>
+                </div>
+                <div class="col-sm-4 padding-right-zero">
+                    <div class="col-sm-6 text-center-vertical text-right">
+                        <label>@Resources.ResourceCommon.lblPageSize:</label>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <select ng-model="entryLimit" class="form-control">
+                            <option>3</option>
+                            <option>5</option>
+                            <option>10</option>
+                            <option>20</option>
+                            <option>50</option>
+                            <option>100</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12" ng-show="filtered.length > 0">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>@Resources.ResourceCommon.LblGeo <a ng-click="sort_by('GeoName');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                    <th>@Resources.ResourceCommon.LblSchool <a ng-click="sort_by('SchoolName');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                    <th>@Resources.ResourceTraining.LblEmployee <a ng-click="sort_by('EmployeeName');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                    <th>@Resources.ResourceTraining.LblTrainingType <a ng-click="sort_by('TypeName');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                    <th>@Resources.ResourceTraining.LblDescription <a ng-click="sort_by('Description');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                    <th>@Resources.ResourceTraining.LblStartDate <a ng-click="sort_by('StartDate');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                    <th>@Resources.ResourceTraining.LblEndDate <a ng-click="sort_by('EndDate');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                    @*<th>@Resources.ResourceTraining.LblStatus <a ng-click="sort_by('Status');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>*@
+                                    <th>@Resources.ResourceCommon.LblEdit </th>
+                                    <th>@Resources.ResourceCommon.LblDelete </th>
+                                </tr>
+                            </thead>
+                            <tfoot>
+                                <tr>
+                                    <th>@Resources.ResourceCommon.LblGeo <a ng-click="sort_by('GeoName');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                    <th>@Resources.ResourceCommon.LblSchool <a ng-click="sort_by('SchoolName');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                    <th>@Resources.ResourceTraining.LblEmployee <a ng-click="sort_by('EmployeeName');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                    <th>@Resources.ResourceTraining.LblTrainingType <a ng-click="sort_by('TypeName');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                    <th>@Resources.ResourceTraining.LblDescription <a ng-click="sort_by('Description');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                    <th>@Resources.ResourceTraining.LblStartDate <a ng-click="sort_by('StartDate');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                    <th>@Resources.ResourceTraining.LblEndDate <a ng-click="sort_by('EndDate');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                    @*<th>@Resources.ResourceTraining.LblStatus <a ng-click="sort_by('Status');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>*@
+                                    <th>@Resources.ResourceCommon.LblEdit </th>
+                                    <th>@Resources.ResourceCommon.LblDelete </th>
+                                </tr>
+                            </tfoot>
+                            <tbody>
+                                <tr ng-class="{'selected':data == selectedRow}" ng-repeat="data in filtered = (allTrainingFromDb  | filter:SearchText | orderBy : predicate :reverse) | startFrom:(currentPage-1)*entryLimit | limitTo:entryLimit">
+                                    <td>{{data.GeoName }}</td>
+                                    <td>{{data.SchoolName }}</td>
+                                    <td>{{data.EmployeeName }}</td>
+                                    <td>{{data.TypeName }}</td>
+                                    <td>{{data.Description }}</td>
+                                    <td>{{data.StartDate }}</td>
+                                    <td>{{data.EndDate }}</td>
+                                    @*<td>{{data.Status }}</td>*@
+
+                                    <td><input type="button" value=@Resources.ResourceCommon.LblEdit class="btn btn-info btn-sm" ng-click="populateTraining(data)" /></td>
+                                    <td>
+                                        <input type="button" value=@Resources.ResourceCommon.LblDelete class="btn btn-danger btn-sm" ng-bootbox-confirm='@Resources.ResourceCommon.MsgConfirm_Delete'
+                                               ng-bootbox-confirm-action="deleteTraining(data)" ng-bootbox-confirm-action-cancel="confirmCallbackCancel(attr1, attr2)" />
+                                    </td>
+</tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12" ng-show="filtered.length > 0">
+                    <div pagination="" max-size="15" page="currentPage" on-select-page="setPage(page)" boundary-links="true" total-items="filtered.length" items-per-page="entryLimit" class="pagination-small" previous-text="&laquo;" next-text="&raquo;"></div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-12" ng-show="filtered.length == 0">
+                <div class="col-xs-12 col-sm-12 col-md-12 alert alert-danger">
+                    @Resources.ResourceTraining.LblNoTrainingFound
+                </div>
+            </div>
+        </div>
+    </div>
+    @* ************ TABLE - SECTION (End)*************** *@
+
+</div>
+
+
+@section scripts{
+    <script type="text/javascript">
+    app.filter('startFrom', function () {
+        return function (input, start) {
+            if (input) {
+                start = +start; //parse to int
+                return input.slice(start);
+            }
+            return [];
+        }
+    });
+    app.factory('focus', function ($rootScope, $timeout) {
+        return function (name) {
+            $timeout(function () {
+                $rootScope.$broadcast('focusOn', name);
+            });
+        };
+    });
+    app.factory('training2Service', ['$http', function ($http) {
+
+        return {
+            saveTraining: function (training) {
+                return $http({
+                    url: '/Training/CreateTraining',
+                    method: 'POST',
+                    data: training
+                });
+            },
+            getTraining: function (id) {
+                return $http.get('/Training/GetTraining/' + id);
+            },
+            getAllTraining: function () {
+                return $http.get('/Training/GetTrainingList2');
+            },
+            getAllDivision: function () {
+                return $http.get('/UserPermission/GetAllDivisionByUserPermission');
+            },
+            getAllDistrictListByDivision: function (id) {
+                return $http.get('/UserPermission/GetAllDistrictByUserPermission/' + id);
+            },
+            getAllUpazilaListByDistrict: function (id) {
+                return $http.get('/UserPermission/GetAllUpazilaByUserPermission/' + id);
+            },
+            getAllSchoolListByUpazila: function (id) {
+                return $http.get('/UserPermission/GetAllSchoolByUserPermission/' + id);
+            },
+            getAllEmployeeFromDb: function(id) {
+                return $http.get('/Employee/GetEmployeeListBySchool/'+ id);
+            },
+            getAllTrainingType: function () {
+                return $http.get('/TrainingType/GetTrainingTypeList');
+            },
+            //getLastId: function () {
+            //    return $http.get('/Training/GetLastId');
+            //},
+            deleteTraining: function (training) {
+                return $http({
+                    url: '/Training/DeleteTraining',
+                    method: 'POST',
+                    data: training
+                });
+            }
+        };
+    }]);app.controller('training2Ctrl', function ($scope, $timeout, $http, focus, $location, $anchorScroll, training2Service, $log, $ngBootbox) {
+        $scope.messageModalObj = {};
+        $scope.messageModalObj.message = '';
+        $scope.level = true;   
+
+        $scope.StartDate = new Date();
+        $scope.EndDate = new Date();
+        loadAllTraining();
+        $scope.showModalforSearch = false;
+
+        $scope.allStatusFromStatic = [
+            { Id: 1, Name: "Start" }, { Id: 2, Name: "Finished" }, { Id: 3, Name: "Continue" }
+        ];
+
+        // Add a new training
+        $scope.addTraining = function () {
+            $scope.$broadcast('show-errors-check-validity');
+            if ($scope.form.$valid) {
+            
+                if (!($scope.StartDate <= $scope.EndDate)) {
+                    $ngBootbox.alert({ message: 'Invalid training end date ', title: 'Warning' });
+                    return;
+                }
+                var training = {};
+                training["Id"] = $scope.Id;
+                training["EmployeeId"] = $scope.EmployeeId;
+                training["StartDate"] = $scope.StartDate;
+                training["EndDate"] = $scope.EndDate;
+                training["Description"] = $scope.Description;
+                training["Status"] = $scope.Status;
+                training["TypeId"] = $scope.TypeId;
+                training["SchoolId"] = $scope.SchoolId;
+
+                training2Service.saveTraining(training)
+                .then(function onSuccess(response) {
+                    loadAllTraining();
+                    loadLastId();
+                    $scope.messageModalObj.message = response.data.message;
+                    $scope.showModalforSearch = true;
+                    $timeout(function () { $scope.showModalforSearch = false; }, 3000);
+                    $scope.reset();
+
+                })
+                .catch(function onError(response) {
+                    $ngBootbox.alert('@Resources.ResourceCommon.MsgErrorInSaving');
+                });
+            }
+        };
+        // Populate training
+        $scope.selectedRow = null;
+        $scope.populateTraining = function (training) {
+            $scope.selectedRow = training;
+            $scope.Id = training.Id;
+            $scope.DivisionId = training.DivisionId;
+            $scope.DistrictId1 = training.DistrictId;
+            $scope.UpazilaId1 = training.UpazilaId;
+            $scope.SchoolId1 = training.SchoolId;
+            $scope.EmployeeId1 = training.EmployeeId;
+            $scope.GetAllDistrict($scope.DivisionId);
+            $scope.GetAllUpazila($scope.DistrictId1);
+            $scope.GetAllSchool($scope.UpazilaId1);
+            $scope.loadAllEmployee($scope.SchoolId1);
+            
+            $scope.StartDate = moment(training.StartDate).toDate(); 
+            $scope.EndDate = moment(training.EndDate).toDate(); 
+            $scope.Description = training.Description;
+            $scope.Status = training.Status;
+            $scope.TypeId = training.TypeId;
+            $location.hash('searchDivId');
+            $anchorScroll();
+            focus('focusMe');
+        }
+
+        $scope.reset = function () {
+            $scope.$broadcast('show-errors-reset');
+            //$scope.Id = '';
+            $scope.StartDate = '';
+            $scope.EndDate = '';
+            $scope.Description = '';
+            $scope.Status = null;
+            $scope.TypeId = null;
+            $scope.DivisionId = null;
+            $scope.DistrictId = null;
+            $scope.UpazilaId = null;
+            $scope.SchoolId = null;
+            $scope.EmployeeId = null;
+            $scope.DistrictId1 = null;
+            $scope.UpazilaId1 = null;
+            $scope.SchoolId1 = null;
+            $scope.EmployeeId1 = null;
+            $scope.selectedRow = null;
+        }
+
+        $scope.deleteTraining = function (training) {
+            training2Service.deleteTraining(training)
+            .then(function onSuccess(response) {
+                $scope.messageModalObj.message = response.data.message;
+                $scope.showModalforSearch = true;
+                $timeout(function () { $scope.showModalforSearch = false; }, 3000);
+                loadAllTraining();
+                loadLastId();
+            })
+            .catch(function onError(response) {
+                $ngBootbox.alert('@Resources.ResourceCommon.MsgNot_deleted');
+            });
+        }
+        // Load Training
+        function loadAllTraining() {
+            $scope.allTrainingFromDb = [];
+            training2Service.getAllTraining()
+                .then(function onSuccess(response) {
+                    $scope.allTrainingFromDb = response.data;
+                })
+                .catch(function onError(response) {
+                    $ngBootbox.alert('@Resources.ResourceCommon.MsgErrorInLoading');
+                });
+        }
+
+        // Load employee
+        $scope.loadAllEmployee= function(schoolId) {
+            $scope.allEmployeeFromDb = [];
+            if (schoolId == undefined) return;
+
+            training2Service.getAllEmployeeFromDb(schoolId)
+                .then(function onSuccess(response) {
+                    $scope.allEmployeeFromDb = response.data;
+                    $scope.EmployeeId = $scope.EmployeeId1;
+                })
+                .catch(function onError(response) {
+                    $ngBootbox.alert('@Resources.ResourceCommon.MsgErrorInLoading');
+                });
+        }
+
+        // Load TrainingType
+        loadAllTrainingType();
+        function loadAllTrainingType() {
+            $scope.allTrainingTypeFromDb = [];
+            training2Service.getAllTrainingType()
+                .then(function onSuccess(response) {
+                    $scope.allTrainingTypeFromDb = response.data;
+                })
+                .catch(function onError(response) {
+                    $ngBootbox.alert('@Resources.ResourceCommon.MsgErrorInLoading');
+                });
+        }
+
+        loadLastId();
+        function loadLastId() {
+            @*$scope.allNoticeFromDb = [];
+            training2Service.getLastId()
+                .then(function onSuccess(response) {
+                    $scope.LastIdFromDb = response.data;
+                    $scope.Id = parseInt($scope.LastIdFromDb) + 1;
+                })
+                .catch(function onError(response) {
+                    $ngBootbox.alert('@Resources.ResourceCommon.MsgErrorInLoading');
+                });*@
+        }
+
+        loadAllDivision();
+        function loadAllDivision() {
+            $scope.allDivisionFromDb = [];
+            training2Service.getAllDivision()
+                .then(function onSuccess(response) {
+                    $scope.allDivisionFromDb = response.data;
+                })
+                .catch(function onError(response) {
+                    $ngBootbox.alert('@Resources.ResourceCommon.MsgErrorInLoading');
+                });
+        }
+
+            $scope.GetAllDistrict = function (divisionId) {
+                $scope.allDistrictFromDb = [];
+                if (divisionId == undefined) return;
+
+                training2Service.getAllDistrictListByDivision(divisionId)
+                .then(function onSuccess(response) {
+                    $scope.allDistrictFromDb = response.data;
+                    $scope.DistrictId = $scope.DistrictId1;
+                })
+                .catch(function onError(response) {
+                    $ngBootbox.alert('@Resources.ResourceCommon.MsgErrorInLoading');
+                });
+        }
+
+            $scope.GetAllUpazila = function (districtId) {
+                $scope.allUpazilaFromDb = [];
+                if (districtId == undefined) return;
+
+                training2Service.getAllUpazilaListByDistrict(districtId)
+                .then(function onSuccess(response) {
+                    $scope.allUpazilaFromDb = response.data;
+                    $scope.UpazilaId = $scope.UpazilaId1;
+                })
+                .catch(function onError(response) {
+                    $ngBootbox.alert('@Resources.ResourceCommon.MsgErrorInLoading');
+                });
+        }
+            
+            $scope.GetAllSchool = function (upazilaId) {
+                $scope.allSchoolFromDb = [];
+                if (upazilaId == undefined) return;
+
+                training2Service.getAllSchoolListByUpazila(upazilaId)
+                    .then(function onSuccess(response) {
+                        $scope.allSchoolFromDb = response.data;
+                        $scope.SchoolId = $scope.SchoolId1;
+                    })
+                    .catch(function onError(response) {
+                        $ngBootbox.alert('@Resources.ResourceCommon.MsgErrorInLoading');
+                    });
+            }
+
+        $scope.currentPage = 1; //current page
+        $scope.entryLimit = 10; //max no of items to display in a page
+        $scope.filteredItems = $scope.allTrainingFromDb.length; //Initially for no filter
+        $scope.totalItems = $scope.allTrainingFromDb.length;
+        //$scope.maxSize = 15;
+
+        $scope.setPage = function (pageNo) {
+            $scope.currentPage = pageNo;
+        };
+        $scope.filter = function () {
+            $timeout(function () {
+                $scope.filteredItems = $scope.filtered.length;
+            }, 9000);
+        };
+        $scope.sort_by = function (predicate) {
+            $scope.predicate = predicate;
+            $scope.reverse = !$scope.reverse;
+        };
+    });</script>
+    }

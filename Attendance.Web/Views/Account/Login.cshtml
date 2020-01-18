@@ -1,0 +1,332 @@
+﻿@{
+    ViewBag.Title = "Login";
+    Layout = "~/Views/Shared/_UserLoginLayout.cshtml";
+}
+
+<style type="text/css">
+    .lang-btn {
+        background-color: #fff;
+    }
+
+        .lang-btn.checked {
+            background-color: #2D4373;
+            color: #ffffff;
+        }
+
+    .profile-img {
+        width: inherit;
+        height: auto;
+        margin: 0 auto 20px;
+        display: block;
+        padding: 20px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+        border-radius: 5px;
+        background: #fff;
+        -webkit-box-shadow: 0px 0px 10px 3px rgba(0,0,0,0.1);
+        -moz-box-shadow: 0px 0px 10px 3px rgba(0,0,0,0.1);
+        box-shadow: 0px 0px 10px 3px rgba(0,0,0,0.1);
+    }
+
+    .btn-group.fullwidth {
+        display: flex;
+    }
+
+    .fullwidth .btn {
+        flex: 1;
+    }
+</style>
+
+
+<div class="sports-full-background" ng-controller="loginCtrl">
+
+	<header class="sports-background-photo_header">
+		<a href="/" class="sports-background-photo__logo">
+			<img src="~/Content/Images/logo.png" />
+		</a>
+
+		<div class="sports-right-button">
+			@Html.ActionLink("Home", "Index", "Home")
+		</div>
+	</header>
+
+    <div class="sports-container">
+        <div class="well row">
+
+            <h1 class="login-Screen-header">
+                <span class="main-action">
+                    Login
+                </span>
+                or
+                <span class="secondary-action">
+                    <a href="/Register?returnUrl=@ViewBag.returnUrl" class="">Register</a>
+                </span>
+            </h1>
+            
+            <div>
+                <form name="form" class="mt">
+
+                    <div class="form-group">
+                        <label>
+                            Email Address <b class="starStyle">*</b>
+                        </label>
+                        <input class="form-control mb" name="LoginName" type="email" placeholder="Email Address" ng-model="LoginName" autofocus required />
+                        <p class="help-block" ng-if="form.Email.$error.email">
+                            Email is not valid
+                        </p>
+                    </div>
+
+                    <div class="form-group" >
+                        <label>
+                           Password
+                        </label>
+                        <input name="Password" class="form-control mb" type="password" placeholder="Password" ng-model="Password" required />
+                        <p class="help-block" ng-if="form.Password.$error.required">
+                            Password id Required
+                        </p>
+                    </div>
+
+                    <span class="login-Screen-footer pull-right">
+                        <a href="/Account/RecoverPassword">Forget Password</a>
+                    </span>
+
+                    <button class="btn btn-primary btn-block login-btn" ng-click="userLogin()" style="height: 45px; background: #707bd6;">LogIn</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <modal title='Message' visible="showModalforSearch">
+        <alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
+        <form name="form.update" role="form">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <span>{{messageModalObj.message}}</span>
+                </div>
+            </div>
+        </form>
+    </modal>
+</div>
+
+@section scripts{
+    <script type="text/javascript">
+
+        $('.btn-toggle').click(function () {
+            $(this).find('.btn').toggleClass('active');
+
+            if ($(this).find('.btn-primary').size() > 0) {
+                $(this).find('.btn').toggleClass('btn-primary');
+            }
+            if ($(this).find('.btn-danger').size() > 0) {
+                $(this).find('.btn').toggleClass('btn-danger');
+            }
+            if ($(this).find('.btn-success').size() > 0) {
+                $(this).find('.btn').toggleClass('btn-success');
+            }
+            if ($(this).find('.btn-info').size() > 0) {
+                $(this).find('.btn').toggleClass('btn-info');
+            }
+
+            $(this).find('.btn').toggleClass('btn-default');
+
+        });
+
+        var myEl = angular.element(document.querySelector('#body'));
+        myEl.addClass('login-background');
+
+        $(".input").focusin(function () {
+            $(this).find("span").animate({ "opacity": "0" }, 200);
+        });
+
+        $(".input").focusout(function () {
+            $(this).find("span").animate({ "opacity": "1" }, 300);
+        });
+
+        $(".login").submit(function () {
+            $(this).find(".submit i").removeAttr('class').addClass("fa fa-check").css({ "color": "#fff" });
+            $(".submit").css({ "background": "#2ecc71", "border-color": "#2ecc71" });
+            $(".feedback").show().animate({ "opacity": "1", "bottom": "-80px" }, 400);
+            $("input").css({ "border-color": "#2ecc71" });
+            return false;
+        });
+
+        app.factory('loginService', ['$http', function ($http) {
+            return {
+                checkLogin: function (user, timeZoneOffset, language) {
+                    var parameters = { user: user, timeZoneOffset: timeZoneOffset, language: language };
+                    return $http({
+                        url: '/Account/CheckLogin',
+                        method: 'POST',
+                        dataType: "json",
+                        data: JSON.stringify(parameters)
+                    });
+                },
+                saveMyTeam: function (myTeam, tournamentId, userId) {
+                    var parameters = { myTeam: myTeam, tournamentId: tournamentId, userId: userId };
+                    return $http({
+                        url: '/Team/CreateUserTeam',
+                        method: 'POST',
+                        data: JSON.stringify(parameters)
+                    });
+                },
+                saveMyMatchTeam: function (myTeam, matchId, tournamentId, userId) {
+                    var params = {
+                        myTeam: myTeam,
+                        matchId: matchId,
+                        tournamentId: tournamentId,
+                        userId: userId
+                    }
+                    return $http({
+                        url: '/Team/CreateUserMatchTeam',
+                        method: 'POST',
+                        data: JSON.stringify(params)
+                    });
+                },
+                SetTimeZoneOffset: function (timeZoneOffset) {
+                    var parameters = { timeZoneOffset: timeZoneOffset };
+                    return $http({
+                        url: '/Account/SetTimeZoneOffset',
+                        method: 'POST',
+                        dataType: "json",
+                        data: JSON.stringify(parameters)
+                    });
+                },
+                saveLeagueJoinCheck: function (myLeague) {
+                    return $http({
+                        url: '/MyLeague/LeagueJoinCheck',
+                        method: 'POST',
+                        data: myLeague
+                    });
+                }
+            };
+        }]);
+
+        app.controller('loginCtrl', function ($scope, loginService, $timeout, $ngBootbox) {
+
+            $scope.language = "en";
+            $scope.en = "en";
+            $scope.zh = "zh";
+            $scope.checkedEn = true;
+            $scope.checkedZh = false;
+
+            $scope.showModalforLogIn = false;
+            $scope.Roles = {};
+
+            $scope.messageModalObj = {};
+            $scope.showModalforSearch = false;
+
+            $scope.toggleResponseValue = function (lng) {
+                $scope.language = lng;
+
+                if (lng == "en") {
+                    $scope.checkedEn = true;
+                    $scope.checkedZh = false;
+                }
+
+                if (lng == "zh") {
+                    $scope.checkedEn = false;
+                    $scope.checkedZh = true;
+                }
+            }
+
+            $scope.userLogin = function () {
+                $scope.$broadcast('show-errors-check-validity');
+                if ($scope.form.$valid) {
+                    var login = {};
+                    login["LoginName"] = $scope.LoginName;
+                    login["Password"] = $scope.Password;
+
+                    var dateObj = new Date();
+                    var timeZoneOffset = -(dateObj.getTimezoneOffset());
+                    var language = $scope.language;
+                    loginService.checkLogin(login, timeZoneOffset, language)
+                        .then(function onSuccess(response) {
+                            if (response.data.isSuccess === true) {
+                                if (localStorage.userTeam) {
+                                    var team = JSON.parse(localStorage.userTeam);
+                                    if (team != null) {
+                                        if (team["IsMatchTeam"] === true)
+                                            saveMatchTeam(team, team["MatchScheduleId"], team["TournamentId"], response.data.userId);
+                                        else
+                                            saveTeam(team, team["TournamentId"], response.data.userId);
+                                    }
+                                }
+                                localStorage.removeItem("userTeam");
+
+                                if (localStorage.leagueInfo != null) {
+                                    var myleague = JSON.parse(localStorage.leagueInfo);
+                                    loginService.saveLeagueJoinCheck(myleague)
+                                        .then(function onSuccess(response) {
+
+                                        })
+                                        .catch(function onError(response) {
+                                            $ngBootbox.alert(" Please try again later");
+                                        });
+                                }
+
+                                window.location = "/User/Dashboard";
+
+                               //if ('@ViewBag.returnUrl' == '') {
+                                 //   window.location = "/User/Dashboard";
+                                //}
+                                //else {
+                                  //  window.location = '@ViewBag.returnUrl';
+                                //}
+                            }
+                            else {
+                                $scope.showModalforSearch = true;
+                                $scope.messageModalObj.message = response.data.message;
+                                $timeout(function () { $scope.showModalforSearch = false; }, 3000);
+                            }
+                        });
+                }
+            };
+
+            //========== save User Team ========//
+            function saveTeam(team, tournamentId, userId) {
+                loginService.saveMyTeam(team, tournamentId, userId)
+                    .then(function onSuccess(response) {
+                        if (response.data.isSuccess) {
+                            if (!response.data.NeedToPay) {
+                                window.location.href = "/User/Dashboard";
+                            } else {
+                                window.location.href = "/Payment/" + tournamentId;
+                            }
+                        } else {
+                            $ngBootbox.alert("Failed to save your Information, Please try again later");
+                        }
+                    })
+                    .catch(function onError(response) {
+                        $ngBootbox.alert("Failed to save your Information, Please try again later");
+                    });
+            }
+
+            function saveMatchTeam(team, matchId, tournamentId, userId) {
+                loginService.saveMyMatchTeam(team, matchId, tournamentId, userId)
+                    .then(function onSuccess(response) {
+                        if (response.data.isSuccess) {
+                            if (!response.data.NeedToPay) {
+                                window.location.href = "/User/Dashboard";
+                            } else {
+                                window.location.href = "/MatchPayment/" + matchId + "/" + tournamentId;
+                            }
+                        } else {
+                            $ngBootbox.alert("Failed to save your Information, Please try again later");
+                        }
+                    })
+                    .catch(function onError(response) {
+                        $ngBootbox.alert("Failed to save your Information, Please try again later");
+                    });
+            }
+
+            loadTimeZone();
+            function loadTimeZone() {
+                var dateObj = new Date();
+                var timeZoneOffset = -(dateObj.getTimezoneOffset());
+                loginService.SetTimeZoneOffset(timeZoneOffset)
+                    .then(function onSuccess(response) {
+                    });
+            }
+        });
+    </script>
+}

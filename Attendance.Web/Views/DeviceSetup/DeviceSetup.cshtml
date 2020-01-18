@@ -1,0 +1,436 @@
+﻿
+@{
+    ViewBag.Title = @Resources.ResourceDeviceSetup.LblDeviceSetup;
+    Layout = "~/Views/Shared/_AdminViewLayout.cshtml";
+}
+
+<div class="col-xs-12 col-sm-12" ng-controller="deviceSetupCtrl">
+
+    @* ************ FORM - SECTION (Start)*************** *@
+    <div class="panel panel-default">
+        <div class="panel-heading text-lg text-bold text-uppercase">@Resources.ResourceDeviceSetup.LblDeviceSetup</div>
+        <div class="panel-body  border-green pt pb">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12">
+                    <div class="form-horizontal">
+                        <form name="form" novalidate>
+                          
+                            <div class="form-group" show-errors>
+                                <div class=" padding-right-zero">
+                                    <label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+                                        <b class="starStyle">*</b> @Resources.ResourceDeviceSetup.LblDeviceType
+                                    </label>
+                                </div>
+                                <div class="col-xs-12 col-sm-5 col-md-5">
+                                    <select data-ng-model="TypeId" class="form-control"
+                                            data-ng-options="c.Id as c.Name for c in allDeviceTypeFromDb | orderBy: 'Name'" name="TypeId" ng-required="true">
+                                        <option value="">@Resources.ResourceDeviceSetup.LblSelectDeviceType</option>
+                                    </select>
+                                    <b class="help-block" ng-if="form.TypeId.$error.required">
+                                        @string.Format(Resources.ResourceCommon.VMsgRequired_Name, Resources.ResourceDeviceSetup.LblDeviceType)
+                                    </b>
+                                </div>
+                            </div>
+
+                            <div class="form-group" show-errors>
+                                <div class=" padding-right-zero">
+                                    <label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+                                        <b class="starStyle">*</b> @Resources.ResourceDeviceSetup.LblDeviceSetupName
+                                    </label>
+                                </div>
+                                <div class="col-xs-12 col-sm-5 col-md-5">
+                                    <input class="form-control" type="text" name="Name" ng-model="Name" required ng-maxlength="50" />
+                                    <b class="help-block" ng-if="form.Name.$error.required">
+                                        @string.Format(Resources.ResourceCommon.VMsgRequired_Name, Resources.ResourceDeviceSetup.LblDeviceSetupName)
+                                    </b>
+                                    <b class="help-block" ng-if="form.Name.$error.maxlength">@Resources.ResourceCommon.VMsgToo_Large</b>
+                                </div>
+                            </div>
+                            <div class="form-group" show-errors>
+                                <div class=" padding-right-zero">
+                                    <label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+                                        <b class="starStyle">*</b> @Resources.ResourceDeviceSetup.LblCode
+                                    </label>
+                                </div>
+                                <div class="col-xs-12 col-sm-5 col-md-5">
+                                    <input class="form-control" type="text" name="Code" ng-model="Code" required ng-maxlength="50" />
+                                    <b class="help-block" ng-if="form.Code.$error.required">
+                                        @string.Format(Resources.ResourceCommon.VMsgRequired_Name, Resources.ResourceDeviceSetup.LblCode)
+                                    </b>
+                                    <b class="help-block" ng-if="form.Code.$error.maxlength">@Resources.ResourceCommon.VMsgToo_Large</b>
+                                </div>
+                            </div>
+                            <div class="form-group" show-errors>
+                                <div class=" padding-right-zero">
+                                    <label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+                                        <b class="starStyle">*</b> @Resources.ResourceDeviceSetup.LblGate
+                                    </label>
+                                </div>
+                                <div class="col-xs-12 col-sm-5 col-md-5">
+                                    <input class="form-control" type="text" name="Gate" ng-model="Gate" required ng-maxlength="100" />
+                                    <b class="help-block" ng-if="form.Gate.$error.required">
+                                        @string.Format(Resources.ResourceCommon.VMsgRequired_Name, Resources.ResourceDeviceSetup.LblGate)
+                                    </b>
+                                    <b class="help-block" ng-if="form.Gate.$error.maxlength">@Resources.ResourceCommon.VMsgToo_Large</b>
+                                </div>
+                            </div>
+                            <div class="form-group" show-errors>
+                                <div class=" padding-right-zero">
+                                    <label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+                                        <b class="starStyle">*</b> @Resources.ResourceDeviceSetup.LblIPAddress
+                                    </label>
+                                </div>
+                                <div class="col-xs-12 col-sm-5 col-md-5">
+                                    <input class="form-control" type="text" name="IPAddress" ng-model="IPAddress" required ng-maxlength="50" />
+                                    <b class="help-block" ng-if="form.IPAddress.$error.required">
+                                        @string.Format(Resources.ResourceCommon.VMsgRequired_Name, Resources.ResourceDeviceSetup.LblIPAddress)
+                                    </b>
+                                    <b class="help-block" ng-if="form.IPAddress.$error.maxlength">@Resources.ResourceCommon.VMsgToo_Large</b>
+                                </div>
+                            </div>
+                            <div class="form-group" show-errors>
+                                <div class=" padding-right-zero">
+                                    <label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+                                        <b class="starStyle">*</b> @Resources.ResourceDeviceSetup.LblLocation
+                                    </label>
+                                </div>
+                                <div class="col-xs-12 col-sm-5 col-md-5">
+                                    <input class="form-control" type="text" name="Location" ng-model="Location" required ng-maxlength="100" />
+                                    <b class="help-block" ng-if="form.Location.$error.required">
+                                        @string.Format(Resources.ResourceCommon.VMsgRequired_Name, Resources.ResourceDeviceSetup.LblLocation)
+                                    </b>
+                                    <b class="help-block" ng-if="form.Location.$error.maxlength">@Resources.ResourceCommon.VMsgToo_Large</b>
+                                </div>
+                            </div>
+                            <div class="form-group" show-errors>
+                                <div class=" padding-right-zero">
+                                    <label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+                                        <b class="starStyle">*</b> @Resources.ResourceDeviceSetup.LblPort
+                                    </label>
+                                </div>
+                                <div class="col-xs-12 col-sm-5 col-md-5">
+                                    <input class="form-control" type="text" name="Port" ng-model="Port" required ng-maxlength="50" />
+                                    <b class="help-block" ng-if="form.Port.$error.required">
+                                        @string.Format(Resources.ResourceCommon.VMsgRequired_Name, Resources.ResourceDeviceSetup.LblPort)
+                                    </b>
+                                    <b class="help-block" ng-if="form.Port.$error.maxlength">@Resources.ResourceCommon.VMsgToo_Large</b>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="padding-right-zero">
+                                    <label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+                                        @Resources.ResourceCommon.LblIsActive
+                                    </label>
+                                </div>
+                                <div class="col-xs-12 col-sm-5 col-md-5">
+                                    <input class="form-control" type="checkbox" ng-model="IsActive" checked />
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-md-offset-3 col-sm-offset-3 col-xs-12 col-sm-8 col-md-8  padding-right-zero">
+                                    <input type="button" ng-click="addDeviceSetup()" class="btn btn-primary" value=@Resources.ResourceCommon.LblSave />
+                                    <input type="button" ng-click="reset()" class="btn btn-default" value=@Resources.ResourceCommon.LblReset />
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @* ************ FORM - SECTION (End)*************** *@
+
+
+
+    @* ************ POP-UP MODEL (Start)*************** *@
+    <div class="row">
+        <div class="col-xs-12 col-sm-3 col-md-3">
+            <modal title='@Resources.ResourceCommon.MsgHeaderSuccess' visible="showModalforSearch">
+                <alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
+                <form name="form.update" role="form">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-12">
+                            <span>{{messageModalObj.message}}</span>
+                        </div>
+                    </div>
+                </form>
+            </modal>
+        </div>
+    </div>
+    @* ************ POP-UP MODEL (End)*************** *@
+
+
+
+    @* ************ TABLE - SECTION (Start)*************** *@
+    <div class="panel panel-default">
+        <div class="panel-heading text-lg text-bold text-uppercase">@Resources.ResourceDeviceSetup.LblDeviceSetup @Resources.ResourceCommon.lblList</div>
+        <div class="panel-body border-green  pt pb">
+            <div class="row mb">
+                <div class="col-sm-8 padding-left-zero">
+                    <div class="col-sm-4">
+                        <input type="text" ng-model="SearchText" placeholder='@Resources.ResourceCommon.TextBoxSearch_Watermark' class="form-control" />
+                    </div>
+                    <div class="col-sm-8 text-center-vertical">
+                        @Resources.ResourceCommon.lblFiltered <b>{{ filtered.length }}</b> of <b>{{ allDeviceSetupFromDb.length}}</b> @Resources.ResourceDeviceSetup.LblTotalDeviceSetup
+                    </div>
+                </div>
+                <div class="col-sm-4 padding-right-zero">
+                    <div class="col-sm-6 text-center-vertical text-right">
+                        <label>@Resources.ResourceCommon.lblPageSize:</label>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <select ng-model="entryLimit" class="form-control">
+                            <option>3</option>
+                            <option>5</option>
+                            <option>10</option>
+                            <option>20</option>
+                            <option>50</option>
+                            <option>100</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12" ng-show="filtered.length > 0">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>@Resources.ResourceDeviceSetup.LblDeviceSetupName <a ng-click="sort_by('Name');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                    <th>@Resources.ResourceDeviceSetup.LblSchool <a ng-click="sort_by('SchoolName');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                    <th>@Resources.ResourceDeviceSetup.LblDeviceType <a ng-click="sort_by('DeviceTypeName');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                    <th>@Resources.ResourceDeviceSetup.LblCode <a ng-click="sort_by('Code');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                    <th>@Resources.ResourceDeviceSetup.LblLocation <a ng-click="sort_by('Location');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                    <th>@Resources.ResourceCommon.LblIsActive <a ng-click="sort_by('IsActive');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                    <th>@Resources.ResourceCommon.LblEdit </th>
+                                    <th>@Resources.ResourceCommon.LblDelete </th>
+                                </tr>
+                            </thead>
+                            <tfoot>
+                                <tr>
+                                    <th>@Resources.ResourceDeviceSetup.LblDeviceSetupName <a ng-click="sort_by('Name');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                    <th>@Resources.ResourceDeviceSetup.LblSchool <a ng-click="sort_by('SchoolName');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                    <th>@Resources.ResourceDeviceSetup.LblDeviceType <a ng-click="sort_by('DeviceTypeName');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                    <th>@Resources.ResourceDeviceSetup.LblCode <a ng-click="sort_by('Code');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                    <th>@Resources.ResourceDeviceSetup.LblLocation <a ng-click="sort_by('Location');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                    <th>@Resources.ResourceCommon.LblIsActive <a ng-click="sort_by('IsActive');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                    <th>@Resources.ResourceCommon.LblEdit </th>
+                                    <th>@Resources.ResourceCommon.LblDelete </th>
+                                </tr>
+                            </tfoot>
+                            <tbody>
+                                <tr ng-class="{'selected':data == selectedRow}" ng-repeat="data in filtered = (allDeviceSetupFromDb  | filter:SearchText | orderBy : predicate :reverse) | startFrom:(currentPage-1)*entryLimit | limitTo:entryLimit">
+                                    <td>{{data.Name }}</td>
+                                    <td>{{data.SchoolName }}</td>
+                                    <td>{{data.DeviceTypeName }}</td>
+                                    <td>{{data.Code }}</td>
+                                    <td>{{data.Location }}</td>
+                                    <td>{{data.IsActive }}</td>
+
+                                    <td><input type="button" value=@Resources.ResourceCommon.LblEdit class="btn btn-info btn-sm" ng-click="populateDeviceSetup(data)" /></td>
+                                    <td>
+                                        <input type="button" value=@Resources.ResourceCommon.LblDelete class="btn btn-danger btn-sm" ng-bootbox-confirm='@Resources.ResourceCommon.MsgConfirm_Delete'
+                                               ng-bootbox-confirm-action="deleteDeviceSetup(data)" ng-bootbox-confirm-action-cancel="confirmCallbackCancel(attr1, attr2)" />
+                                    </td>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12" ng-show="filtered.length > 0">
+                    <div pagination="" max-size="15" page="currentPage" on-select-page="setPage(page)" boundary-links="true" total-items="filtered.length" items-per-page="entryLimit" class="pagination-small" previous-text="&laquo;" next-text="&raquo;"></div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-12" ng-show="filtered.length == 0">
+                <div class="col-xs-12 col-sm-12 col-md-12 alert alert-danger">
+                    @Resources.ResourceDeviceSetup.LblNoDeviceSetupFound
+                </div>
+            </div>
+        </div>
+    </div>
+    @* ************ TABLE - SECTION (End)*************** *@
+
+</div>
+
+
+@section scripts{
+    <script type="text/javascript">
+    app.filter('startFrom', function () {
+        return function (input, start) {
+            if (input) {
+                start = +start; //parse to int
+                return input.slice(start);
+            }
+            return [];
+        }
+    });
+    app.factory('focus', function ($rootScope, $timeout) {
+        return function (name) {
+            $timeout(function () {
+                $rootScope.$broadcast('focusOn', name);
+            });
+        };
+    });
+    app.factory('deviceSetupService', ['$http', function ($http) {
+
+        return {
+            saveDeviceSetup: function (deviceSetup) {
+                return $http({
+                    url: '/DeviceSetup/CreateDeviceSetup',
+                    method: 'POST',
+                    data: deviceSetup
+                })
+            },
+            getDeviceSetup: function (id) {
+                return $http.get('/DeviceSetup/GetDeviceSetup/' + id);
+            },
+            getAllDeviceSetup: function () {
+                return $http.get('/DeviceSetup/GetDeviceSetupList2');
+            },
+            getAllDeviceType: function () {
+                return $http.get('/DeviceType/GetActiveDeviceTypeList');
+            },
+            deleteDeviceSetup: function (deviceSetup) {
+                return $http({
+                    url: '/DeviceSetup/DeleteDeviceSetup',
+                    method: 'POST',
+                    data: deviceSetup
+                })
+            }
+        };
+        }]);
+
+        app.controller('deviceSetupCtrl', function ($scope, $timeout, $http, focus, $location, $anchorScroll, deviceSetupService, $log, $ngBootbox) {
+        $scope.messageModalObj = {};
+        $scope.messageModalObj.message = '';
+        $scope.SchoolId = '@ViewBag.SchoolId';       
+
+        loadAllDeviceSetup();
+        $scope.showModalforSearch = false;
+        // Add a new deviceSetup
+        $scope.addDeviceSetup = function () {
+            $scope.$broadcast('show-errors-check-validity');
+            if ($scope.form.$valid) {
+                var deviceSetup = {};
+                deviceSetup["Id"] = $scope.Id;
+                deviceSetup["Name"] = $scope.Name;
+                deviceSetup["Gate"] = $scope.Gate;
+                deviceSetup["Code"] = $scope.Code;
+                deviceSetup["IPAddress"] = $scope.IPAddress;
+                deviceSetup["Location"] = $scope.Location;
+                deviceSetup["Port"] = $scope.Port;
+                deviceSetup["TypeId"] = $scope.TypeId;
+                deviceSetup["SchoolId"] = $scope.SchoolId;
+                deviceSetup["IsActive"] = $scope.IsActive;
+
+                deviceSetupService.saveDeviceSetup(deviceSetup)
+                .then(function onSuccess(response) {
+                    loadAllDeviceSetup();
+                    $scope.messageModalObj.message = response.data.message;
+                    $scope.showModalforSearch = true;
+                    $timeout(function () { $scope.showModalforSearch = false; }, 3000);
+                    $scope.reset();
+
+                })
+                .catch(function onError(response) {
+                    $ngBootbox.alert('@Resources.ResourceCommon.MsgErrorInSaving');
+                });
+            }
+        };
+        // Populate deviceSetup
+        $scope.selectedRow = null;
+        $scope.populateDeviceSetup = function (deviceSetup) {
+            $scope.selectedRow = deviceSetup;
+            $scope.Id = deviceSetup.Id;
+            $scope.Name = deviceSetup.Name;
+            $scope.Gate = deviceSetup.Gate;
+            $scope.Code = deviceSetup.Code;
+            $scope.IPAddress = deviceSetup.IPAddress;
+            $scope.Location = deviceSetup.Location;
+            $scope.Port = deviceSetup.Port;
+            $scope.TypeId = deviceSetup.TypeId;
+            $scope.SchoolId = deviceSetup.SchoolId;
+
+            $scope.IsActive = deviceSetup.IsActive;
+            $location.hash('searchDivId');
+            $anchorScroll();
+            focus('focusMe');
+        }
+
+        $scope.reset = function () {
+            $scope.$broadcast('show-errors-reset');
+            $scope.Id = '';
+            $scope.Name = '';
+            $scope.Gate = '';
+            $scope.Code = '';
+            $scope.IPAddress = '';
+            $scope.Location = '';
+            $scope.Port = '';
+            $scope.TypeId = null;
+            $scope.IsActive = true;
+            $scope.selectedRow = null;
+        }
+
+        $scope.deleteDeviceSetup = function (deviceSetup) {
+            deviceSetupService.deleteDeviceSetup(deviceSetup)
+            .then(function onSuccess(response) {
+                $scope.messageModalObj.message = response.data.message;
+                $scope.showModalforSearch = true;
+                $timeout(function () { $scope.showModalforSearch = false; }, 3000);
+                loadAllDeviceSetup();
+            })
+            .catch(function onError(response) {
+                $ngBootbox.alert('@Resources.ResourceCommon.MsgNot_deleted');
+            });
+        }
+        // Load device setup
+        function loadAllDeviceSetup() {
+            $scope.allDeviceSetupFromDb = [];
+            deviceSetupService.getAllDeviceSetup()
+                .then(function onSuccess(response) {
+                    $scope.allDeviceSetupFromDb = response.data;
+                })
+                .catch(function onError(response) {
+                    $ngBootbox.alert('@Resources.ResourceCommon.MsgErrorInLoading');
+                });
+            }
+            // Load device type
+            loadAllDeviceType();
+        function loadAllDeviceType() {
+            $scope.allDeviceTypeFromDb = [];
+            deviceSetupService.getAllDeviceType()
+                .then(function onSuccess(response) {
+                    $scope.allDeviceTypeFromDb = response.data;
+                })
+                .catch(function onError(response) {
+                    $ngBootbox.alert('@Resources.ResourceCommon.MsgErrorInLoading');
+                });
+            }
+
+        
+            
+
+        $scope.currentPage = 1; //current page
+        $scope.entryLimit = 10; //max no of items to display in a page
+        $scope.filteredItems = $scope.allDeviceSetupFromDb.length; //Initially for no filter
+        $scope.totalItems = $scope.allDeviceSetupFromDb.length;
+        //$scope.maxSize = 15;
+
+        $scope.setPage = function (pageNo) {
+            $scope.currentPage = pageNo;
+        };
+        $scope.filter = function () {
+            $timeout(function () {
+                $scope.filteredItems = $scope.filtered.length;
+            }, 9000);
+        };
+        $scope.sort_by = function (predicate) {
+            $scope.predicate = predicate;
+            $scope.reverse = !$scope.reverse;
+        };
+    });</script>
+}

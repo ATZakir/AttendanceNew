@@ -1,0 +1,18 @@
+{
+	"header": "Welcome to Teacher's Attendance System",
+	"descriptions": [
+
+		"This system is a time and attendance system designed to automate employee time and attendance tracking for schools. This software dramatically reduces the number of hours it takes to process employee time records",
+
+		"Application is an added-value function which helps to centralize attendance data generated from different locations. With this comprehensive and ubiquitous solution, no matter where your employees clock-in or clock-out, all data will be centralized for a real time monitoring and efficient management."
+	],
+  "list": {
+    "heading": "Important Information!",
+    "items": [
+      "Only authorized user can access to the system.",
+      "Never disclose your password or any security information to anyone.",
+      "Update your PC with latest Anti-Virus software, Personal firewall and security updates for browsers.",
+      "Recommended browsers are the latest version of Google Chrome and Mozilla Firefox."
+    ]
+  }
+}

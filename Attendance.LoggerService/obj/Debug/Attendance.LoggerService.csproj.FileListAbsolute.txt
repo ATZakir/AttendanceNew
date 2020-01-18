@@ -1,0 +1,14 @@
+D:\Attendance\Attendance\Attendance.LoggerService\bin\Debug\Attendance.LoggerService.dll
+D:\Attendance\Attendance\Attendance.LoggerService\bin\Debug\Attendance.LoggerService.pdb
+D:\Attendance\Attendance\Attendance.LoggerService\bin\Debug\log4net.dll
+D:\Attendance\Attendance\Attendance.LoggerService\bin\Debug\MoreLinq.dll
+D:\Attendance\Attendance\Attendance.LoggerService\bin\Debug\System.ValueTuple.dll
+D:\Attendance\Attendance\Attendance.LoggerService\bin\Debug\log4net.xml
+D:\Attendance\Attendance\Attendance.LoggerService\bin\Debug\MoreLinq.pdb
+D:\Attendance\Attendance\Attendance.LoggerService\bin\Debug\MoreLinq.xml
+D:\Attendance\Attendance\Attendance.LoggerService\bin\Debug\System.ValueTuple.xml
+D:\Attendance\Attendance\Attendance.LoggerService\obj\Debug\Attendance.LoggerService.csproj.CoreCompileInputs.cache
+D:\Attendance\Attendance\Attendance.LoggerService\obj\Debug\Attendance.LoggerService.csproj.CopyComplete
+D:\Attendance\Attendance\Attendance.LoggerService\obj\Debug\Attendance.LoggerService.dll
+D:\Attendance\Attendance\Attendance.LoggerService\obj\Debug\Attendance.LoggerService.pdb
+D:\Attendance\Attendance\Attendance.LoggerService\obj\Debug\Attendance.LoggerService.csprojAssemblyReference.cache

@@ -1,0 +1,697 @@
+﻿
+@{
+    ViewBag.Title = "User";
+    Layout = "~/Views/Shared/_AdminViewLayout.cshtml";
+}
+
+
+<div class="col-xs-12 col-sm-12" ng-controller="userCtrl">
+
+    @* ************ FORM - SECTION (Start)*************** *@
+    <div class="panel panel-default">
+        <div class="panel-heading text-lg text-bold text-uppercase">@Resources.ResourceUser.LblUser</div>
+        <div class="panel-body  border-green pt pb">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-2 col-sm-4 col-xs-4 selector-container-div">
+                        <div class="row">
+                            <div class="panel panel-default selector-container">
+                                <div class="panel-body" style="padding: 0;">
+
+                                    <div class="form-group">
+                                        <div class=" padding-right-zero">
+                                            <label class=" control-label default-color">
+                                                <b class="starStyle"></b> @Resources.ResourceUser.LblUserName
+                                            </label>
+                                        </div>
+                                        <div class="">
+                                            <input type="text" ng-model="SearchText" placeholder='@Resources.ResourceCommon.TextBoxSearch_Watermark' class="form-control" />
+
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="control-label">@Resources.ResourceUser.LblUserList
+                                        </label>
+                                        <div class="" style="height: 207px; overflow: auto;">
+                                            <select multiple data-ng-model="Udata" 
+                                                    class="form-control listSelect" focus-on="focusMe"
+                                                    required data-ng-options="c as c.LoginName for c in                         allUserFromDb | filter:SearchText | orderBy : predicate :                              reverse | orderBy: 'LoginName'" name="UserId"
+                                                    style="height: 100%; overflow-y: auto; padding: 0;"
+                                                    ng-click="populateUser(Udata);"></select>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-10 col-sm-8 col-xs-8">
+                        <div class="form-horizontal">
+                            <form name="form" novalidate>
+                                <div class="row">
+
+                                    <div class="col-xs-10 col-sm-8 col-md-8">
+                                        <div class="form-group" show-errors>
+                                            <div class=" padding-right-zero">
+                                                <label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+                                                    <b class="starStyle">*</b>@Resources.ResourceUser.LblFullName
+                                                </label>
+                                            </div>
+                                            <div class="col-xs-12 col-sm-8 col-md-8">
+                                                <select data-ng-model="EmployeeId" class="form-control"
+                                                        data-ng-options="c.Id as c.Code + '-'+ c.FullName for c
+                                                    in allEmployeeFromDb | orderBy: 'Code'" name="EmployeeId"
+                                                        ng-required="true"
+                                                        ng-change="GetSchoolAdmin(EmployeeId)">
+                                                    <option value="">@Resources.ResourceUser.LblSelectEmployee</option>
+                                                </select>
+                                                <b class="help-block" ng-if="form.EmployeeId.$error.required">
+                                                    @string.Format(Resources.ResourceCommon.VMsgRequired_Name, @Resources.ResourceUser.LblFullName)
+                                                </b>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group" show-errors>
+                                            <div class=" padding-right-zero">
+                                                <label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+                                                    <b class="starStyle">*</b>@Resources.ResourceUser.LblLoginName
+                                                </label>
+                                            </div>
+                                            <div class="col-xs-12 col-sm-8 col-md-8">
+                                                <input class="form-control" type="text" name="LoginName"
+                                                       ng-model="LoginName" required ng-maxlength="50" />
+                                                <b class="help-block" ng-if="form.LoginName.$error.required">
+                                                    @string.Format(Resources.ResourceCommon.VMsgRequired_Name, @Resources.ResourceUser.LblLoginName)
+                                                </b>
+
+                                                <b class="help-block" ng-if="form.LoginName.$error.maxlength">
+                                                    @Resources.ResourceCommon.VMsgToo_Large
+                                                </b>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class=" padding-right-zero">
+                                                <label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+                                                    @Resources.ResourceUser.LblEmail
+                                                </label>
+                                            </div>
+                                            <div class="col-xs-12 col-sm-8 col-md-8">
+                                                <input class="form-control" type="Email" name="Email"
+                                                       ng-model="Email" ng-maxlength="50" />
+
+                                                <b class="help-block" ng-if="form.Email.$error.maxlength">
+                                                    @Resources.ResourceCommon.VMsgToo_Large
+                                                </b>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group" show-errors>
+                                            <div class=" padding-right-zero">
+                                                <label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+                                                    <b class="starStyle">*</b>@Resources.ResourceUser.LblPassword
+                                                </label>
+                                            </div>
+                                            <div class="col-xs-12 col-sm-8 col-md-8">
+                                                <input class="form-control" type="text" name="Password"
+                                                       ng-model="Password" required ng-maxlength="50"
+                                                       @*ng-pattern="@("/^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)[A-Za-z\\d@$!%*#?&]               {8,}$/")"*@ />
+                                                <b class="help-block" ng-if="form.Password.$error.required">
+                                                    @string.Format(Resources.ResourceCommon.VMsgRequired_Name, @Resources.ResourceUser.LblPassword)
+                                                </b>
+                                                @*<b ng-messages="form.Password.$error" class="help-block">
+                                            <b ng-message="pattern"> @Resources.ResourceUser.LblPattern </b>
+                                        </b>*@
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class=" padding-right-zero">
+                                                <label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+                                                    @Resources.ResourceUser.LblIsActive
+                                                </label>
+                                            </div>
+                                            <div class="col-xs-3 col-sm-1 col-md-1 padding-left-zero">
+                                                <div class="col-xs-12 col-sm-10 col-md-8">
+                                                    <input class="form-control" type="checkbox" ng-model="IsActive" />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group" show-errors>
+                                            <div class=" padding-right-zero">
+                                                <label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+                                                    <b class="starStyle">*</b>@Resources.ResourceUser.LblRole
+                                                </label>
+                                            </div>
+                                            <div class="col-xs-12 col-sm-8 col-md-8">
+                                                <select data-ng-model="RoleId" class="form-control"
+                                                        data-ng-options="c.Id as c.Name for c in allRoleFromDb| filter: { Name: '!SAdmin' } |  orderBy: 'Name'" name="RoleId" ng-required="true">
+                                                    <option value="">@Resources.ResourceUser.LblSelectRole</option>
+                                                </select>
+                                                <b class="help-block" ng-if="form.RoleId.$error.required">
+                                                    Role is Required
+                                                </b>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                   
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                @* ************ User Permision *************** *@
+                <div class="row">
+                    <h3 class="heading">@Resources.ResourceUser.LblUserPermission</h3>
+                    @*<div class="row padding-left-10">*@
+                    <div class="table-responsive">
+                        <table class="table table-bordered" style="margin-bottom: 5px;">
+                            <thead>
+                                <tr>
+                                    <th style="width: 250px;">
+                                        @Resources.ResourceDivision.LblDivision
+                                    </th>
+
+                                    <th style="width: 250px;">
+                                        @Resources.ResourceDistrict.LblDistrict
+                                    </th>
+
+                                    <th style="width: 250px;">
+                                        @Resources.ResourceUpazila.LblUpazila
+                                    </th>
+
+                                    <th style="width: 250px;">
+                                        @Resources.ResourceSchool.LblSchool
+                                    </th>
+
+                                    <th style="width: 120px;">
+                                        @Resources.ResourceEmployee.Remove
+                                    </th>
+
+                                    <th style="width: 150px;">
+                                        @Resources.ResourceEmployee.LblAdd
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="aUser in UserPermissions"
+                                    ng-init="outerIndex=$index">
+
+                                    <td>
+                                        <select data-ng-model="aUser.DivisionId" class="form-control"
+                                                data-ng-options="c.Id as c.Name for c in                                            allDivisionFromDb | orderBy: 'Name'"
+                                                name="aUser.DivisionId"
+                                                ng-change="GetAllDistrict(aUser.DivisionId,$index)">
+                                            <option value="">
+                                                @Resources.ResourceCommon.LblSelectDivision
+                                            </option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <select data-ng-model="aUser.DistrictId" class="form-control"
+                                                data-ng-options="c.Id as c.Name for c in                                            aUser.DistrictList | 
+                                                orderBy: 'Name'" name="aUser.DistrictId"
+                                                ng-change="GetAllUpazila(aUser.DistrictId,$index)"
+                                                ng-disabled="aUser.DivisionId==0">
+                                            <option value="">
+                                                @Resources.ResourceCommon.LblSelectDistrict
+                                            </option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <select data-ng-model="aUser.UpazilaId" class="form-control"
+                                                data-ng-options="c.Id as c.Name for c in                                            aUser.UpazilaList |
+                                                orderBy: 'Name'" name="aUser.UpazilaId" 
+                                                ng-change="GetAllSchool(aUser.UpazilaId,$index)"
+                                                ng-disabled="((aUser.DivisionId==0)||
+                                                (aUser.DistrictId==0))">
+                                            <option value="">
+                                                @Resources.ResourceCommon.LblSelectUpazila
+                                            </option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        
+                                        <select data-ng-model="aUser.SchoolId" class="form-control"
+                                                data-ng-options="c.Id as c.Name for c in
+                                                aUser.SchoolList | orderBy: 'Name'" name="aUser.SchoolId" 
+                                                ng-disabled="((aUser.DivisionId==0)||(aUser.DistrictId==0))">
+                                            <option value="">@Resources.ResourceSchool.LblSelectSchool</option>
+                                        </select>
+                                    </td>
+
+                                    <td>
+                                        <button class="btn  btn-default btn-block gridButton" ng-bootbox-confirm="@Resources.ResourceCommon.MsgConfirmRemoveFromTheDetails " ng-bootbox-confirm-action="UserPermissions.splice($index, 1)" ng-bootbox-confirm-action-cancel="confirmCallbackCancel(attr1, attr2)" title="@Resources.ResourceCommon.MsgConfirmRemoveFromTheDetails">
+                                            <i class="text-danger glyphicon glyphicon-remove"></i>
+                                        </button>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-block btn-sm btn-info" ng-click="addUserPermissionNew($event)">@Resources.ResourceCommon.LblAddDetailItem</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+                <div class="form-group">
+                    <div class="col-md-offset-3 col-sm-offset-3 col-xs-12 col-sm-8 col-md-8  padding-right-zero">
+                        <input type="button" ng-click="addUser()" class="btn btn-primary" value="@Resources.ResourceCommon.LblSave" />
+                        <input type="button" ng-click="reset()" class="btn btn-default" value="@Resources.ResourceCommon.LblReset" />
+
+                        <input type="button" ng-show="editmode" class="btn btn-danger" value=@Resources.ResourceCommon.LblDelete
+                               ng-bootbox-confirm='@Resources.ResourceCommon.MsgConfirm_Delete'
+                               ng-bootbox-confirm-action="deleteUser(data)" ng-bootbox-confirm-action-cancel="confirmCallbackCancel(attr1, attr2)" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        @* ************ POP-UP MODEL (Start)*************** *@
+        <div class="row">
+            <div class="col-xs-12 col-sm-3 col-md-3">
+                <modal title='@Resources.ResourceCommon.MsgHeaderSuccess' visible="showModalforSearch">
+                    <alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
+                    <form name="form.update" role="form">
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-12 col-md-12">
+                                <span>{{messageModalObj.message}}</span>
+                            </div>
+                        </div>
+                    </form>
+                </modal>
+            </div>
+        </div>
+        @* ************ POP-UP MODEL (End)*************** *@
+
+
+    </div>
+
+    @section scripts{
+
+        <script type="text/javascript">
+        app.filter('startFrom',
+            function() {
+                return function(input, start) {
+                    if (input) {
+                        start = +start; //parse to int
+                        return input.slice(start);
+                    }
+                    return [];
+                }
+            });
+        app.factory('focus',
+            function($rootScope, $timeout) {
+                return function(name) {
+                    $timeout(function() {
+                        $rootScope.$broadcast('focusOn', name);
+                    });
+                };
+            });
+        app.factory('userService',
+            [
+                '$http', function($http) {
+
+                    return {
+                        saveUser: function(user) {
+                            var param = { user: user};
+                            return $http({
+                                url: '/User/CreateUser',
+                                method: 'POST',
+                                datatype: JSON,
+                                data: JSON.stringify(param)
+                            });
+                        },
+                        getAllUser: function() {
+                            return $http.get('/User/GetUserList');
+                        },
+                        getAllRole: function() {
+                            return $http.get('/Role/GetRoleList');
+                        },
+                        getAllDivision: function() {
+                            return $http.get('/Division/GetDivisionList');
+                        },
+                        getAllDistrictListByDivision: function(id) {
+                            return $http.get('/District/GetDistrictListByDivision/' + id);
+                        },
+                        getAllUpazilaListByDistrict: function(id) {
+                            return $http.get('/Upazila/GetAllUpazilaListByDistrict/' + id);
+                        },
+                        getAllSchoolListByUpazila: function(id) {
+                            return $http.get('/School/GetAllSchoolListByUpazila/' + id);
+                        }, 
+                        getEmployeeForUser: function (id) {
+                            return $http.get('/Employee/GetEmployee/' + id);
+                        },
+                        getAllEmployee: function() {
+                            return $http.get('/Employee/GetEmployeeList');
+                        },
+                        deleteUser: function(user) {
+                            return $http({
+                                url: '/User/DeleteUser',
+                                method: 'POST',
+                                data: user
+                            })
+                        }
+                    };
+                }
+            ]);
+        app.controller('userCtrl',
+            function($scope, $timeout, $http, focus, $location, $anchorScroll, userService, $log, $ngBootbox) {
+                $scope.messageModalObj = {};
+                $scope.messageModalObj.message = '';
+                $scope.level = true;
+                $scope.editmode = false;
+
+                loadAllUser();
+                $scope.showModalforSearch = false;
+                $scope.IsActive = true;
+                //$scope.DivisionId = 0;
+                $scope.DivisionIdFromDb = false;
+                $scope.DistrictIdFromDb = false;
+                $scope.UpazilaIdFromDb = false;
+                $scope.SchoolFromDb = false;
+
+                $scope.UserPermissions = [];
+                $scope.UserPermissions.push({
+                    Id: ''
+                    //DivisionId: 0
+                });
+
+                $scope.addUserPermissionNew = function($event) {
+                    $scope.UserPermissions.push({
+                        Id: ''
+                        //DivisionId: 0
+                    });
+                }
+                // Add a new user
+                $scope.addUser = function() {
+                    $scope.$broadcast('show-errors-check-validity');
+                    if ($scope.form.$valid) {
+                        var user = {};
+                        user["Id"] = $scope.Id;
+                        user["EmployeeId"] = $scope.EmployeeId;
+                        user["Name"] = $scope.Name;
+                        user["LoginName"] = $scope.LoginName;
+                        user["Email"] = $scope.Email;
+                        user["Password"] = $scope.Password;
+                        user["IsActive"] = $scope.IsActive;
+                        user["RoleId"] = $scope.RoleId;
+
+                        if ($scope.UserPermissions.length > 0)
+                            for (var i = 0; i < $scope.UserPermissions.length; i++) {
+                                if ($scope.UserPermissions[i].DivisionId == null) {
+                                    $scope.UserPermissions[i].DistrictId = null;
+                                }
+                                if ($scope.UserPermissions[i].DistrictId == null) {
+                                    $scope.UserPermissions[i].UpazilaId = null;
+                                }
+                                if ($scope.UserPermissions[i].UpazilaId == null) {
+                                    $scope.UserPermissions[i].SchoolId = null;
+                                }
+                            }
+                        var userPermissions = $scope.UserPermissions;
+                        user["UserPermissions"] = userPermissions;
+                        userService.saveUser(user)
+                            .then(function onSuccess(response) {
+                                loadAllUser();
+                                $scope.messageModalObj.message = response.data.message;
+                                $scope.showModalforSearch = true;
+                                $timeout(function() { $scope.showModalforSearch = false; }, 3000);
+                                $scope.reset();
+
+                            })
+                            .catch(function onError(response) {
+                                $ngBootbox.alert('@Resources.ResourceCommon.MsgErrorInSaving');
+                            });
+                    }
+                };
+
+                // Populate user
+                $scope.selectedRow = null;
+                $scope.populateUser = function(user) {
+                    $scope.selectedRow = user;
+                    $scope.selectedRow = user[0];
+                    var aUser = user[0];
+                    $scope.editmode = true;
+                    $scope.Id = aUser.Id;
+                    $scope.EmployeeId = aUser.EmployeeId;
+                    $scope.LoginName = aUser.LoginName;
+                    $scope.Email = aUser.Email;
+                    $scope.Password = aUser.Password;
+                    $scope.Name = aUser.Name;
+                    $scope.IsActive = aUser.IsActive;
+                    $scope.RoleId = aUser.RoleId;
+                    $scope.Mobile = aUser.Mobile;
+                    $scope.UserPermissions = aUser.UserPermissions;
+                    //if (aUser.UserPermissions.length > 0)
+                    //    for (var i = 0; i < $scope.UserPermissions.length; i++) {
+                    //        if ($scope.UserPermissions[i].DivisionId != null) {
+                    //            $scope.GetAllDistrict($scope.UserPermissions[i].DivisionId, i);
+                    //        }
+                    //        if ($scope.UserPermissions[i].DistrictId != null) {
+                    //            $scope.GetAllUpazila($scope.UserPermissions[i].DistrictId, i);
+                    //        }
+                    //        if ($scope.UserPermissions[i].SchoolId != null) {
+                    //            $scope.GetAllSchool($scope.UserPermissions[i].SchoolId, i);
+                    //        }
+                    //    }
+
+                    if (aUser.UserPermissions.length === 0) {
+                        $scope.UserPermissions = [];
+                        $scope.UserPermissions.push({
+                            Id: ''
+                            //DivisionId: 0
+                        });
+                    }
+                    $scope.editmode = true;
+                    $anchorScroll();
+                    focus('focusMe');
+                }
+
+                $scope.reset = function() {
+                    $scope.$broadcast('show-errors-reset');
+                    $scope.Id = '';
+                    $scope.EmployeeId = null;
+                    $scope.Name = '';
+                    $scope.Password = '';
+                    $scope.Email = '';
+                    $scope.IsActive = true;
+                    $scope.RoleId = null;
+                    $scope.LoginName = '';
+                    $scope.Mobile = '';
+                    $scope.UserPermissions = [];
+                    $scope.UserPermissions.push({
+                        Id: ''
+                        //DivisionId: 0
+                    });
+                    $scope.IsSchoolAdmin = '';
+                    $scope.editmode = false;
+                    $scope.selectedRow = null;
+                }
+
+                $scope.deleteUser = function(user) {
+                    userService.deleteUser(user)
+                        .then(function onSuccess(response) {
+                            $scope.messageModalObj.message = response.data.message;
+                            $scope.showModalforSearch = true;
+                            $timeout(function() { $scope.showModalforSearch = false; }, 3000);
+                            loadAllUser();
+                        })
+                        .catch(function onError(response) {
+                            $ngBootbox.alert('@Resources.ResourceCommon.MsgNot_deleted');
+                        });
+                }
+
+                // Load user
+                function loadAllUser() {
+                    $scope.allUserFromDb = [];
+                    userService.getAllUser()
+                        .then(function onSuccess(response) {
+                            $scope.allUserFromDb = response.data;
+                        })
+                        .catch(function onError(response) {
+                            $ngBootbox.alert('@Resources.ResourceCommon.MsgErrorInLoading');
+                        });
+                }
+
+                loadAllRole();
+
+                function loadAllRole() {
+                    $scope.allRoleFromDb = [];
+                    userService.getAllRole()
+                        .then(function onSuccess(response) {
+                            $scope.allRoleFromDb = response.data;
+                        })
+                        .catch(function onError(response) {
+                            $ngBootbox.alert('@Resources.ResourceCommon.MsgErrorInLoading');
+                        });
+                }
+
+                loadAllEmployee();
+
+                function loadAllEmployee() {
+                    $scope.allEmployeeFromDb = [];
+                    userService.getAllEmployee()
+                        .then(function onSuccess(response) {
+                            $scope.allEmployeeFromDbBK = angular.copy(response.data);
+                            $scope.allEmployeeFromDb = response.data;
+                            $scope.IsSchoolAdmin = $scope.allEmployeeFromDb.IsSchoolAdmin;
+                        })
+                        .catch(function onError(response) {
+                            $ngBootbox.alert('@Resources.ResourceCommon.MsgErrorInLoading');
+                        });
+                }
+                $scope.GetSchoolAdmin = function (employeeId, selectedPermissionIndex = 0) {
+                    if (employeeId) {
+                        $scope.GetEmployeeEmail(employeeId);
+                        if ($scope.IsSchoolAdmin) {
+                             $scope.allEmployeeForUser = [];
+                        userService.getEmployeeForUser(employeeId)
+                        .then(function onSuccess(response) { 
+                            $scope.allEmployeeForUser = response.data;
+                            $scope.Email = $scope.allEmployeeForUser.Email;
+                                $scope.UserPermissions[selectedPermissionIndex].DivisionId =
+                                    $scope.allEmployeeForUser.DivisionId;
+                            $scope.GetAllDistrict($scope.allEmployeeForUser.DivisionId, 0);
+                                $scope.UserPermissions[selectedPermissionIndex].DistrictId =
+                                    $scope.allEmployeeForUser.DistrictId;
+                            $scope.GetAllUpazila($scope.allEmployeeForUser.DistrictId, 0);
+                                $scope.UserPermissions[selectedPermissionIndex].UpazilaId =
+                                    $scope.allEmployeeForUser.UpazilaId;
+                            $scope.GetAllSchool($scope.allEmployeeForUser.UpazilaId, 0);
+                                $scope.UserPermissions[selectedPermissionIndex].SchoolId =
+                                    $scope.allEmployeeForUser.SchoolId;
+                            })
+
+                        .catch(function onError(response) {
+                            $ngBootbox.alert('@Resources.ResourceCommon.MsgErrorInLoading');
+                        });
+                        }
+                        
+                    }
+
+                }
+
+                $scope.GetEmployeeEmail = function(employeeId) {
+                    if (employeeId) {
+                        for (var i = 0; i < $scope.allEmployeeFromDbBK.length; i++) {
+                            if ($scope.allEmployeeFromDbBK[i].Id === employeeId) {
+                                $scope.Email = $scope.allEmployeeFromDbBK[i].Email;
+                                $scope.IsSchoolAdmin = $scope.allEmployeeFromDbBK[i].IsSchoolAdmin;
+                            }
+                        }
+                    }
+
+                }
+
+
+                loadAllDivision();
+
+                function loadAllDivision() {
+                    $scope.allDivisionFromDb = [];
+                    userService.getAllDivision()
+                        .then(function onSuccess(response) {
+                            $scope.allDivisionFromDb = response.data;
+                        })
+                        .catch(function onError(response) {
+                            $ngBootbox.alert('@Resources.ResourceCommon.MsgErrorInLoading');
+                        });
+                }
+
+
+
+                $scope.GetAllDistrict = function (divisionId, selectedPermissionIndex) {
+                    userService.getAllDistrictListByDivision(divisionId)
+                        .then(function onSuccess(response) {
+                            $scope.UserPermissions[selectedPermissionIndex].DistrictList =
+                                response.data;
+                         
+                            if (!$scope.IsSchoolAdmin) {
+                                $scope.DivisionIdFromDb = true;
+                                if ($scope.DivisionIdFromDb === true) {
+                                    $scope.UserPermissions[selectedPermissionIndex].DistrictId = 0;
+                                }
+                            }
+                           
+                        })
+                        .catch(function onError(response) {
+                            $ngBootbox.alert('@Resources.ResourceCommon.MsgErrorInLoading');
+                        });
+                }
+
+                $scope.GetAllUpazila = function (districtId, selectedPermissionIndex) {
+                    userService.getAllUpazilaListByDistrict(districtId)
+                        .then(function onSuccess(response) {
+                            $scope.UserPermissions[selectedPermissionIndex].UpazilaList =
+                                response.data;
+                            if (!$scope.IsSchoolAdmin) {
+                                $scope.DistrictIdFromDb = true;
+                                if ($scope.DistrictIdFromDb === true) {
+                                    $scope.UserPermissions[selectedPermissionIndex].UpazilaId = 0;
+                                }
+                            }
+                        })
+                        .catch(function onError(response) {
+                            $ngBootbox.alert('@Resources.ResourceCommon.MsgErrorInLoading');
+                        });
+                }
+                $scope.GetAllSchool = function (upazilaId, selectedPermissionIndex) {
+                    userService.getAllSchoolListByUpazila(upazilaId)
+                        .then(function onSuccess(response) {
+                            $scope.UserPermissions[selectedPermissionIndex].SchoolList =
+                                response.data;
+                            if (!$scope.IsSchoolAdmin) {
+                                $scope.SchoolIdFromDb = true;
+                                if ($scope.SchoolIdFromDb === true) {
+                                    $scope.UserPermissions[selectedPermissionIndex].SchoolId = 0;
+                                }
+                            }
+                        })
+                        .catch(function onError(response) {
+                            $ngBootbox.alert('@Resources.ResourceCommon.MsgErrorInLoading');
+                        });
+                }
+
+                $scope.allSchoolFromDb = [];
+                $scope.selectedallSchoolFromDb = [];
+                $scope.moveItem = function(item, from, to) {
+                    var idx = from.indexOf(item);
+                    if (idx != -1) {
+                        from.splice(idx, 1);
+                        to.push(item);
+                    }
+                };
+
+                $scope.moveAll = function(from, to) {
+                    angular.forEach(from,
+                        function(item) {
+                            to.push(item);
+                        });
+                    from.length = 0;
+                };
+                $scope.currentPage = 1; //current page
+                $scope.itemsPerPage = 5; //max no of items to display in a page
+                $scope.filteredItems = $scope.allUserFromDb.length; //Initially for no filter
+                $scope.totalItems = $scope.allUserFromDb.length;
+                //$scope.maxSize = 15;
+
+                $scope.setPage = function(pageNo) {
+                    $scope.currentPage = pageNo;
+                };
+                $scope.filter = function() {
+                    $timeout(function() {
+                            $scope.filteredItems = $scope.filtered.length;
+                        },
+                        9000);
+                };
+                $scope.sort_by = function(predicate) {
+                    $scope.predicate = predicate;
+                    $scope.reverse = !$scope.reverse;
+                };
+
+            });
+        </script>
+    }

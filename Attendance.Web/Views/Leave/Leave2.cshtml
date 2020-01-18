@@ -1,0 +1,765 @@
+﻿@{
+	ViewBag.Title = "Leave";
+	Layout = "~/Views/Shared/_AdminViewLayout.cshtml";
+}
+
+<div class="col-xs-12 col-sm-12" ng-controller="leave2Ctrl">
+	<div class="panel panel-default">
+		<div class="panel-heading text-lg text-bold text-uppercase">Leave</div>
+		<div class="panel-body  border-green pt pb">
+			<div class="form-horizontal">
+				<form name="form" novalidate>
+					<div class="container-fluid">
+						<div class="row">
+							<div class="col-md-6">
+								<div ng-show="level">
+									<div class="form-group" show-errors id="searchdivid">
+										<div class=" padding-right-zero">
+											<label class="col-xs-12 col-sm-3 col-md-4 control-label default-color">
+												<b class="starStyle">*</b> @Resources.ResourceCommon.LblDivisionName
+											</label>
+										</div>
+										<div class="col-xs-12 col-sm-5 col-md-8">
+											<select data-ng-model="DivisionId" class="form-control"
+													data-ng-options="c.Id as c.Name for c in allDivisionFromDb | orderBy: 'Name'" name="DivisionId"
+													ng-required="true" ng-change="GetAllDistrict(DivisionId)">
+												<option value="">@Resources.ResourceCommon.LblSelectDivision</option>
+											</select>
+											<b class="help-block" ng-if="form.DivisionId.$error.required">
+												@string.Format(Resources.ResourceCommon.VMsgRequired_Name, Resources.ResourceCommon.LblDivisionName)
+											</b>
+										</div>
+									</div>
+									<div class="form-group" show-errors id="searchdivid">
+										<div class=" padding-right-zero">
+											<label class="col-xs-12 col-sm-3 col-md-4 control-label default-color">
+												<b class="starStyle">*</b> @Resources.ResourceCommon.LblDistrictName
+											</label>
+										</div>
+										<div class="col-xs-12 col-sm-5 col-md-8">
+											<select data-ng-model="DistrictId" class="form-control"
+													data-ng-options="c.Id as c.Name for c in allDistrictFromDb | orderBy: 'Name'" name="DistrictId"
+													ng-required="true" ng-change="GetAllUpazila(DistrictId)">
+												<option value="">@Resources.ResourceCommon.LblSelectDistrict</option>
+											</select>
+											<b class="help-block" ng-if="form.DistrictId.$error.required">
+												@string.Format(Resources.ResourceCommon.VMsgRequired_Name, Resources.ResourceCommon.LblDistrictName)
+											</b>
+										</div>
+									</div>
+									<div class="form-group" show-errors id="searchdivid">
+										<div class=" padding-right-zero">
+											<label class="col-xs-12 col-sm-3 col-md-4 control-label default-color">
+												<b class="starStyle">*</b> @Resources.ResourceCommon.LblUpazilaName
+											</label>
+										</div>
+										<div class="col-xs-12 col-sm-5 col-md-8">
+											<select data-ng-model="UpazilaId" class="form-control"
+													data-ng-options="c.Id as c.Name for c in allUpazilaFromDb | orderBy: 'Name'" name="UpazilaId"
+													ng-required="true" ng-change="GetAllSchool(UpazilaId)">
+												<option value="">@Resources.ResourceCommon.LblSelectUpazila</option>
+											</select>
+											<b class="help-block" ng-if="form.DistrictId.$error.required">
+												@string.Format(Resources.ResourceCommon.VMsgRequired_Name, Resources.ResourceCommon.LblUpazilaName)
+											</b>
+										</div>
+									</div>
+									<div class="form-group" show-errors id="searchdivid">
+										<div class=" padding-right-zero">
+											<label class="col-xs-12 col-sm-3 col-md-4 control-label default-color">
+												<b class="starStyle">*</b> @Resources.ResourceCommon.LblSchoolName
+											</label>
+										</div>
+										<div class="col-xs-12 col-sm-5 col-md-8">
+											<select data-ng-model="SchoolId" class="form-control"
+													data-ng-options="c.Id as c.Name for c in allSchoolFromDb | orderBy: 'Name'" name="SchoolId"
+													ng-required="true" ng-change="loadAllEmployee(SchoolId)">
+												<option value="">@Resources.ResourceCommon.LblSelectSchool</option>
+											</select>
+											<b class="help-block" ng-if="form.SchoolId.$error.required">
+												@string.Format(Resources.ResourceCommon.VMsgRequired_Name, Resources.ResourceCommon.LblSchoolName)
+											</b>
+										</div>
+									</div>
+								</div>
+
+								<div class="form-group" show-errors>
+									<label class="col-md-4 control-label">
+										<b class="starStyle">*</b> Employee
+									</label>
+									<div class="col-md-8">
+										<select data-ng-model="EmployeeId" class="form-control"
+												data-ng-options="c.Id as c.FullName for c in allEmployeeFromDb | orderBy: 'Name'"
+												name="EmployeeId" ng-required="true">
+											<option value="">Select Employee</option>
+										</select>
+										<input type="number" ng-model="EmployeeId" hidden="hidden" />
+										<b class="help-block" ng-if="form.EmployeeId.$error.required">
+											Employee can't be empty
+										</b>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label class="col-md-4 control-label">
+										Designation
+									</label>
+									<div class="col-md-8">
+										<input class="form-control" type="text" name="Designation" ng-model="Designation" ng-disabled="true" />
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label class="col-md-4 control-label">
+										<b class="starStyle">*</b> Department
+									</label>
+									<div class="col-md-8">
+										<input class="form-control" type="text" name="Department" ng-model="Department" ng-disabled="true" />
+									</div>
+								</div>
+
+								<div class="form-group" show-errors>
+									<label class="col-md-4 control-label">
+										<b class="starStyle">*</b> Leave Type
+									</label>
+									<div class="col-md-8">
+										<select data-ng-model="LeaveTypeId" class="form-control"
+												data-ng-options="c.Id as c.Name for c in allLeaveTypeFromDb | orderBy: 'Name'" name="LeaveTypeId" ng-required="true">
+											<option value="">Select LeaveType</option>
+										</select>
+										<b class="help-block" ng-if="form.LeaveTypeId.$error.required">
+											LeaveType can't be empty
+										</b>
+									</div>
+								</div>
+
+								<div class="form-group" show-errors>
+									<label class="col-md-4 control-label">
+										<b class="starStyle">*</b> Start Date
+									</label>
+									<div class="col-md-8">
+										<input type="text" class="form-control" ng-model="StartDate" name="StartDate" data-date-format="dd-MMM-yyyy" bs-datepicker
+											   data-container='body' data-min-view="0" data-autoclose="true" ng-required="true">
+										<b class="help-block" ng-if="form.StartDate.$error.required">
+											Start Date can't be empty
+										</b>
+									</div>
+								</div>
+
+								<div class="form-group" show-errors>
+									<label class="col-md-4 control-label">
+										<b class="starStyle">*</b> End Date
+									</label>
+									<div class="col-md-8">
+										<input type="text" class="form-control" ng-model="EndDate" name="EndDate" data-date-format="dd-MMM-yyyy" bs-datepicker
+											   data-container='body' data-min-view="0" data-autoclose="true" ng-required="true" ng-change="calculateNoOfDays()">
+										<b class="help-block" ng-if="form.EndDate.$error.required">
+											End Date can't be empty
+										</b>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label class="col-md-4 control-label">
+										No of Days
+									</label>
+									<div class="col-md-8">
+										<input class="form-control" type="text" name="NoOfDays" ng-model="NoOfDays" ng-disabled="true" />
+									</div>
+								</div>
+
+
+
+								<div class="form-group" ng-hide="true">
+									<label class="col-md-4 control-label">
+										<b class="starStyle">*</b>Acting Nominee
+									</label>
+									<div class="col-md-8">
+										<input class="form-control" type="text" name="ActingNominee" ng-model="ActingNominee" />
+									</div>
+								</div>
+
+							</div>
+
+							<div class="col-md-6">
+
+								<div class="form-group" show-errors>
+									<label class="col-md-4 control-label">
+										<b class="starStyle">*</b> Date
+									</label>
+									<div class="col-md-8">
+										<input type="text" class="form-control" ng-model="Date" name="Date" data-date-format="dd-MMM-yyyy"
+											   bs-datepicker data-container='body' data-min-view="0" data-autoclose="true" ng-required="true">
+										<b class="help-block" ng-if="form.Date.$error.required">
+											Date can't be empty
+										</b>
+									</div>
+								</div>
+
+
+
+
+
+								<div class="form-group" show-errors>
+									<label class="col-md-4 control-label">
+										<b class="starStyle">*</b> Reason of Leave
+									</label>
+									<div class="col-md-8">
+										<textarea class="form-control" type="text" name="LeaveReason" ng-model="LeaveReason" rows="3" maxlength="250"></textarea>
+										<b class="help-block" ng-if="!form.leaveReason.$valid">
+											Reason of Leave is too long
+										</b>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label class="col-md-4 control-label">
+										Con.during Leave
+									</label>
+									<div class="col-md-8">
+										<input class="form-control" type="text" name="ContactDuringLeave" ng-model="ContactDuringLeave" />
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label class="col-md-4 control-label">
+										Add.during Leave
+									</label>
+									<div class="col-md-8">
+										<textarea class="form-control" type="text" name="AddressDuringLeave" ng-model="AddressDuringLeave" rows="3" maxlength="250"></textarea>
+										<b class="help-block" ng-if="!form.AddressDuringLeave.$valid">
+											Address is too long
+										</b>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label class="col-md-4 control-label">
+										<b class="starStyle">*</b> Current Balance
+									</label>
+									<div class="col-md-8" ng-show="EmpLeaveBalance.length > 0">
+										<table class="table table-bordered " style="font-size: 13px;">
+											<thead ng-hide="true">
+												<tr>
+													<th style="text-align: right;">Leave Type</th>
+													<th>Balance</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr ng-repeat="leaveBalance in EmpLeaveBalance" >
+													<td style="text-align: right;">
+														{{leaveBalance.LeaveTypeName}} :
+													</td>
+													<td>
+														{{leaveBalance.Balance}}
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+
+									<div class="col-md-8" ng-show="EmpLeaveBalance.length == 0">
+										<span style="color:red"> No Leave Balance Found</span>
+									</div>
+								</div>
+
+							</div>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<div class="col-md-offset-3 col-sm-offset-3 col-xs-12 col-sm-8 col-md-8  padding-right-zero">
+							<input type="button" ng-click="addLeave()" class="btn btn-primary" value=@Resources.ResourceCommon.LblSave />
+							@*<input type="button" ng-click="reset()" class="btn btn-default" value="Request For Remove" />*@
+							<input type="button" ng-click="reset()" class="btn btn-default" value=@Resources.ResourceCommon.LblReset />
+							@* <input type="button" ng-click="reset()" cla ss="btn btn-default" value="Search" /> *@
+						</div>
+					</div>
+				</form>
+			</div>
+
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-12 col-sm-3 col-md-3">
+			<modal title='Success' visible="showModalforSearch">
+				<alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
+				<form name="form.update" role="form">
+					<div class="row">
+						<div class="col-xs-12 col-sm-12 col-md-12">
+							<span>{{messageModalObj.message}}</span>
+						</div>
+					</div>
+				</form>
+			</modal>
+		</div>
+	</div>
+
+	<div class="panel panel-default">
+		<div class="panel-heading text-lg text-bold text-uppercase">Leave List</div>
+		<div class="panel-body border-green pt pb">
+			<div class="row mb">
+				<div class="col-sm-9 padding-left-zero">
+					<div class="col-sm-4">
+						<input type="text" ng-model="SearchText" placeholder='Search Here' class="form-control" />
+					</div>
+					<div class="col-sm-8 text-center-vertical">
+						Filtered <b>{{ filtered.length }}</b> of <b>{{ allLeaveFromDb.length}}</b> leave
+					</div>
+				</div>
+				<div class="col-sm-3 padding-right-zero">
+					<div class="col-sm-6 text-center-vertical">
+						<label>Page Size:</label>
+					</div>
+
+					<div class="col-sm-6">
+						<select ng-model="itemsPerPage" class="form-control">
+							<option ng-value="1">1</option>
+							<option ng-value="5">5</option>
+							<option ng-value="10">10</option>
+							<option ng-value="15">15</option>
+							<option ng-value="30">30</option>
+							<option ng-value="50">50</option>
+							<option ng-value="100">100</option>
+						</select>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-12 col-sm-12 col-md-12" ng-show="filtered.length > 0">
+					<table class="table table-bordered">
+						<thead>
+                            <tr>
+                                <th>@Resources.ResourceCommon.LblGeo <a ng-click="sort_by('GeoName');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                <th>@Resources.ResourceCommon.LblSchool <a ng-click="sort_by('SchoolName');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                <th>@Resources.ResourceCommon.LblEmployee <a ng-click="sort_by('EmployeeName');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                <th>@Resources.ResourceLeave.LblLeaveType <a ng-click="sort_by('LeaveTypeName');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                <th>@Resources.ResourceLeave.LblStartDate <a ng-click="sort_by('StartDate');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                <th>@Resources.ResourceLeave.LblEndDate <a ng-click="sort_by('EndDate');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+
+                                <th>@Resources.ResourceCommon.LblEdit </th>
+                                <th>@Resources.ResourceCommon.LblDelete </th>
+                            </tr>
+						</thead>
+						<tfoot>
+                            <tr>
+                                <th>@Resources.ResourceCommon.LblGeo <a ng-click="sort_by('GeoName');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                <th>@Resources.ResourceCommon.LblSchool <a ng-click="sort_by('SchoolName');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                <th>@Resources.ResourceCommon.LblEmployee <a ng-click="sort_by('EmployeeName');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                <th>@Resources.ResourceLeave.LblLeaveType <a ng-click="sort_by('LeaveTypeName');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                <th>@Resources.ResourceLeave.LblStartDate <a ng-click="sort_by('StartDate');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                <th>@Resources.ResourceLeave.LblEndDate <a ng-click="sort_by('EndDate');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                <th>@Resources.ResourceCommon.LblEdit </th>
+                                <th>@Resources.ResourceCommon.LblDelete </th>
+                            </tr>
+						</tfoot>
+						<tbody>
+                            <tr ng-class="{'selected':data == selectedRow}" ng-repeat="data in filtered = (allLeaveFromDb  | filter:SearchText | orderBy : predicate :reverse) | startFrom:(currentPage-1)*entryLimit | limitTo:entryLimit">
+                                @*| filter:{'Name':SearchText}:false|filter:{'LeaveTypeId':LeaveTypeId||undefined}:true| filter:{'DistrictId':DistrictId||undefined}:true|filter:{'AreaId':AreaId||undefined}:true | filter:{'Specializations':SpecializationId||undefined}:true*@
+                                <td>{{data.GeoName }}</td>
+                                <td>{{data.SchoolName }}</td>
+                                <td>{{data.EmployeeName }}</td>
+                                <td>{{data.LeaveTypeName }}</td>
+                                <td>{{data.StartDate}}</td>
+                                <td>{{data.EndDate}}</td>
+                                
+                                <td>
+                                    <input type="button" value=Edit class="btn btn-info btn-sm" ng-click="populateLeave(data)" />
+                                </td>
+                                <td>
+                                    <input type="button" value=Delete class="btn btn-danger btn-sm" ng-bootbox-confirm='Delete'
+                                           ng-bootbox-confirm-action="deleteLeave(data)" ng-bootbox-confirm-action-cancel="confirmCallbackCancel(attr1, attr2)" />
+                                </td>
+                            </tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			@*<div class="row">
+				  <div class="col-xs-12 col-sm-12 col-md-12" ng-show="filtered.length > 0">
+					<div pagination="" max-size="15" page="currentPage" on-select-page="setPage(page)" boundary-links="true" total-items="filtered.length" items-per-page="entryLimit" class="pagination-small" previous-text="&laquo;" next-text="&raquo;"></div>
+				  </div>
+				</div>*@
+			<div class="row">
+				<div class="col-md-6">
+					<div class="pull-left">
+						<br />
+						<pre>Page: {{currentPage}}/{{numPages}}</pre>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="pull-right">
+						<ul uib-pagination total-items="filtered.length" items-per-page="itemsPerPage" ng-model="currentPage" max-size="5" boundary-links="true" num-pages="numPages" boundary-link-numbers="true" rotate="false"></ul>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-xs-12 col-sm-12 col-md-12" ng-show="filtered.length == 0">
+				<div class="col-xs-12 col-sm-12 col-md-12 alert alert-danger">
+					No LeaveType Found
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+@section scripts
+{
+	@* <script src="~/Scripts/App/View/Leave/Leave2.js"></script> *@
+	<script>
+		
+app.filter('startFrom',
+	function () {
+		return function (input, start) {
+			if (input) {
+				start = +start; //parse to int
+				return input.slice(start);
+			}
+			return [];
+		}
+	});
+app.factory('focus',
+	function ($rootScope, $timeout) {
+		return function (name) {
+			$timeout(function () {
+				$rootScope.$broadcast('focusOn', name);
+			});
+		};
+	});
+app.factory('leave2Service',
+	[
+		'$http', function ($http) {
+
+			return {
+				saveLeave: function (leave) {
+					return $http({
+						url: '/Leave/CreateLeave',
+						method: 'POST',
+						data: leave
+					});
+				},
+				getLeave: function (id) {
+					return $http.get('/Leave/GetLeave/' + id);
+				},
+				getAllLeave: function () {
+					return $http.get('/Leave/GetLeaveList');
+				},
+				getAllLeaveType: function () {
+					return $http.get('/LeaveType/GetLeaveTypeList');
+				},
+				getAllDivision: function () {
+					return $http.get('/UserPermission/GetAllDivisionByUserPermission');
+				},
+				getAllDistrictListByDivision: function (id) {
+					return $http.get('/UserPermission/GetAllDistrictByUserPermission/' + id);
+				},
+				getAllUpazilaListByDistrict: function (id) {
+					return $http.get('/UserPermission/GetAllUpazilaByUserPermission/' + id);
+				},
+				getAllSchoolListByUpazila: function (id) {
+					return $http.get('/UserPermission/GetAllSchoolByUserPermission/' + id);
+				},
+				getAllEmployeeFromDb: function (id) {
+					return $http.get('/Employee/GetEmployeeSimpleListBySchool/' + id);
+				},
+				deleteLeave: function (leave) {
+					return $http({
+						url: '/Leave/DeleteLeave',
+						method: 'POST',
+						data: leave
+					});
+				},
+				getEmpLeaveBalance: function (id) {
+					return $http.get('/Employee/GetEmployeeLeaveBalanceForLeave/' + id);
+				}
+			};
+		}
+	]);
+app.controller('leave2Ctrl',
+	function ($scope, $timeout, $http, focus, $location, $anchorScroll, leave2Service, $log, $ngBootbox, $filter) {
+		$scope.messageModalObj = {};
+		$scope.messageModalObj.message = '';
+		$scope.level = true;
+
+		loadAllLeave();
+		$scope.showModalforSearch = false;
+
+		$scope.StartDate = new Date();
+		$scope.Date = new Date();
+		$scope.showLeaveBalance = false;
+
+
+		$scope.calculateNoOfDays = function () {
+
+			var endDate = new Date($scope.EndDate.getFullYear(),
+				$scope.EndDate.getMonth(),
+				$scope.EndDate.getDate());
+			var startDate = new Date($scope.StartDate.getFullYear(),
+				$scope.StartDate.getMonth(),
+				$scope.StartDate.getDate());
+			var diffTime = Math.abs(endDate - startDate);
+			var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+			$scope.NoOfDays = diffDays;
+
+			checkLeaveValidity(diffDays);
+		}
+
+		function checkLeaveValidity(days) {
+			if ($scope.LeaveTypeId > 0) {
+				var obj = $filter('filter')($scope.allLeaveTypeFromDb, { Id: $scope.LeaveTypeId }, true)[0];
+				if (obj) {
+					var obj1 = $filter('filter')($scope.EmpLeaveBalance, { LeaveTypeName: obj.Name }, true)[0];
+					if (obj1) {
+						var balance = obj1.Balance;
+						if (balance < days) {
+							$ngBootbox.alert('You have exceeded your balance. Additional days wil be unpaid Leave');
+						}
+					}
+				}
+			} 
+		}
+
+
+		$scope.$watch('EmployeeId', function (empId) {
+			if (empId > 0) {
+				$scope.setEmployeeInfo(empId);
+			} else {
+				$scope.EmpLeaveBalance = [];
+				$scope.Designation = "";
+				$scope.Department = "";
+			}
+			
+		});
+
+		$scope.setEmployeeInfo = function (empId) {
+			$scope.EmpLeaveBalance = [];
+			leave2Service.getEmpLeaveBalance(empId)
+				.then(function onSuccess(response) {
+					$scope.EmpLeaveBalance = response.data;
+				})
+				.catch(function onError(response) {
+					$ngBootbox.alert('Employee Leave Balance Loading error');
+				});
+
+			var obj = $filter('filter')($scope.allEmployeeFromDb, { Id: empId }, true)[0];
+			if (obj) {
+				$scope.Designation = obj.Designation;
+				$scope.Department = obj.Department;
+			}
+		}
+
+		// Add a new leave
+		$scope.addLeave = function () {
+			$scope.$broadcast('show-errors-check-validity');
+			if ($scope.form.$valid) {
+				var leave = {};
+				leave["Id"] = $scope.Id;
+				leave["LeaveTypeId"] = $scope.LeaveTypeId;
+				leave["EmployeeId"] = $scope.EmployeeId;
+				leave["Date"] = $scope.Date;
+				leave["StartDate"] = $scope.StartDate;
+				leave["EndDate"] = $scope.EndDate;
+				leave["LeaveReason"] = $scope.LeaveReason;
+				leave["ContactDuringLeave"] = $scope.ContactDuringLeave;
+				leave["AddressDuringLeave"] = $scope.AddressDuringLeave;
+				leave["Status"] = $scope.Status;
+				leave["SchoolId"] = $scope.SchoolId;
+				leave["NoOfDays"] = $scope.NoOfDays;
+
+				leave2Service.saveLeave(leave)
+					.then(function onSuccess(response) {
+						loadAllLeave();
+						$scope.messageModalObj.message = response.data.message;
+						$scope.showModalforSearch = true;
+						$timeout(function () { $scope.showModalforSearch = false; }, 3000);
+						$scope.reset();
+
+					})
+					.catch(function onError(response) {
+						$ngBootbox.alert('Error in saving');
+					});
+			}
+		};
+		// Populate leave
+		$scope.selectedRow = null;
+		$scope.populateLeave = function (leave) {
+			$scope.selectedRow = leave;
+			$scope.Id = leave.Id;
+			$scope.Name = leave.Name;
+			$scope.LeaveTypeId = leave.LeaveTypeId;
+			$scope.DivisionId = leave.DivisionId;
+			$scope.DistrictId1 = leave.DistrictId;
+			$scope.UpazilaId1 = leave.UpazilaId;
+			$scope.SchoolId1 = leave.SchoolId;
+			$scope.EmployeeId1 = leave.EmployeeId;
+			$scope.GetAllDistrict($scope.DivisionId);
+			$scope.GetAllUpazila($scope.DistrictId1);
+			$scope.GetAllSchool($scope.UpazilaId1);
+			$scope.loadAllEmployee($scope.SchoolId1);
+
+			$scope.StartDate = moment(leave.StartDate).toDate();
+			$scope.EndDate = moment(leave.EndDate).toDate();
+			$location.hash('searchDivId');
+			$anchorScroll();
+			focus('focusMe');
+		}
+
+
+		$scope.reset = function () {
+			$scope.$broadcast('show-errors-reset');
+			$scope.Id = '';
+			$scope.Name = '';
+			$scope.LeaveTypeId = '';
+			$scope.DivisionId = null;
+			$scope.DistrictId = null;
+			$scope.UpazilaId = null;
+			$scope.SchoolId = null;
+			$scope.EmployeeId = null;
+			$scope.selectedRow = null;
+			$scope.Date = new Date();
+			$scope.StartDate = new Date();
+			$scope.EndDate = null;
+			$scope.LeaveReason = "";
+			$scope.ContactDuringLeave = "";
+			$scope.AddressDuringLeave = "";
+			$scope.Status = "";
+			$scope.NoOfDays = "";
+
+		}
+
+		$scope.deleteLeave = function (leave) {
+			leave2Service.deleteLeave(leave)
+				.then(function onSuccess(response) {
+					$scope.messageModalObj.message = response.data.message;
+					$scope.showModalforSearch = true;
+					$timeout(function () { $scope.showModalforSearch = false; }, 3000);
+					loadAllLeave();
+				})
+				.catch(function onError(response) {
+					$ngBootbox.alert('Unable to deleted');
+				});
+		}
+
+		// Load leave
+		function loadAllLeave() {
+			$scope.allLeaveFromDb = [];
+			leave2Service.getAllLeave()
+				.then(function onSuccess(response) {
+					$scope.allLeaveFromDb = response.data;
+				})
+				.catch(function onError(response) {
+					$ngBootbox.alert('Error in loading');
+				});
+		}
+
+		loadAllLeaveType();
+
+		function loadAllLeaveType() {
+			$scope.allLeaveTypeFromDb = [];
+			leave2Service.getAllLeaveType()
+				.then(function onSuccess(response) {
+					$scope.allLeaveTypeFromDb = response.data;
+				})
+				.catch(function onError(response) {
+					$ngBootbox.alert('Error in loading Leave Types');
+				});
+		}
+
+
+		// Load employee
+		$scope.loadAllEmployee = function (schoolId) {
+			$scope.allEmployeeFromDb = [];
+			if (schoolId == undefined) return;
+
+			leave2Service.getAllEmployeeFromDb(schoolId)
+				.then(function onSuccess(response) {
+					$scope.allEmployeeFromDb = response.data;
+					$scope.EmployeeId = $scope.EmployeeId1;
+				})
+				.catch(function onError(response) {
+					$ngBootbox.alert('@Resources.ResourceCommon.MsgErrorInLoading');
+				});
+		}
+
+		
+
+
+		loadAllDivision();
+
+		function loadAllDivision() {
+			$scope.allDivisionFromDb = [];
+			leave2Service.getAllDivision()
+				.then(function onSuccess(response) {
+					$scope.allDivisionFromDb = response.data;
+				})
+				.catch(function onError(response) {
+					$ngBootbox.alert('@Resources.ResourceCommon.MsgErrorInLoading');
+				});
+		}
+
+		$scope.GetAllDistrict = function (divisionId) {
+			$scope.allDistrictFromDb = [];
+			if (divisionId == undefined) return;
+
+			leave2Service.getAllDistrictListByDivision(divisionId)
+				.then(function onSuccess(response) {
+					$scope.allDistrictFromDb = response.data;
+					$scope.DistrictId = $scope.DistrictId1;
+				})
+				.catch(function onError(response) {
+					$ngBootbox.alert('@Resources.ResourceCommon.MsgErrorInLoading');
+				});
+		}
+
+		$scope.GetAllUpazila = function (districtId) {
+			$scope.allUpazilaFromDb = [];
+			if (districtId == undefined) return;
+
+			leave2Service.getAllUpazilaListByDistrict(districtId)
+				.then(function onSuccess(response) {
+					$scope.allUpazilaFromDb = response.data;
+					$scope.UpazilaId = $scope.UpazilaId1;
+				})
+				.catch(function onError(response) {
+					$ngBootbox.alert('@Resources.ResourceCommon.MsgErrorInLoading');
+				});
+		}
+
+		$scope.GetAllSchool = function (upazilaId) {
+			$scope.allSchoolFromDb = [];
+			if (upazilaId == undefined) return;
+
+			leave2Service.getAllSchoolListByUpazila(upazilaId)
+				.then(function onSuccess(response) {
+					$scope.allSchoolFromDb = response.data;
+					$scope.SchoolId = $scope.SchoolId1;
+				})
+				.catch(function onError(response) {
+					$ngBootbox.alert('@Resources.ResourceCommon.MsgErrorInLoading');
+				});
+		}
+
+		$scope.currentPage = 1; //current page
+		$scope.itemsPerPage = 5; //max no of items to display in a page
+		$scope.filteredItems = $scope.allLeaveTypeFromDb.length; //Initially for no filter
+		$scope.totalItems = $scope.allLeaveTypeFromDb.length;
+		//$scope.maxSize = 15;
+
+		$scope.setPage = function (pageNo) {
+			$scope.currentPage = pageNo;
+		};
+		$scope.filter = function () {
+			$timeout(function () {
+				$scope.filteredItems = $scope.filtered.length;
+			},
+				9000);
+		};
+		$scope.sort_by = function (predicate) {
+			$scope.predicate = predicate;
+			$scope.reverse = !$scope.reverse;
+		};
+	});
+	</script>
+}
+
+

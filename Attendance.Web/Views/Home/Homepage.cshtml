@@ -1,0 +1,113 @@
+﻿@{
+	ViewBag.Title = "Home Page";
+	Layout = "~/Views/Shared/_HomePageLayout.cshtml";
+}
+<style>
+	.list-header {
+		font-size: 1rem;
+		font-weight: 700;
+		margin-bottom: 10px;
+	}
+	.table tbody > tr > td:first-child {
+		font-size: 10px;
+	}
+
+	.table tbody > tr > td {
+		padding: 3px 4px;
+		vertical-align: middle;
+		font-size: .8rem;
+	}
+
+	.description-section {
+		text-align: justify;
+	}
+</style>
+
+<div class="container-fluid h-100 landing-page-main-section" ng-controller="landingPageController">
+	<div class="row h-100">
+		<div class="col-md-8 col-sm-6">
+			<div class="description-section mb-3">
+				<p>
+					{{landingData.description}}
+				</p>
+			</div>
+			<div>
+				<div class="list-header">
+					<span>{{landingData.list.heading}}</span>
+				</div>
+				<div class="list-items">
+					<table class="table table-borderless">
+						<tbody>
+						<tr ng-repeat="item in landingData.list.items">
+							<td><i class="fa fa-circle" aria-hidden="true"></i></td>
+							<td>{{item}}</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-4 col-sm-6">
+			<div class="card text-white bg-secondary  w-100 shadow">
+				<div class="card-header bg-secondary  text-white font-weight-bold">
+					Digital Attendance Login
+				</div>
+				<div class="list-group list-group-flush">
+					<a href="/School" class="list-group-item list-group-item-action fadeInUp pl-3  py-2"
+					   data-wow-delay="0.8s">
+						<div class="d-flex align-items-center">
+							<img src="~/Content/Images/schoollogin.png" height="40" class="pr-3" />
+							<span>School User</span>
+						</div>
+					</a>
+					<a href="/Admin" class="list-group-item list-group-item-action fadeInUp pl-3  py-2 "
+					   data-wow-delay="0.8s">
+						<div class="d-flex align-items-center">
+							<img src="~/Content/Images/adminlogin.png" height="40" class="pr-3" />
+							<span>Admin User</span>
+						</div>
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+@section scripts
+{
+	<script type="text/javascript">
+
+		app.factory('focus',
+			function($rootScope, $timeout) {
+				return function(name) {
+					$timeout(function() {
+						$rootScope.$broadcast('focusOn', name);
+					});
+				};
+			});
+	
+		app.factory('landingPageService',
+			[
+				'$http', function($http) {
+					return {
+						getAllcategory: function () {
+							return $http.get('/Content/staticData/LandingPageData.json');
+						}
+					};
+				}
+			]);
+		app.controller('landingPageController',
+			function($scope, $timeout, $http, focus, $location, $anchorScroll, landingPageService, $log) {
+				
+				loadAllData();
+				function loadAllData() {
+					$scope.allCityFromDb = [];
+					landingPageService.getAllcategory()
+						.then(function onSuccess(response) {
+							$scope.landingData = response.data;
+							$scope.categories = response.data.list.items;
+						});
+				}
+			});
+	</script>
+}

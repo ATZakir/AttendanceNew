@@ -1,0 +1,82 @@
+/*-- Space-Class --*/
+
+
+/*==========  Mobile First Method  ==========*/
+
+/* Custom, iPhone Retina */
+@media only screen and (min-width : 320px) {
+	#body {
+		padding: 0;
+		padding-bottom: 60px;
+	}
+
+	.Landing-page-navbar .title {
+		font-size: .8rem;
+	}
+
+	.Landing-page-navbar .title-block {
+		text-align: left;
+	}
+}
+
+/* Extra Small Devices, Phones */
+@media only screen and (min-width : 480px) {
+	#body {
+		padding: 0;
+		padding-bottom: 60px;
+	}
+
+	.Landing-page-navbar .title {
+		font-size: .9rem;
+	}
+
+	.Landing-page-navbar .title-block {
+		text-align: left;
+	}
+}
+
+/* Small Devices, Tablets */
+@media only screen and (min-width : 768px) {
+	.at-landing-page-header {
+		height: 280px;
+		overflow: hidden;
+	}
+
+	#body {
+		padding: 0;
+		padding-bottom: 60px;
+	}
+
+	.Landing-page-navbar .title {
+		font-size: 1rem;
+	}
+
+	.Landing-page-navbar .title-block {
+		text-align: right;
+	}
+}
+
+/* Medium Devices, Desktops */
+@media only screen and (min-width : 992px) {
+	.at-landing-page-header {
+		height: 280px;
+		overflow: hidden;
+	}
+
+	#body {
+		padding: 0;
+		padding-bottom: 60px;
+	}
+
+	.Landing-page-navbar .title-block {
+		text-align: right;
+	}
+}
+
+/* Large Devices, Wide Screens */
+@media only screen and (min-width : 1200px) {
+	#body {
+		padding: 0;
+		padding-bottom: 60px;
+	}
+}

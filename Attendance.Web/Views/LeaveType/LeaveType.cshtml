@@ -1,0 +1,396 @@
+﻿@{
+    ViewBag.Title = @Resources.ResourceLeaveType.LblLeaveType;
+    Layout = "~/Views/Shared/_AdminViewLayout.cshtml";
+}
+
+
+<div class="col-xs-12 col-sm-12" ng-controller="leaveTypeCtrl">
+
+    @* ************ FORM - SECTION (Start)*************** *@
+    <div class="panel panel-default">
+        <div class="panel-heading text-lg text-bold text-uppercase">@Resources.ResourceLeaveType.LblLeaveType</div>
+        <div class="panel-body  border-green pt pb">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12">
+                    <div class="form-horizontal">
+                        <form name="form" novalidate>
+                            <div class="form-group" show-errors id="searchdivid">
+                                <div class=" padding-right-zero">
+                                    <label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+                                        <b class="starStyle">*</b> @Resources.ResourceLeaveType.LblLeaveType
+                                    </label>
+                                </div>
+                                <div class="col-xs-12 col-sm-5 col-md-5">
+                                    <input class="form-control" type="text" name="Name" ng-model="Name" required ng-maxlength="50" focus-on="focusMe" />
+                                    <b class="help-block" ng-if="form.Name.$error.required">
+                                        @string.Format(Resources.ResourceCommon.VMsgRequired_Name, Resources.ResourceLeaveType.LblLeaveType)
+                                    </b>
+
+                                    <b class="help-block" ng-if="form.Name.$error.maxlength">@Resources.ResourceCommon.VMsgToo_Large</b>
+                                </div>
+                            </div>
+                            <div class="form-group" show-errors id="searchdivid">
+                                <div class=" padding-right-zero">
+                                    <label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+                                        <b class="starStyle">*</b> @Resources.ResourceLeaveType.LblShortName
+                                    </label>
+                                </div>
+                                <div class="col-xs-12 col-sm-5 col-md-5">
+                                    <input class="form-control" type="text" name="ShortName" ng-model="ShortName" required ng-maxlength="10" focus-on="focusMe" />
+                                    <b class="help-block" ng-if="form.ShortName.$error.required">
+                                        @string.Format(Resources.ResourceCommon.VMsgRequired_Name, Resources.ResourceLeaveType.LblShortName)
+                                    </b>
+
+                                    <b class="help-block" ng-if="form.ShortName.$error.maxlength">@Resources.ResourceCommon.VMsgToo_Large</b>
+                                </div>
+                            </div>
+                            <div class="form-group" show-errors id="searchdivid">
+                                <div class=" padding-right-zero">
+                                    <label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+                                        @Resources.ResourceLeaveType.LblRemarks
+                                    </label>
+                                </div>
+                                <div class="col-xs-12 col-sm-5 col-md-5">
+                                    <textarea class="form-control" ng-maxlength="200" ng-model="Remarks" name="Remarks"></textarea>
+                                    <b class="help-block" ng-if="form.Remarks.$error.maxlength">@Resources.ResourceCommon.VMsgToo_Large</b>
+
+                                </div>
+                            </div>
+                            <div class="form-group" show-errors id="searchdivid">
+                                <div class=" padding-right-zero">
+                                    <label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+                                        <b class="starStyle">*</b> @Resources.ResourceLeaveType.LblPaymentMode
+                                    </label>
+                                </div>
+                                <div class="col-xs-12 col-sm-5 col-md-5">
+                                    <select data-ng-model="PaymentMode" class="form-control" name="PaymentMode" ng-required="true">
+                                        <option value="Pay">PAY</option>
+                                        <option value="LWP">LWP</option>
+                                    </select>
+                                    <b class="help-block" ng-if="form.PaymentMode.$error.required">
+                                        @string.Format(Resources.ResourceCommon.VMsgRequired_Name, Resources.ResourceLeaveType.LblPaymentMode)
+                                    </b>
+                                </div>
+                            </div>
+                            <div class="form-group" show-errors id="searchdivid">
+                                <div class=" padding-right-zero">
+                                    <label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+                                        <b class="starStyle">*</b> @Resources.ResourceLeaveType.LblPayDays
+                                    </label>
+                                </div>
+                                <div class="col-xs-12 col-sm-5 col-md-5">
+                                    <input class="form-control" type="number" name="PayDays" ng-model="PayDays" min="0" />
+                                    <b class="help-block" ng-if="form.PayDays.$error.required">
+                                        @string.Format(Resources.ResourceCommon.VMsgRequired_Name, Resources.ResourceLeaveType.LblPayDays)
+                                    </b>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="padding-right-zero">
+                                    <label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+                                        @Resources.ResourceLeaveType.LblCarryForward
+                                    </label>
+                                </div>
+                                <div class="col-xs-12 col-sm-5 col-md-5">
+                                    <input class="form-control" type="checkbox" ng-model="CarryForward" checked/>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="padding-right-zero">
+                                    <label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+                                        @Resources.ResourceCommon.LblIsActive
+                                    </label>
+                                </div>
+                                <div class="col-xs-12 col-sm-5 col-md-5">
+                                    <input class="form-control" type="checkbox" ng-model="IsActive" checked />
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-md-offset-3 col-sm-offset-3 col-xs-12 col-sm-8 col-md-8  padding-right-zero">
+                                    <input type="button" ng-click="addLeaveType()" class="btn btn-primary" value=@Resources.ResourceCommon.LblSave /> <input type="button" ng-click="reset()" class="btn btn-default" value=@Resources.ResourceCommon.LblReset />
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @* ************ FORM - SECTION (End)*************** *@
+
+
+
+    @* ************ POP-UP MODEL (Start)*************** *@
+    <div class="row">
+        <div class="col-xs-12 col-sm-3 col-md-3">
+            <modal title='@Resources.ResourceCommon.MsgHeaderSuccess' visible="showModalforSearch">
+                @*<alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>*@
+                <form name="form.update" role="form">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-12">
+                            <span>{{messageModalObj.message}}</span>
+                        </div>
+                    </div>
+                </form>
+            </modal>
+        </div>
+    </div>
+    @* ************ POP-UP MODEL (End)*************** *@
+
+
+
+    @* ************ TABLE - SECTION (Start)*************** *@
+    <div class="panel panel-default">
+        <div class="panel-heading text-lg text-bold text-uppercase">@Resources.ResourceLeaveType.LblLeaveType @Resources.ResourceCommon.lblList</div>
+        <div class="panel-body border-green  pt pb">
+            <div class="row mb">
+                <div class="col-sm-8 padding-left-zero">
+                    <div class="col-sm-4">
+                        <input type="text" ng-model="SearchText" placeholder='@Resources.ResourceCommon.TextBoxSearch_Watermark' class="form-control" />
+                    </div>
+                    <div class="col-sm-8 text-center-vertical">
+                        @Resources.ResourceCommon.lblFiltered <b>{{ filtered.length }}</b> of <b>{{ allLeaveTypeFromDb.length}}</b> @Resources.ResourceLeaveType.LblTotalLeaveType
+                    </div>
+                </div>
+                <div class="col-sm-4 padding-right-zero">
+                    <div class="col-sm-6 text-center-vertical text-right">
+                        <label>@Resources.ResourceCommon.lblPageSize:</label>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <select ng-model="entryLimit" class="form-control">
+                            <option>3</option>
+                            <option>5</option>
+                            <option>10</option>
+                            <option>20</option>
+                            <option>50</option>
+                            <option>100</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12" ng-show="filtered.length > 0">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>@Resources.ResourceLeaveType.LblLeaveType <a ng-click="sort_by('Name');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                    <th>@Resources.ResourceLeaveType.LblShortName <a ng-click="sort_by('ShortName');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                    <th>@Resources.ResourceLeaveType.LblPayDays <a ng-click="sort_by('PayDays');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                    <th>@Resources.ResourceLeaveType.LblPaymentMode <a ng-click="sort_by('PaymentMode');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                    <th>@Resources.ResourceLeaveType.LblCarryForward <a ng-click="sort_by('CarryForward');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                    <th>@Resources.ResourceCommon.LblIsActive <a ng-click="sort_by('IsActive');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                    <th>@Resources.ResourceCommon.LblEdit </th>
+                                    <th>@Resources.ResourceCommon.LblDelete </th>
+                                </tr>
+                            </thead>
+                            <tfoot>
+                                <tr>
+                                    <th>@Resources.ResourceLeaveType.LblLeaveType <a ng-click="sort_by('Name');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                    <th>@Resources.ResourceLeaveType.LblShortName <a ng-click="sort_by('ShortName');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                    <th>@Resources.ResourceLeaveType.LblPayDays <a ng-click="sort_by('PayDays');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                    <th>@Resources.ResourceLeaveType.LblPaymentMode <a ng-click="sort_by('PaymentMode');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                    <th>@Resources.ResourceLeaveType.LblCarryForward <a ng-click="sort_by('CarryForward');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                    <th>@Resources.ResourceCommon.LblIsActive <a ng-click="sort_by('IsActive');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                    <th>@Resources.ResourceCommon.LblEdit </th>
+                                    <th>@Resources.ResourceCommon.LblDelete </th>
+                                </tr>
+                            </tfoot>
+                            <tbody>
+                                <tr ng-class="{'selected':data == selectedRow}" ng-repeat="data in filtered = (allLeaveTypeFromDb  | filter:SearchText | orderBy : predicate :reverse) | startFrom:(currentPage-1)*entryLimit | limitTo:entryLimit">
+                                    <td>{{data.Name }}</td>
+                                    <td>{{data.ShortName }}</td>
+                                    <td>{{data.PayDays }}</td>
+                                    <td>{{data.PaymentMode }}</td>
+                                    <td>{{data.CarryForward }}</td>
+                                    <td>{{data.IsActive }}</td>
+
+                                    <td><input type="button" value=@Resources.ResourceCommon.LblEdit class="btn btn-info btn-sm" ng-click="populateLeaveType(data)" /></td>
+                                    <td>
+                                        <input type="button" value=@Resources.ResourceCommon.LblDelete class="btn btn-danger btn-sm" ng-bootbox-confirm='@Resources.ResourceCommon.MsgConfirm_Delete'
+                                               ng-bootbox-confirm-action="deleteLeaveType(data)" ng-bootbox-confirm-action-cancel="confirmCallbackCancel(attr1, attr2)" />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12" ng-show="filtered.length > 0">
+                    <div pagination="" max-size="15" page="currentPage" on-select-page="setPage(page)" boundary-links="true" total-items="filtered.length" items-per-page="entryLimit" class="pagination-small" previous-text="&laquo;" next-text="&raquo;"></div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-12" ng-show="filtered.length == 0">
+                <div class="col-xs-12 col-sm-12 col-md-12 alert alert-danger">
+                    @Resources.ResourceLeaveType.LblNoLeaveTypeFound
+                </div>
+            </div>
+        </div>
+    </div>
+    @* ************ TABLE - SECTION (End)*************** *@
+
+</div>
+
+@section scripts{
+    <script type="text/javascript">
+    app.filter('startFrom', function () {
+        return function (input, start) {
+            if (input) {
+                start = +start; //parse to int
+                return input.slice(start);
+            }
+            return [];
+        }
+    });
+    app.factory('focus', function ($rootScope, $timeout) {
+        return function (name) {
+            $timeout(function () {
+                $rootScope.$broadcast('focusOn', name);
+            });
+        };
+    });
+    app.factory('leaveTypeService', ['$http', function ($http) {
+
+        return {
+            saveLeaveType: function (leaveType) {
+                return $http({
+                    url: '/LeaveType/CreateLeaveType',
+                    method: 'POST',
+                    data: leaveType
+                })
+            },
+            getLeaveType: function (id) {
+                return $http.get('/LeaveType/GetLeaveType/' + id);
+            },
+            getAllLeaveType: function () {
+                return $http.get('/LeaveType/GetLeaveTypeList');
+            },
+            deleteLeaveType: function (leaveType) {
+                return $http({
+                    url: '/LeaveType/DeleteLeaveType',
+                    method: 'POST',
+                    data: leaveType
+                })
+            }
+        };
+    }]);
+
+    app.controller('leaveTypeCtrl', function ($scope, $timeout, $http, focus, $location, $anchorScroll, leaveTypeService, $log, $ngBootbox) {
+
+        if ('@ViewBag.permission' == "NO") {
+            $scope.NoPermission = true;
+        }
+        $scope.messageModalObj = {};
+        $scope.messageModalObj.message = '';
+        loadAllLeaveType();
+        $scope.showModalforSearch = false;
+        // Add a new leaveType
+        $scope.addLeaveType = function () {
+            $scope.$broadcast('show-errors-check-validity');
+            if ($scope.form.$valid) {
+                var leaveType = {};
+                leaveType["Id"] = $scope.Id;
+                leaveType["Name"] = $scope.Name;
+                leaveType["IsActive"] = $scope.IsActive;
+                leaveType["CarryForward"] = $scope.CarryForward;
+                leaveType["PayDays"] = $scope.PayDays;
+                leaveType["PaymentMode"] = $scope.PaymentMode;
+                leaveType["Remarks"] = $scope.Remarks;
+                leaveType["ShortName"] = $scope.ShortName;
+
+                leaveTypeService.saveLeaveType(leaveType)
+                .then(function onSuccess(response) {
+                    loadAllLeaveType();
+                    $scope.messageModalObj.message = response.data.message;
+                    $scope.showModalforSearch = true;
+                    $timeout(function () { $scope.showModalforSearch = false; }, 3000);
+                    $scope.reset();
+                })
+                .catch(function onError(response) {
+                    $ngBootbox.alert('@Resources.ResourceCommon.MsgErrorInSaving');
+                });
+            }
+        };
+
+        // Populate leaveType
+        $scope.selectedRow = null;
+        $scope.populateLeaveType = function (rowvalue) {
+            $scope.selectedRow = rowvalue;
+            $scope.Id = rowvalue.Id;
+            $scope.Name = rowvalue.Name;
+            $scope.IsActive = rowvalue.IsActive;
+            $scope.CarryForward = rowvalue.CarryForward;
+            $scope.PayDays = rowvalue.PayDays;
+            $scope.PaymentMode = rowvalue.PaymentMode;
+            $scope.Remarks = rowvalue.Remarks;
+            $scope.ShortName = rowvalue.ShortName;
+
+            $location.hash('searchDivId');
+            $anchorScroll();
+            focus('focusMe');
+        }
+
+        $scope.reset = function () {
+            $scope.$broadcast('show-errors-reset');
+            $scope.selectedRow = null;
+            $scope.Id = '';
+            $scope.Name = '';
+            $scope.IsActive = true;
+            $scope.CarryForward = '';
+            $scope.PayDays = '';
+            $scope.PaymentMode = '';
+            $scope.Remarks = '';
+            $scope.ShortName = '';
+        }
+
+        $scope.deleteLeaveType = function (leaveType) {
+            leaveTypeService.deleteLeaveType(leaveType)
+            .then(function onSuccess(response) {
+                $scope.messageModalObj.message = response.data.message;
+                $scope.showModalforSearch = true;
+                $timeout(function () { $scope.showModalforSearch = false; }, 3000);
+                $scope.reset();
+                loadAllLeaveType();
+            })
+            .catch(function onError(response) {
+                $ngBootbox.alert('@Resources.ResourceCommon.MsgNot_deleted');
+            });
+        }
+
+        // Load leave type
+        function loadAllLeaveType() {
+            $scope.allLeaveTypeFromDb = [];
+            leaveTypeService.getAllLeaveType()
+                .then(function onSuccess(response) {
+                    $scope.allLeaveTypeFromDb = response.data;
+                })
+                .catch(function onError(response) {
+                    $ngBootbox.alert('@Resources.ResourceCommon.MsgErrorInLoading');
+                });
+        }
+
+        $scope.currentPage = 1; //current page
+        $scope.entryLimit = 10; //max no of items to display in a page
+        $scope.filteredItems = $scope.allLeaveTypeFromDb.length; //Initially for no filter
+        $scope.totalItems = $scope.allLeaveTypeFromDb.length;
+        //$scope.maxSize = 15;
+
+        $scope.setPage = function (pageNo) {
+            $scope.currentPage = pageNo;
+        };
+        $scope.filter = function () {
+            $timeout(function () {
+                $scope.filteredItems = $scope.filtered.length;
+            }, 9000);
+        };
+        $scope.sort_by = function (predicate) {
+            $scope.predicate = predicate;
+            $scope.reverse = !$scope.reverse;
+        };
+    });
+    </script>
+}

@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CacheKeys>
+	<CacheKeyPrefix name="permission:module" />
+	<CacheKeyPrefix name="permission:subModule" />
+	<CacheKeyPrefix name="permission:subModuleItem" />
+	<CacheKeyPrefix name="permission:role" />
+	<CacheKeyPrefix name="permission:roleSubModuleItem" />
+	<CacheKeyPrefix name="permission:user" />
+  <CacheKeyPrefix name="permission:country" />
+	<CacheKeyPrefix name="permission:city" />
+	<CacheKeyPrefix name="permission:currency" />
+
+	<CacheKeyPrefix name="permission:workflowaction" />
+	<CacheKeyPrefix name="permission:workflowactionSetting" />
+	
+	
+</CacheKeys>

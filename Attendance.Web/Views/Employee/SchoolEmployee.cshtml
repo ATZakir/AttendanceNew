@@ -1,0 +1,1268 @@
+﻿
+@using Attendance.Web.Helpers
+@{
+	ViewBag.Title = @Resources.ResourceEmployee.LblTitle;
+	Layout = "~/Views/Shared/_AdminViewLayout.cshtml";
+}
+
+<div ng-controller="schoolEmployeeCtrl">
+
+	@* ************ FORM - SECTION (Start)*************** *@
+	<div class="panel panel-default">
+		<div class="panel-heading text-lg text-bold text-uppercase">@Resources.ResourceEmployee.LblTitle</div>
+		<div class="panel-body border-green pt pb">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-md-2 col-sm-4 col-xs-4 left-selection-column">
+						<div class="selector-container-div shadow">
+							<div class="panel panel-default selector-container">
+								<div class="panel-body" style="padding: 0;">
+                                    <div class="form-group">
+                                        <div class=" padding-right-zero">
+                                            <label class=" control-label default-color">
+                                                <b class="starStyle"></b> @Resources.ResourceEmployee.LblName
+                                            </label>
+                                        </div>
+                                        <div class="">
+                                            <input type="text" ng-model="SearchText" placeholder='@Resources.ResourceCommon.TextBoxSearch_Watermark' class="form-control" />
+                                        </div>
+                                        <br />
+                                        <button type="submit" ng-click="loadAllEmployeeListBySchool()" class="btn btn-success btn-sm btn-refresh-icon">
+                                            Refresh
+                                        </button>
+                                    </div>
+
+									<div class="form-group">
+										<label class="control-label">@Resources.ResourceEmployee.LblAllEmployeeList</label>
+										<div class="" style="height: 300px; overflow: auto;">
+											<select multiple data-ng-model="Edata" class="form-control listSelect" focus-on="focusMe"
+													required data-ng-options="c as c.Code + '-'+ c.FullName for c in allEmployeeListBySchoolFromDb| orderBy : predicate :reverse | orderBy: 'Code'" name="EmployeeId"
+													style="height: 100%; overflow-y: auto; padding: 0;"
+													ng-click="populateEmployee(Edata);"></select>
+										</div>
+									</div>
+								</div>
+								<div class="panel-footer">
+									<ul uib-pagination boundary-links="false" total-items="pagingInfo.totalItems"
+										items-per-page="pagingInfo.itemsPerPage" ng-change="selectPage(pagingInfo.page)"
+										ng-model="pagingInfo.page" class="pagination-sm" previous-text="&lsaquo;" next-text="&rsaquo;"></ul>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-10 col-sm-8 col-xs-8">
+						<div class="form-horizontal">
+							<form name="form" novalidate>
+								<div class="row">
+									<div class="col-xs-6 col-sm-6 col-md-6">
+
+										<div class="form-group" show-errors id="searchdivid">
+											<div class=" padding-right-zero">
+												<label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+													<b class="starStyle">*</b> @Resources.ResourceEmployee.LblCode
+												</label>
+											</div>
+											<div class="col-xs-12 col-sm-9 col-md-9">
+												<input class="form-control" type="text" ng-maxlength="50" ng-model="Code" required name="Code" focus-on="focusMe" />
+												<b class="help-block" ng-if="form.Code.$error.required">
+													@string.Format(Resources.ResourceCommon.VMsgRequired_Name, Resources.ResourceEmployee.LblCode)
+												</b>
+												<b class="help-block" ng-if="form.Code.$error.maxlength">@Resources.ResourceCommon.VMsgToo_Large</b>
+											</div>
+										</div>
+
+										<div class="form-group">
+											<div class=" padding-right-zero">
+												<label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+													@Resources.ResourceEmployee.LblGender
+												</label>
+											</div>
+											<div class="col-xs-12 col-sm-9 col-md-9">
+												<select data-ng-model="Gender" class="form-control"
+														data-ng-options="c.name as c.name for c in Genders | orderBy: 'name'" name="Gender">
+													<option value="">@Resources.ResourceEmployee.SelectGender</option>
+												</select>
+											</div>
+										</div>
+
+										<div class="form-group" show-errors>
+											<div class=" padding-right-zero">
+												<label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+													<b class="starStyle">*</b> @Resources.ResourceEmployee.LblFullName
+												</label>
+											</div>
+											<div class="col-xs-12 col-sm-9 col-md-9">
+												<input class="form-control" type="text" ng-maxlength="100" ng-model="FullName" required name="FullName" />
+												<b class="help-block" ng-if="form.FullName.$error.required">
+													@string.Format(Resources.ResourceCommon.VMsgRequired_Name, Resources.ResourceEmployee.LblFullName)
+												</b>
+												<b class="help-block" ng-if="form.FullName.$error.maxlength">@Resources.ResourceCommon.VMsgToo_Large</b>
+											</div>
+										</div>
+
+										<div class="form-group" show-errors>
+											<div class=" padding-right-zero">
+												<label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+													@Resources.ResourceEmployee.LblFullNameBangla
+												</label>
+											</div>
+											<div class="col-xs-12 col-sm-9 col-md-9">
+												<input class="form-control" type="text" ng-maxlength="100" ng-model="FullNameBangla" name="FullNameBangla" />
+												<b class="help-block" ng-if="form.FullNameBangla.$error.required">
+													@string.Format(Resources.ResourceCommon.VMsgRequired_Name, Resources.ResourceEmployee.LblFullNameBangla)
+												</b>
+												<b class="help-block" ng-if="form.FullName.$error.maxlength">@Resources.ResourceCommon.VMsgToo_Large</b>
+											</div>
+										</div>
+
+										<div class="form-group" show-errors>
+											<div class=" padding-right-zero">
+												<label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+													<b class="starStyle">*</b> @Resources.ResourceEmployee.LblPresentAddress
+												</label>
+											</div>
+											<div class="col-xs-12 col-sm-9 col-md-9">
+												<textarea class="form-control" ng-maxlength="200" ng-model="PresentAddress" required name="PresentAddress"></textarea>
+												<b class="help-block" ng-if="form.PresentAddress.$error.required">
+													@string.Format(Resources.ResourceCommon.VMsgRequired_Name, Resources.ResourceEmployee.LblPresentAddress)
+												</b>
+												<b class="help-block" ng-if="form.PresentAddress.$error.maxlength">@Resources.ResourceCommon.VMsgToo_Large</b>
+											</div>
+										</div>
+
+										<div class="form-group">
+											<div class=" padding-right-zero">
+												<label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+													@Resources.ResourceEmployee.LblFatherName
+												</label>
+											</div>
+											<div class="col-xs-12 col-sm-9 col-md-9">
+												<input class="form-control" type="text" ng-maxlength="100" ng-model="FatherName" name="FatherName" />
+												<b class="help-block" ng-if="form.FatherName.$error.maxlength">@Resources.ResourceCommon.VMsgToo_Large</b>
+											</div>
+										</div>
+
+										<div class="form-group">
+											<div class=" padding-right-zero">
+												<label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+													@Resources.ResourceEmployee.LblMotherName
+												</label>
+											</div>
+											<div class="col-xs-12 col-sm-9 col-md-9">
+												<input class="form-control" type="text" ng-maxlength="100" ng-model="MotherName" name="MotherName" />
+												<b class="help-block" ng-if="form.MotherName.$error.maxlength">@Resources.ResourceCommon.VMsgToo_Large</b>
+											</div>
+										</div>
+
+										<div class="form-group">
+											<div class=" padding-right-zero">
+												<label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+													@Resources.ResourceEmployee.LblDOB
+												</label>
+											</div>
+											<div class="col-xs-12 col-sm-9 col-md-9">
+												<input type="text" class="form-control" ng-model="DOB" name="DOB" data-date-format="dd-MMM-yyyy" bs-datepicker data-container='body'
+													   data-min-view="0" data-autoclose="true">
+											</div>
+										</div>
+
+										<div class="form-group">
+											<div class=" padding-right-zero">
+												<label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+													@Resources.ResourceEmployee.LblNationality
+												</label>
+											</div>
+											<div class="col-xs-12 col-sm-9 col-md-9">
+												<input class="form-control" type="text" ng-maxlength="50" ng-model="Nationality" name="Nationality" />
+
+											</div>
+										</div>
+
+										<div class="form-group">
+											<div class=" padding-right-zero">
+												<label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+													@Resources.ResourceEmployee.LblNationalId
+												</label>
+											</div>
+											<div class="col-xs-12 col-sm-9 col-md-9">
+												<input class="form-control" type="text" ng-maxlength="50" ng-model="NationalId" name="NationalId" />
+												<b class="help-block" ng-if="form.NationalId.$error.maxlength">@Resources.ResourceCommon.VMsgToo_Large</b>
+											</div>
+										</div>
+
+										<div class="form-group">
+
+											<div class=" padding-right-zero">
+												<label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+													@Resources.ResourceEmployee.LblPassport
+												</label>
+											</div>
+											<div class="col-xs-12 col-sm-9 col-md-9">
+												<input class="form-control" type="text" ng-maxlength="50" ng-model="PassportNo" name="PassportNo" />
+												<b class="help-block" ng-if="form.PassportNo.$error.maxlength">@Resources.ResourceCommon.VMsgToo_Large</b>
+											</div>
+										</div>
+
+										<div class="form-group">
+
+											<div class=" padding-right-zero">
+												<label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+													@Resources.ResourceEmployee.ActivationCode
+												</label>
+											</div>
+											<div class="col-xs-12 col-sm-9 col-md-9">
+												<input class="form-control" type="text" ng-maxlength="50" ng-model="AuthenticationCode" name="AuthenticationCode" />
+											</div>
+										</div>
+										<div class="form-group">
+											<div class=" padding-right-zero">
+												<label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+													@Resources.ResourceEmployee.LblJoiningDate
+												</label>
+											</div>
+											<div class="col-xs-12 col-sm-9 col-md-9">
+												<input type="text" class="form-control" ng-model="JoinDate" name="JoinDate" data-date-format="dd-MMM-yyyy" bs-datepicker data-container='body'
+													   data-min-view="0" data-autoclose="true">
+											</div>
+										</div>
+
+										<div class="form-group">
+											<div class=" padding-right-zero">
+												<label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+													@Resources.ResourceEmployee.LblEmail
+												</label>
+											</div>
+											<div class="col-xs-12 col-sm-9 col-md-9">
+												<input class="form-control" type="email" ng-maxlength="100" ng-model="Email" name="Email" />
+												<b class="help-block" ng-if="form.Email.$error.maxlength">@Resources.ResourceCommon.VMsgToo_Large</b>
+											</div>
+										</div>
+
+
+
+									</div>
+
+									<div class="col-xs-6 col-sm-6 col-md-6">
+
+										<div class="form-group">
+											<div class=" padding-right-zero">
+												<label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+													@Resources.ResourceEmployee.LblOfficePhone
+												</label>
+											</div>
+											<div class="col-xs-12 col-sm-9 col-md-9">
+												<input class="form-control" type="number" ng-maxlength="50" ng-model="OfficePhone" name="OfficePhone" />
+												<b class="help-block" ng-if="form.OfficePhone.$error.maxlength">@Resources.ResourceCommon.VMsgToo_Large</b>
+											</div>
+										</div>
+
+										<div class="form-group">
+											<div class=" padding-right-zero">
+												<label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+													@Resources.ResourceEmployee.LblOfficeMobile
+												</label>
+											</div>
+											<div class="col-xs-12 col-sm-9 col-md-9">
+												<input class="form-control" type="number" ng-maxlength="50" ng-model="OfficeMobile" name="OfficeMobile" />
+												<b class="help-block" ng-if="form.OfficeMobile.$error.maxlength">@Resources.ResourceCommon.VMsgToo_Large</b>
+											</div>
+										</div>
+
+										<div class="form-group">
+											<div class=" padding-right-zero">
+												<label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+													@Resources.ResourceEmployee.LblPermanentAddress
+												</label>
+											</div>
+											<div class="col-xs-12 col-sm-9 col-md-9">
+												<textarea class="form-control" ng-maxlength="200" ng-model="PermanentAddress" name="PermanentAddress"></textarea>
+												<b class="help-block" ng-if="form.PermanentAddress.$error.maxlength">@Resources.ResourceCommon.VMsgToo_Large</b>
+											</div>
+										</div>
+
+										<div class="form-group">
+											<div class=" padding-right-zero">
+												<label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+													@Resources.ResourceEmployee.LblResidentPhone
+												</label>
+											</div>
+											<div class="col-xs-12 col-sm-9 col-md-9">
+												<input class="form-control" type="number" ng-maxlength="50" ng-model="ResidentPhone" name="ResidentPhone" />
+												<b class="help-block" ng-if="form.ResidentPhone.$error.maxlength">@Resources.ResourceCommon.VMsgToo_Large</b>
+											</div>
+										</div>
+
+										<div class="form-group">
+											<div class=" padding-right-zero">
+												<label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+													@Resources.ResourceEmployee.LblResidentMobile
+												</label>
+											</div>
+											<div class="col-xs-12 col-sm-9 col-md-9">
+												<input class="form-control" type="number" ng-maxlength="50" ng-model="ResidentMobile" name="ResidentMobile" />
+												<b class="help-block" ng-if="form.ResidentMobile.$error.maxlength">@Resources.ResourceCommon.VMsgToo_Large</b>
+											</div>
+										</div>
+
+										<div class="form-group">
+											<div class=" padding-right-zero">
+												<label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+													@Resources.ResourceEmployee.LblRelgion
+												</label>
+											</div>
+											<div class="col-xs-12 col-sm-9 col-md-9">
+												<input class="form-control" type="text" ng-maxlength="100" ng-model="Relgion" name="Relgion" />
+
+											</div>
+										</div>
+
+
+
+										<div class="form-group">
+											<div class=" padding-right-zero">
+												<label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+													@Resources.ResourceEmployee.LblMaritalStatus
+												</label>
+											</div>
+											<div class="col-xs-12 col-sm-9 col-md-9">
+												<select data-ng-model="MaritalStatus" class="form-control"
+														data-ng-options="c.name as c.name for c in aMaritalStatus | orderBy: 'name'" name="MaritalStatus">
+													<option value="">@Resources.ResourceEmployee.SelectMaritalStatus</option>
+												</select>
+											</div>
+										</div>
+
+										<div class="form-group">
+											<div class=" padding-right-zero">
+												<label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+													@Resources.ResourceEmployee.LblBloodGroup
+												</label>
+											</div>
+											<div class="col-xs-12 col-sm-9 col-md-9">
+												<select data-ng-model="BloodGroup" class="form-control"
+														data-ng-options="c.name as c.name for c in bloodGroups | orderBy: 'name'" name="BloodGroup">
+													<option value="">@Resources.ResourceEmployee.SelectBloodGroup</option>
+												</select>
+											</div>
+										</div>
+
+										<div class="form-group">
+											<div class=" padding-right-zero">
+												<label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+													<b class="starStyle"></b> @Resources.ResourceEmployee.EmployeeImage
+												</label>
+											</div>
+											<div class="col-xs-12 col-sm-9 col-md-9">
+
+												<input type="file" file-model="myFile" class="form-control" onchange="angular.element(this).scope().uploadImage(this.files)" name="file" data-autoclose="true">
+												<div ng-hide="IsHidden">
+													<a class=" link-text-style" href="/Files/EmployeeImage/{{PhotoPath}}" download target="_blank">Download File</a>
+												</div>
+											</div>
+										</div>
+
+										@*<input type="file" ng-model="image" onchange="angular.element(this).scope().uploadImage(this.files)" />*@
+
+										<table class="table table-bordered" style="font-size: 13px;">
+											<thead>
+												<tr>
+													<th>Leave Type</th>
+													<th>Allocated Days</th>
+													<th>Achieved</th>
+													<th>Balance</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr ng-repeat="leaveBalance in EmployeeLeaveBalanceList">
+													<td style="width: 100px; text-align: right;">
+														{{leaveBalance.LeaveTypeName}} :
+													</td>
+													<td style="width: 50px;">
+														<input type="text" class="form-control"
+															   ng-model="leaveBalance.DafaultAllocatedDays" ng-disabled="true">
+													</td>
+													<td style="width: 50px;">
+														<input type="number" class="form-control" ng-model="leaveBalance.Achieved"
+															   ng-change="calculateLeaveBalance()">
+													</td>
+													<td style="width: 50px;">
+														<input type="number" class="form-control" ng-model="leaveBalance.Balance" ng-disabled="true">
+													</td>
+												</tr>
+											</tbody>
+										</table>
+
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+
+				@* ************ Schoo Employee History *************** *@
+				<div class="row">
+					<h3 class="heading">@Resources.ResourceEmploymentHistory.LblEmploymentHistory</h3>
+
+					<div class="table-responsive">
+						<table class="table table-bordered" style="margin-bottom: 5px;">
+							<thead>
+								<tr>
+									<th style="width: 150px;">
+										@Resources.ResourceEmploymentHistory.LblDepartment
+									</th>
+
+									<th style="width: 150px;">
+										@Resources.ResourceEmploymentHistory.LblDesignation
+									</th>
+
+									<th style="width: 150px;">
+										@Resources.ResourceSchool.LblSchool
+									</th>
+
+									<th style="width: 150px;">
+										@Resources.ResourceDutyShift.LblDutyShift
+									</th>
+
+									<th>
+										@Resources.ResourceEmploymentHistory.LblDateFrom
+									</th>
+									<th>
+										@Resources.ResourceEmploymentHistory.LblDateTo
+									</th>
+									<th>
+										@Resources.ResourceEmployee.Remove
+									</th>
+
+									<th>
+										@Resources.ResourceEmployee.LblAdd
+									</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="aEmployee in EmploymentHistories" ng-init="outerIndex=$index">
+
+									<td>
+										<select data-ng-model="aEmployee.DepartmentId" class="form-control"
+												data-ng-options="c.Id as c.Name for c in allDepartmentFromDb | orderBy: 'Name'" ng-change="getDesignation(aEmployee.DepartmentId,$index)" name="DepartmentId">
+											<option value="">@Resources.ResourceEmploymentHistory.LblSelDep</option>
+										</select>
+									</td>
+
+									<td>
+										<select data-ng-model="aEmployee.DesignationId" class="form-control" ng-disable="!aEmployee.DepartmentId"
+												data-ng-options="c.Id as c.Name for c in aEmployee.DesignationList | orderBy: 'Name'">
+											<option value="">@Resources.ResourceEmploymentHistory.LblSelDesg</option>
+										</select>
+
+									</td>
+
+									<td>
+										<select data-ng-model="aEmployee.SchoolId" class="form-control" ng-disable="!aEmployee.SchoolId" data-ng-options="c.Id as c.Name for c in SchoolList | orderBy: 'Name'" ng-change="getDutyShift(aEmployee.SchoolId,$index)">
+											<option value="">@Resources.ResourceInstitute.LbSllInstitute</option>
+										</select>
+									</td>
+
+									<td>
+										<select data-ng-model="aEmployee.DutyShiftId" class="form-control" ng-disable="!aEmployee.DepartmentId" data-ng-options="c.Id as c.DutyShiftMasterName for c in aEmployee.allDutyShiftList
+                                    | orderBy: 'Name'">
+											<option value="">@Resources.ResourceDutyShift.LblSlDutyShift</option>
+										</select>
+									</td>
+
+									<td>
+										<input type="text" class="form-control" ng-model="aEmployee.DateFrom" name="DateFrom" data-date-format="dd-MMM-yyyy" bs-datepicker @*data-placement='auto'*@ data-container='body'
+											   data-min-view="0" data-autoclose="true">
+									</td>
+									<td>
+										<input type="text" class="form-control" ng-model="aEmployee.DateTo" name="DateTo" data-date-format="dd-MMM-yyyy" bs-datepicker @*data-placement='auto'*@ data-container='body'
+											   data-min-view="0" data-autoclose="true">
+									</td>
+									<td>
+										<button class="btn  btn-default btn-block gridButton" ng-bootbox-confirm="@Resources.ResourceCommon.MsgConfirmRemoveFromTheDetails " ng-bootbox-confirm-action="EmploymentHistories.splice($index, 1)" ng-bootbox-confirm-action-cancel="confirmCallbackCancel(attr1, attr2)" title="@Resources.ResourceCommon.MsgConfirmRemoveFromTheDetails">
+											<i class="text-danger glyphicon glyphicon-remove"></i>
+										</button>
+									</td>
+									<td>
+										<button class="btn btn-block btn-sm btn-info" ng-click="addNewDetail($event)">@Resources.ResourceCommon.LblAddDetailItem</button>
+									</td>
+
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+				</div>
+
+				@* ************ Employee Education Start *************** *@
+				<div class="row">
+					<h3 class="heading">@Resources.ResourceEmployeeEducation.LblEmployeeEducation</h3>
+					<div class="table-responsive">
+						<table class="table table-bordered" style="margin-bottom: 5px;">
+							<thead>
+								<tr>
+									<th style="width: 150px;">
+										@Resources.ResourceEducationLevel.LblEducationLevel
+									</th>
+									<th>
+										@Resources.ResourceBoardorUniversity.LblDegreeTitle
+									</th>
+									<th>
+										@Resources.ResourceBoardorUniversity.LblDegreeMajor
+									</th>
+
+									<th style="width: 150px;">
+										@Resources.ResourceBoardorUniversity.LblBoardorUniversity
+									</th>
+									<th style="width: 150px;">
+										@Resources.ResourceInstitute.LblInstitute
+									</th>
+									<th>
+										@Resources.ResourceBoardorUniversity.LblResult
+									</th>
+									<th>
+										@Resources.ResourceBoardorUniversity.LblScale
+									</th>
+									<th>
+										@Resources.ResourceEmployee.Remove
+									</th>
+									<th>
+										@Resources.ResourceEmployee.LblAdd
+									</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="edEmployee in EmployeeEducations" ng-init="outerIndex=$index">
+
+									<td>
+										<select data-ng-model="edEmployee.LevelId" class="form-control"
+												required data-ng-options="c.Id as c.Name for c in EducationLevelList                     |orderBy: 'Name'" name="LevelId">
+											<option value=""> @Resources.ResourceCommon.LblSelect</option>
+										</select>
+
+									</td>
+
+									<td>
+										<input type="text" class="form-control" ng-model="edEmployee.DegreeTitle" name="DegreeTitle">
+									</td>
+									<td>
+										<input type="text" class="form-control" ng-model="edEmployee.DegreeMajor" name="DegreeMajor">
+									</td>
+
+
+									<td>
+										<select data-ng-model="edEmployee.BoardOrUniversityId" class="form-control"
+												data-ng-options=" c.Id as c.Name for c in BoardorUniversityList                     |orderBy: 'Name'" name="BoardOrUniversityId"
+												ng-change="getInstitute(edEmployee.BoardOrUniversityId,$index);">
+											<option value=""> @Resources.ResourceCommon.LblSelect</option>
+										</select>
+									</td>
+
+									<td>
+										<select data-ng-model="edEmployee.InstituteId" class="form-control"
+												data-ng-options="c.Id as c.Name for c in InstituteList
+                            |orderBy: 'Name'" name="InstituteId">
+											<option value="">@Resources.ResourceCommon.LblSelect</option>
+										</select>
+									</td>
+									<td>
+										<input type="text" class="form-control" ng-model="edEmployee.Result" name="Result">
+									</td>
+									<td>
+										<input type="text" class="form-control" ng-model="edEmployee.Scale" name="Result">
+									</td>
+									<td>
+										<button class="btn  btn-default btn-block gridButton" ng-bootbox-confirm="@Resources.ResourceCommon.MsgConfirmRemoveFromTheDetails " ng-bootbox-confirm-action="EmployeeEducations.splice($index, 1)" ng-bootbox-confirm-action-cancel="confirmCallbackCancel(attr1, attr2)" title="@Resources.ResourceCommon.MsgConfirmRemoveFromTheDetails">
+											<i class="text-danger glyphicon glyphicon-remove"></i>
+										</button>
+									</td>
+									<td>
+										<button class="btn btn-block btn-sm btn-info" ng-click="addNewDetailEdu($event)">@Resources.ResourceCommon.LblAddDetailItem</button>
+									</td>
+
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				@* ************ Employee Education Finish *************** *@
+			</div>
+
+			<div class="form-group">
+				<div class="col-md-offset-3 col-sm-offset-3 col-xs-12 col-sm-8 col-md-8  padding-right-zero">
+					<input type="button" ng-click="addEmployee()" class="btn btn-primary" value="@Resources.ResourceCommon.LblSave" />
+					<input type="button" ng-click="reset()" class="btn btn-default" value="@Resources.ResourceCommon.LblReset" />
+					@*<input type="button" ng-show="editmode" ng-click="deleteEmployee()" class="btn btn-danger"
+						value="@Resources.ResourceCommon.LblDelete" />*@
+
+
+					<input type="button" ng-show="editmode" class="btn btn-danger" value=@Resources.ResourceCommon.LblDelete
+						   ng-bootbox-confirm='@Resources.ResourceCommon.MsgConfirm_Delete'
+						   ng-bootbox-confirm-action="deleteEmployee()" ng-bootbox-confirm-action-cancel="confirmCallbackCancel(attr1, attr2)" />
+				</div>
+			</div>
+
+
+		</div>
+	</div>
+	@* ************ FORM - SECTION (End)*************** *@
+
+	@* ************ POP-UP MODEL (Start)*************** *@
+	<div class="row">
+		<div class="col-xs-12 col-sm-3 col-md-3">
+			<modal title='@Resources.ResourceCommon.MsgHeaderSuccess' visible="showModalforSearch">
+				<alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
+				<form name="form.update" role="form">
+					<div class="row">
+						<div class="col-xs-12 col-sm-12 col-md-12">
+							<span>{{messageModalObj.message}}</span>
+						</div>
+					</div>
+				</form>
+			</modal>
+		</div>
+	</div>
+	@* ************ POP-UP MODEL (End)*************** *@
+
+	@* ************ TABLE - SECTION (Start)*************** *@
+
+	@* ************ TABLE - SECTION (End) *************** *@
+
+</div>
+
+
+@section scripts{
+	<script type="text/javascript">
+        app.filter('startFrom',
+            function() {
+                return function(input, start) {
+                    if (input) {
+                        start = +start; //parse to int
+                        return input.slice(start);
+                    }
+                    return [];
+                }
+            });
+        app.factory('focus',
+            function($rootScope, $timeout) {
+                return function(name) {
+                    $timeout(function() {
+                        $rootScope.$broadcast('focusOn', name);
+                    });
+                };
+            });
+        app.factory('schoolEmployeeService',
+            [
+                '$http', function($http) {
+
+                    return {
+                        saveEmployee: function (employee, fileName) {
+                            var param = { employee: employee, fileName: fileName };
+                            return $http({
+	                            url: '/Employee/CreateEmployee',
+	                            method: 'POST',
+	                            datatype: JSON,
+	                            data: JSON.stringify(param)
+                            });
+                        },
+                        /*getEmployeeListBySchool: function (id) {
+                            return $http.get('/Employee/GetEmployeeListBySchool/' + id);
+                        },*/
+                        getEmployeeListBySchool: function (pagingInfo) {
+                            return $http.get('/Employee/GetEmployeeListBySchool2/', { params: pagingInfo });
+                        },
+                        getAllDepartment: function() {
+                            return $http.get('/Department/GetDepartmentList');
+                        },
+                        getOperationDepartment: function() {
+                            return $http.get('/Department/GetDepartmentListOperation');
+                        },
+                        getAllDesignationByDept: function(id) { // But Here All Designation are geted
+                            return $http.get('/Designation/GetDesignationListByDepartmentId/' + id);
+                        },
+                        getAllDutyShiftListbySchoolId: function(id) { // But Here All shift are geted
+                            return $http.get('/DutyShiftMaster/GetDutyShiftListbySchoolId/' + id);
+                        },
+                        getAllSchool: function() {
+                            return $http.get('/Institute/GetSchoolList');
+                        },
+                        getAllEducationLevel: function() {
+                            return $http.get('/EducationLevel/GetEducationLevelList');
+                        },
+                        getAllBoardorUniversity: function() {
+                            return $http.get('/BoardorUniversity/GetBoardorUniversityList');
+                        },
+                        getAllInstitute: function() {
+                            return $http.get('/Institute/GetInstituteList');
+                        },
+                        getAllDivision: function () {
+                            return $http.get('/Division/GetActiveDivisionList');
+                        },
+                        getAllDistrictListByDivision: function (id) {
+                            return $http.get('/District/GetDistrictListByDivision/' + id);
+                        },
+                        deleteEmployee: function(schoolEmployee) {
+                            return $http({
+                                url: '/Employee/DeleteEmployee',
+                                method: 'POST',
+                                data: schoolEmployee
+                            });
+						},
+						getAllLeaveType: function() {
+							return $http.get('/LeaveType/GetLeaveTypeList');
+						},
+                        uploadFile: function(name, code, file) {
+                            var fdata = new FormData();
+                            var url = '/Employee/UpoladFile';
+                            fdata.append('name', name);
+                            fdata.append('code', code);
+                            fdata.append('file', file);
+
+                            return $http.post(url,
+                                fdata,
+                                {
+                                    transformRequest: angular.identity,
+                                    headers: { 'Content-Type': undefined }
+                                });
+                        },
+                    };
+                }
+            ]);
+
+        app.controller('schoolEmployeeCtrl',
+            function($scope, $timeout, $http, focus, $location, $anchorScroll, schoolEmployeeService, $log, $ngBootbox, $filter) {
+                $scope.pagingInfo = {
+                    page: 1,
+                    itemsPerPage: 10,
+                    searchText:"",
+                    totalItems: 0,
+                    schoolId: "@UserSession.GetUserFromSession().SchoolId"
+                };
+
+                $scope.selectPage = function (page) {
+                    $scope.pagingInfo.page = page;
+                    $scope.loadAllEmployeeListBySchool();
+                };
+
+                $scope.role = "Admin";
+                $scope.bloodGroups = [
+                    { name: "A+" }, { name: "A-" }, { name: "B+" }, { name: "B-" }, { name: "O+" },
+                    { name: "O-" }, { name: "AB+" }, { name: "AB-" }
+                ];
+
+                $scope.Genders = [
+                    { name: "Male" }, { name: "Female" }
+                ];
+                $scope.aMaritalStatus = [
+                    { name: "Married" }, { name: "Unmarried" }, { name: "Divorced " }
+                ];
+
+                $scope.editmode = false;
+                $scope.JoinDate = new Date();
+                $scope.DOB = new Date();
+                $scope.RoleId = @UserSession.GetUserFromSession().RoleId;
+                $scope.myFile = null;
+                $scope.EmploymentHistories = [];
+
+                $scope.EmploymentHistories.push({
+                    Id: '',
+                    EmployeeId: '',
+                    DepartmentId: '',
+                    DesignationId: '',
+                    DesignationList: [],
+                    DateFrom: '',
+                    DateTo: '',
+                    SchoolList: '',
+                    DutyShiftList: []
+                });
+
+                $scope.addNewDetail = function($event) {
+                    $scope.EmploymentHistories.push({
+                        Id: '',
+                        EmployeeId: '',
+                        DepartmentId: '',
+                        DesignationId: '',
+                        DesignationList: [],
+                        DateFrom: '',
+                        DateTo: '',
+                        SchoolList: '',
+                        DutyShiftList: []
+                    });
+                }
+
+                $scope.EmployeeEducations = [];
+                $scope.EmployeeEducations.push({
+                    Id: '',
+                    EmployeeId: '',
+                    LevelId: '',
+                    DegreeTitle: '',
+                    DegreeMajor: '',
+                    Result: '',
+                    BoardOrUniversityId: [],
+                    InstituteList: [],
+                    Scale: ''
+                });
+
+                $scope.addNewDetailEdu = function($event) {
+                    $scope.EmployeeEducations.push({
+                        Id: '',
+                        EmployeeId: '',
+                        LevelId: '',
+                        DegreeTitle: '',
+                        DegreeMajor: '',
+                        Result: '',
+                        BoardOrUniversityId: [],
+                        InstituteList: [],
+                        Scale: ''
+                    });
+                }
+
+                $scope.messageModalObj = {};
+                $scope.messageModalObj.message = '';
+
+                $scope.operationdept = false;
+
+                if ('@ViewBag.Operation' == 1) {
+                    $scope.operationdept = true;
+                }
+
+                $scope.showModalforSearch = false;
+
+                $scope.schoolId = "@UserSession.GetUserFromSession().SchoolId";
+
+				loadAllLeaveType();
+				function loadAllLeaveType() {
+					$scope.LeaveTypeList = [];
+					$scope.EmployeeLeaveBalanceList = [];
+					schoolEmployeeService.getAllLeaveType()
+						.then(function onSuccess(response) {
+							$scope.LeaveTypeList = response.data;
+							if ($scope.LeaveTypeList.length > 0) {
+								angular.forEach($scope.LeaveTypeList, function (value, key) {
+									$scope.EmployeeLeaveBalanceList.push({
+										Id: null,
+										LeaveTypeId: value.Id,
+										LeaveTypeName: value.Name,
+										DafaultAllocatedDays: value.PayDays,
+										Achieved: 0,
+										Balance: 0,
+										CarryForward : value.CarryForward
+									});
+								});
+							}
+							$scope.calculateLeaveBalance();
+						})
+						.catch(function onError(response) {
+							$ngBootbox.alert('Leave Type Loading Failed');
+						});
+				}
+
+				$scope.calculateLeaveBalance = function() {
+					angular.forEach($scope.EmployeeLeaveBalanceList, function(value, key) {
+						value.Balance = value.DafaultAllocatedDays + value.Achieved;
+					});
+				}
+
+                // Add a new schoolEmployee
+                $scope.addEmployee = function() {
+                    $scope.$broadcast('show-errors-check-validity');
+                    if ($scope.form.$valid) {
+                        var employee = {};
+                        employee["Id"] = $scope.Id;
+                        employee["Code"] = $scope.Code;
+                        employee["FullName"] = $scope.FullName;
+                        employee["PresentAddress"] = $scope.PresentAddress;
+                        employee["PermanentAddress"] = $scope.PermanentAddress;
+
+                        employee["FatherName"] = $scope.FatherName;
+                        employee["MotherName"] = $scope.MotherName;
+                        employee["NationalId"] = $scope.NationalId;
+                        employee["PassportNo"] = $scope.PassportNo;
+                        employee["AuthenticationCode"] = $scope.AuthenticationCode;
+
+
+                        employee["Gender"] = $scope.Gender;
+                        employee["MaritalStatus"] = $scope.MaritalStatus;
+                        employee["Relgion"] = $scope.Relgion;
+                        employee["Nationality"] = $scope.Nationality;
+                        employee["JoinDate"] = $scope.JoinDate;
+                        employee["FullNameBangla"] = $scope.FullNameBangla;
+                        employee["DOB"] = $scope.DOB;
+
+                        employee["Email"] = $scope.Email;
+                        employee["OfficeMobile"] = $scope.OfficeMobile;
+                        employee["OfficePhone"] = $scope.OfficePhone;
+                        employee["ResidentMobile"] = $scope.ResidentMobile;
+
+                        employee["ResidentPhone"] = $scope.ResidentPhone;
+                        employee["BloodGroup"] = $scope.BloodGroup;
+                        employee["EmployeeLeaveBalances"] = $scope.EmployeeLeaveBalanceList;
+
+                        if ($scope.EmploymentHistories.length > 0)
+                            for (var i = 0; i < $scope.EmploymentHistories.length; i++) {
+                                //alert($scope.EmploymentHistories[i].DepartmentId)
+                                if ($scope.EmploymentHistories[i].DepartmentId == null) {
+                                    $scope.EmploymentHistories[i].DesignationId = null;
+                                }
+                            }
+
+                        //resolving dateTime issue of schoolEmployee list
+                        var employmentHistories = $scope.EmploymentHistories;
+                        angular.forEach(employmentHistories,
+                            function(item, key) {
+                                item.DateFrom = new Date(item.DateFrom).toDateString();
+                                if (item.DateTo) {
+                                    item.DateTo = new Date(item.DateTo).toDateString();
+                                }
+
+                            });
+
+                        employee["EmploymentHistories"] = employmentHistories;
+
+                        if ($scope.EmployeeEducations.length > 0)
+                            for (var i = 0; i < $scope.EmployeeEducations.length; i++) {
+
+                            }
+                        var employmentEducation = $scope.EmployeeEducations;
+                        employee["EmployeeEducations"] = employmentEducation;
+
+
+                        var fileName = "";
+                        if ($scope.myFile != null) {
+                            fileName = $scope.myFile.name;
+                        }
+
+                        schoolEmployeeService.saveEmployee(employee, fileName)
+                            .then(function onSuccess(response) {
+                                if ($scope.myFile != null) {
+                                    $scope.UploadFile();
+                                }
+                                $scope.loadAllEmployeeListBySchool();
+                                $scope.messageModalObj.message = response.data.message;
+                                $scope.showModalforSearch = true;
+                                $timeout(function() { $scope.showModalforSearch = false; }, 3000);
+                                $scope.reset();
+
+                            })
+                            .catch(function onError(response) {
+                                $ngBootbox.alert('@Resources.ResourceCommon.MsgErrorInSaving');
+                            });
+                    }
+                };
+
+                // Populate employee
+                $scope.selectedRow = null;
+                $scope.populateEmployee = function(employee) {
+                    $scope.selectedRow = employee[0];
+                    var aEmployee = employee[0];
+                    $scope.Id = aEmployee.Id;
+                    $scope.Code = aEmployee.Code;
+                    $scope.FullName = aEmployee.FullName;
+                    $scope.PresentAddress = aEmployee.PresentAddress;
+                    $scope.PermanentAddress = aEmployee.PermanentAddress;
+                    $scope.MotherName = aEmployee.MotherName;
+                    $scope.NationalId = aEmployee.NationalId;
+                    $scope.Nationality = aEmployee.Nationality;
+                    $scope.FatherName = aEmployee.FatherName;
+                    $scope.PassportNo = aEmployee.PassportNo;
+                    $scope.PhotoPath = aEmployee.PhotoPath;
+                    $scope.AuthenticationCode = aEmployee.AuthenticationCode;
+                    $scope.JoinDate = aEmployee.JoinDate;
+                    $scope.FullNameBangla = aEmployee.FullNameBangla;
+                    $scope.DOB = aEmployee.DOB;
+
+                    $scope.Email = aEmployee.Email;
+                    $scope.OfficeMobile = aEmployee.OfficeMobile;
+                    $scope.OfficePhone = aEmployee.OfficePhone;
+                    $scope.ResidentMobile = aEmployee.ResidentMobile;
+                    $scope.ResidentPhone = aEmployee.ResidentPhone;
+                    $scope.BloodGroup = aEmployee.BloodGroup;
+                    $scope.LatestDepartmentName = aEmployee.LatestDepartmentName;
+					$scope.LatestDesignationName = aEmployee.LatestDesignationName;
+                    $scope.EmployeeLeaveBalanceList = aEmployee.EmployeeLeaveBalances;
+                    $scope.EmploymentHistories = aEmployee.EmploymentHistories;
+                    if (aEmployee.EmploymentHistories.length > 0)
+                        for (var i = 0; i < $scope.EmploymentHistories.length; i++) {
+                            //alert($scope.EmploymentHistories[i].DepartmentId)
+                            if ($scope.EmploymentHistories[i].DepartmentId != null) {
+                                $scope.getDesignation($scope.EmploymentHistories[i].DepartmentId, i);
+                            }
+                            if ($scope.EmploymentHistories[i].SchoolId != null) {
+                                $scope.getDutyShift($scope.EmploymentHistories[i].SchoolId, i);
+                            }
+                        }
+
+                    $scope.EmployeeEducations = aEmployee.EmployeeEducations;
+                    $scope.editmode = true;
+                    $location.hash('searchDivId');
+                    $anchorScroll();
+                    focus('focusMe');
+                }
+
+				$scope.reset = function () {
+					loadAllLeaveType();
+                    $scope.selectedRow = null;
+                    $scope.$broadcast('show-errors-reset');
+                    $scope.myFile = null;
+                    $scope.Id = '';
+                    $scope.Code = '';
+                    $scope.FullName = '';
+                    $scope.PermanentAddress = '';
+                    $scope.PresentAddress = '';
+                    $scope.MotherName = '';
+                    $scope.NationalId = '';
+                    $scope.Nationality = '';
+                    $scope.FatherName = '';
+                    $scope.Email = '';
+                    $scope.OfficeMobile = '';
+                    $scope.OfficePhone = '';
+                    $scope.ResidentMobile = '';
+                    $scope.PassportNo = '';
+                    $scope.PhotoPath = '';
+                    $scope.ResidentPhone = '';
+                    $scope.BloodGroup = '';
+                    $scope.AuthenticationCode = '';
+                    $scope.DOB = '';
+                    $scope.FullNameBangla = '';
+                    $scope.JoinDate = '';
+                    $scope.disableProject = false;
+                    $scope.IsHidden = true;
+                    angular.element("input[type='file']").val(null);
+                    $scope.EmploymentHistories = [];
+                    $scope.EmploymentHistories.push({
+                        Id: '',
+                        EmployeeId: '',
+                        DepartmentId: '',
+                        DesignationId: '',
+                        DesignationList: [],
+                        DateFrom: '',
+                        DateTo: '',
+                        DutyShiftList: [],
+                        SchoolList: ''
+                    });
+                    $scope.EmployeeEducations = [];
+                    $scope.EmployeeEducations.push({
+                        Id: '',
+                        EmployeeId: '',
+                        LevelId: '',
+                        DegreeTitle: '',
+                        DegreeMajor: '',
+                        Result: '',
+                        BoardOrUniversityId: [],
+                        InstituteId: [],
+                        Scale: ''
+
+                    });
+                    $scope.editmode = false;
+                }
+
+                $scope.deleteEmployee = function() {
+                    var employee = $scope.selectedRow;
+
+                    schoolEmployeeService.deleteEmployee(employee)
+                        .then(function onSuccess(response) {
+                            $scope.messageModalObj.message = response.data.message;
+                            $scope.showModalforSearch = true;
+                            $timeout(function() { $scope.showModalforSearch = false; }, 3000);
+                            $scope.loadAllEmployeeListBySchool();
+                        })
+                        .catch(function onError(response) {
+                            $ngBootbox.alert('@Resources.ResourceCommon.MsgNot_deleted');
+                        });
+                }
+
+                //file upload..................
+                $scope.UploadFile = function() {
+                    schoolEmployeeService.uploadFile($scope.myFile.name, $scope.Code, $scope.myFile)
+                        .then(function onSuccess(response) {
+                            $scope.allEmployeeFileFromDb = response.data;
+                        })
+                        .catch(function onError(response) {
+                            $ngBootbox.alert('@Resources.ResourceCommon.MsgErrorInLoading');
+                        });
+                }
+
+                $scope.loadAllEmployeeListBySchool = function() {
+                    $scope.pagingInfo.searchText = $scope.SearchText;
+
+                    $scope.allEmployeeListBySchoolFromDb = [];
+
+                    schoolEmployeeService.getEmployeeListBySchool($scope.pagingInfo)
+                        .then(function onSuccess(response) {
+                            $scope.allEmployeeListBySchoolFromDb = response.data.EmployeeList;
+                            $scope.pagingInfo.totalItems = response.data.RecordCount;
+                        })
+                        .catch(function onError(response) {
+                            $ngBootbox.alert('@Resources.ResourceCommon.MsgErrorInLoading');
+                        });
+                }
+                $scope.loadAllEmployeeListBySchool();
+
+                loadAllDepartment();
+
+                function loadAllDepartment() {
+                    $scope.DesignationId = undefined;
+                    $scope.allDesignationByDepartment = [];
+                    if ($scope.operationdept) {
+                        schoolEmployeeService.getOperationDepartment()
+                            .then(function onSuccess(response) {
+                                $scope.allDepartmentFromDb = response.data;
+                            })
+                            .catch(function onError(response) {
+                                $ngBootbox.alert('@Resources.ResourceCommon.MsgErrorInLoading');
+                            });
+                    } else {
+                        schoolEmployeeService.getAllDepartment()
+                            .then(function onSuccess(response) {
+                                $scope.allDepartmentFromDb = response.data;
+                            })
+                            .catch(function onError(response) {
+                                $ngBootbox.alert('@Resources.ResourceCommon.MsgErrorInLoading');
+                            });
+                    }
+                }
+
+                loadAllSchoolList();
+
+                function loadAllSchoolList() {
+                    $scope.SchoolList = [];
+                    schoolEmployeeService.getAllSchool()
+                        .then(function onSuccess(response) {
+                            $scope.SchoolList = response.data;
+                        })
+                        .catch(function onError(response) {
+                            $ngBootbox.alert('@Resources.ResourceCommon.MsgErrorInLoading');
+                        });
+                }
+
+                loadAllEducationLevel();
+
+                function loadAllEducationLevel() {
+                    $scope.EducationLevelList = [];
+                    schoolEmployeeService.getAllEducationLevel()
+                        .then(function onSuccess(response) {
+                            $scope.EducationLevelList = response.data;
+                        })
+                        .catch(function onError(response) {
+                            $ngBootbox.alert('@Resources.ResourceCommon.MsgErrorInLoading');
+                        });
+                }
+
+                loadAllBoardorUniversity();
+
+                function loadAllBoardorUniversity() {
+                    $scope.EducatioBoardorUniversityListnLevelList = [];
+                    schoolEmployeeService.getAllBoardorUniversity()
+                        .then(function onSuccess(response) {
+                            $scope.BoardorUniversityList = response.data;
+                        })
+                        .catch(function onError(response) {
+                            $ngBootbox.alert('@Resources.ResourceCommon.MsgErrorInLoading');
+                        });
+                }
+
+                loadAllInstitute();
+
+                function loadAllInstitute() {
+                    $scope.EducatioBoardorUniversityListnLevelList = [];
+                    schoolEmployeeService.getAllInstitute()
+                        .then(function onSuccess(response) {
+                            $scope.InstituteList = response.data;
+                        })
+                        .catch(function onError(response) {
+                            $ngBootbox.alert('@Resources.ResourceCommon.MsgErrorInLoading');
+                        });
+                }
+
+                $scope.getDesignation = function(departmentId, selectedHistoryIndex) {
+                    $scope.EmploymentHistories[selectedHistoryIndex].DesignationList = [];
+                    $scope.allDesignationByDepartment = [];
+                    if (departmentId != undefined && departmentId != '' && departmentId != null) {
+                        schoolEmployeeService.getAllDesignationByDept(departmentId)
+                            .then(function onSuccess(response) {
+                                $scope.EmploymentHistories[selectedHistoryIndex].DesignationList = response.data;
+                                $scope.allDesignationByDepartment = response.data;
+                            })
+                            .catch(function onError(response) {
+                                $ngBootbox.alert('@Resources.ResourceCommon.MsgErrorInLoading');
+                            });
+                    }
+                }
+
+                $scope.getDutyShift = function (schoolId, selectedHistoryIndex) {
+                    $scope.EmploymentHistories[selectedHistoryIndex].SchoolList = [];
+                    $scope.allDutyShiftList = [];
+                    if (schoolId != undefined && schoolId !== '' && schoolId !== null) {
+                        schoolEmployeeService.getAllDutyShiftListbySchoolId(schoolId)
+                            .then(function onSuccess(response) {
+                                $scope.EmploymentHistories[selectedHistoryIndex].allDutyShiftList = response.data;
+                                $scope.allDutyShiftList = response.data;
+                            })
+                            .catch(function onError(response) {
+                                $ngBootbox.alert('@Resources.ResourceCommon.MsgErrorInLoading');
+                            });
+                    }
+                }
+
+                loadAllDivision();
+                function loadAllDivision() {
+                    $scope.allDivisionFromDb = [];
+                    schoolEmployeeService.getAllDivision()
+                        .then(function onSuccess(response) {
+                            $scope.allDivisionFromDb = response.data;
+                        })
+                        .catch(function onError(response) {
+                            $ngBootbox.alert('@Resources.ResourceCommon.MsgErrorInLoading');
+                        });
+                }
+
+                $scope.GetAllDistrict = function (DivisionId) {
+                    $scope.allDistrictFromDb = [];
+                    schoolEmployeeService.getAllDistrictListByDivision(DivisionId)
+                        .then(function onSuccess(response) {
+                            $scope.allDistrictFromDb = response.data;
+                        })
+                        .catch(function onError(response) {
+                            $ngBootbox.alert('@Resources.ResourceCommon.MsgErrorInLoading');
+                        });
+                }
+
+                $scope.uploadImage = function(files) {
+                    var ext = files[0].name.substr(files[0].name.lastIndexOf('.') + 1);
+                    if (angular.lowercase(ext) === 'jpg' ||
+                        angular.lowercase(ext) === 'jpeg' ||
+                        angular.lowercase(ext) === 'png') {
+                    } else {
+                        $ngBootbox.alert("Invalid File Format");
+                        angular.element("input[type='file']").val(null);
+                    }
+                }
+
+                $scope.IsHidden = true;
+                $scope.ShowHide = function() {
+                    //If DIV is hidden it will be visible
+                    $scope.IsHidden = $scope.IsHidden ? false : true;
+                }
+
+
+                $scope.currentPage = 1; //current page
+                $scope.entryLimit = 10; //max no of items to display in a page
+                $scope.filteredItems = $scope.allEmployeeListBySchoolFromDb.length; //Initially for no filter
+                $scope.totalItems = $scope.allEmployeeListBySchoolFromDb.length;
+                //$scope.maxSize = 15;
+
+                $scope.setPage = function(pageNo) {
+                    $scope.currentPage = pageNo;
+                };
+                $scope.filter = function() {
+                    $timeout(function() {
+                            $scope.filteredItems = $scope.filtered.length;
+                        },
+                        9000);
+                };
+                $scope.sort_by = function(predicate) {
+                    $scope.predicate = predicate;
+                    $scope.reverse = !$scope.reverse;
+                };
+            });
+	</script>
+}

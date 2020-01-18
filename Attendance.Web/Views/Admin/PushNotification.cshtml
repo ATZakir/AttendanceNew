@@ -1,0 +1,227 @@
+﻿
+@{
+    ViewBag.Title = "PushNotification";
+    Layout = "~/Views/Shared/_AdminViewLayout.cshtml";
+}
+
+<div class="col-xs-12 col-sm-12" ng-controller="pushNotificationCtrl">
+
+    @* ************ FORM - SECTION (Start) *************** *@
+    <div class="panel panel-default">
+        <div class="panel-heading text-lg text-bold text-uppercase">Push Notification</div>
+        <div class="panel-body  border-green pt pb">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12">
+                    <div class="form-horizontal">
+                        <form name="form" novalidate>
+                            <div class="form-group" show-errors id="searchdivid">
+                                <div class=" padding-right-zero">
+                                    <label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+                                        <b class="starStyle">*</b>Option
+                                    </label>
+                                </div>
+
+                                <div class="col-xs-12 col-sm-4 col-md-4">
+
+                                    <select data-ng-model="Option" class="form-control" required name="Option">
+                                        <option value="">Select Action</option>
+                                        <option value="1">Android</option>
+                                        <option value="2">IOS</option>
+                                    </select>
+                                    <b class="help-block" ng-if="form.Option.$error.required">
+                                        Option  is required
+                                    </b>
+
+                                </div>
+                            </div>
+
+                            <div class="form-group" show-errors id="searchdivid">
+                                <div class=" padding-right-zero">
+                                    <label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+                                        <b class="starStyle">*</b>Message
+                                    </label>
+                                </div>
+                                <div class="col-xs-12 col-sm-5 col-md-5">
+                                    <textarea rows="4" cols="50" name="Message" form="usrform" ng-model="Message" required>
+                                             Enter text here...</textarea>
+
+                                    <b class="help-block" ng-if="form.Message.$error.required">
+                                        Message is required
+                                    </b>
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                <div class="col-md-offset-3 col-sm-offset-3 col-xs-12 col-sm-8 col-md-8  padding-right-zero">
+                                    <input type="button" ng-click="addPushNotification()" class="btn btn-primary" value="Send" />
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12 col-sm-3 col-md-3">
+            <modal title='Success' visible="showModalforSearch">
+                <alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
+                <form name="form.update" role="form">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-12">
+                            <span>{{messageModalObj.message}}</span>
+                        </div>
+                    </div>
+                </form>
+            </modal>
+        </div>
+    </div>
+
+</div>
+
+@section scripts{
+    <script type="text/javascript">
+    app.filter('startFrom', function () {
+        return function (input, start) {
+            if (input) {
+                start = +start; //parse to int
+                return input.slice(start);
+            }
+            return [];
+        }
+    });
+    app.factory('focus', function ($rootScope, $timeout) {
+        return function (name) {
+            $timeout(function () {
+                $rootScope.$broadcast('focusOn', name);
+            });
+        };
+    });
+        app.factory('pushNotificationService', ['$http', function ($http) {
+
+            return {
+                savePushNotification: function (pushNotification) {
+                    return $http({
+                        url: '/Admin/CreatePushNotification',
+                        method: 'POST',
+                        data: pushNotification
+                    });
+                },
+                getPushNotification: function (id) {
+                    return $http.get('/Admin/GetPushNotification/' + id);
+                },
+                getAllPushNotification: function () {
+                    return $http.get('/Admin/GetPushNotification');
+                },
+                deletePushNotification: function (pushNotification) {
+                    return $http({
+                        url: '/Admin/DeletePushNotification',
+                        method: 'POST',
+                        data: pushNotification
+                    });
+                }
+            };
+    }]);
+
+        app.controller('pushNotificationCtrl', function ($scope, $timeout, $filter,$http, focus, $location, $anchorScroll, pushNotificationService, $log, $ngBootbox) {
+        if ('@ViewBag.permission' == "NO") {
+            $scope.NoPermission = true;
+        }
+        $scope.messageModalObj = {};
+        $scope.messageModalObj.message = '';
+
+        $scope.addPushNotification = function () {
+            $scope.$broadcast('show-errors-check-validity');
+            if ($scope.form.$valid) {
+
+                var pushNotification = {};
+                pushNotification["Id"] = $scope.Id;
+                pushNotification["Option"] = $scope.Option;
+                pushNotification["Message"] = $scope.Message;
+
+
+                pushNotificationService.savePushNotification(pushNotification)
+                .then(function onSuccess(response) {
+                    loadAllPushNotification();
+                    $scope.messageModalObj.message = response.data.message;
+                    $scope.showModalforSearch = true;
+                    $timeout(function () { $scope.showModalforSearch = false; }, 3000);
+                    $scope.reset();
+
+                })
+                .catch(function onError(response) {
+                    $ngBootbox.alert('Error is Saving Data');
+                });
+            }
+        };
+
+        $scope.selectedRow = null;
+        $scope.populatePushNotification = function (rowvalue) {
+            $scope.selectedRow = rowvalue;
+            $scope.Id = rowvalue.Id;
+            $scope.Option = rowvalue.Option;
+            $scope.Message = rowvalue.Message;
+            $location.hash('searchDivId');
+            $anchorScroll();
+            focus('focusMe');
+            $scope.desableIdField = true;
+        }
+
+        $scope.reset = function () {
+            $scope.$broadcast('show-errors-reset');
+            $scope.selectedRow = null;
+            $scope.Id = '';
+            $scope.Option = '';
+            $scope.Message = null;
+
+        }
+
+        $scope.deletePushNotification = function (pushNotification) {
+            pushNotificationService.deletePushNotification(pushNotification)
+            .then(function onSuccess(response) {
+                $scope.messageModalObj.message = response.data.message;
+                $scope.showModalforSearch = true;
+                $timeout(function () { $scope.showModalforSearch = false; }, 3000);
+                $scope.reset();
+                loadAllPushNotification();
+            })
+            .catch(function onError(response) {
+                $ngBootbox.alert('Can not be deleted');
+            });
+        }
+
+        function loadAllPushNotification() {
+            $scope.allPushNotificationFromDb = [];
+            pushNotificationService.getAllpushNotification()
+                    .then(function onSuccess(response) {
+                        $scope.allpushNotificationFromDb = response.data;
+                    })
+                    .catch(function onError(response) {
+                        $ngBootbox.alert('Error Data Loading');
+                    });
+        }
+
+
+
+        //$scope.currentPage = 1; //current page
+        //$scope.itemsPerPage = 5; //max no of items to display in a page
+        //$scope.filteredItems = $scope.allpushNotificationFromDb.length; //Initially for no filter
+        //$scope.totalItems = $scope.allpushNotificationFromDb.length;
+        ////$scope.maxSize = 15;
+
+        //$scope.setPage = function (pageNo) {
+        //    $scope.currentPage = pageNo;
+        //};
+        //$scope.filter = function () {
+        //    $timeout(function () {
+        //        $scope.filteredItems = $scope.filtered.length;
+        //    }, 9000);
+        //};
+        //$scope.sort_by = function (predicate) {
+        //    $scope.predicate = predicate;
+        //    $scope.reverse = !$scope.reverse;
+        //};
+    });</script>
+}

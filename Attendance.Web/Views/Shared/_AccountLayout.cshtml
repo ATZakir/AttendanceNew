@@ -1,0 +1,36 @@
+﻿<!DOCTYPE html>
+<html ng-app="app"  ng-cloak   lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher's Attendance</title>
+    @Styles.Render("~/Content/vendorCSS")
+    @Styles.Render("~/Content/adminCSS")
+    <link href="~/Content/accountLayoutStyle.css" rel="stylesheet" />
+    @Scripts.Render("~/bundles/modernizr")
+    
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header" style="text-align: center">
+
+                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            </div>
+
+        </div>
+    </div>
+    <div class="container body-content" style=" margin-top: 50px;">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+        </footer>
+    </div>
+
+    @Scripts.Render("~/bundles/mainScripts")
+    @Scripts.Render("~/bundles/angularScripts")
+    @Scripts.Render("~/bundles/appScript")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,265 @@
+﻿
+@{
+    ViewBag.Title = "Login";
+    Layout = "~/Views/Shared/_AdminLoginLayout.cshtml";
+}
+
+
+<style type="text/css">
+    .lang-btn {
+        background-color: #fff;
+    }
+
+        .lang-btn.checked {
+            background-color: #2D4373;
+            color: #ffffff;
+        }
+
+    .profile-img {
+        width: 250px;
+        height: auto;
+        margin: 0 auto 20px;
+        display: block;
+        padding: 10px 50px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+        border-radius: 5px;
+        background: #fff;
+        -webkit-box-shadow: 0px 0px 10px 3px rgba(0,0,0,0.1);
+        -moz-box-shadow: 0px 0px 10px 3px rgba(0,0,0,0.1);
+        box-shadow: 0px 0px 10px 3px rgba(0,0,0,0.1);
+    }
+
+    .btn-group.fullwidth {
+        display: flex;
+    }
+
+    .fullwidth .btn {
+        flex: 1;
+    }
+</style>
+
+
+<div class="well row bk-light login-box">
+    <div class="col-md-12 ">
+        <img class="profile-img" src="~/Content/Images/logo.png" alt="Sports Logo" />
+        <h1 class="login-Screen-header">Login</h1>
+        <form name="form" class="mt" novalidate="">
+            <select id="drpdownLanguage" class="dropdownclass" name="drpdownLanguage" data-ng-model="language" ng-hide="true">
+                <option value="en">English</option>
+                <option value="zh">Chinese</option>
+            </select>
+
+            <div class="form-group" show-errors>
+                <label class="text-uppercase text-sm">
+                    User Name
+                </label>
+                <input class="form-control mb" name="LoginName" type="text" placeholder="Username" ng-model="LoginName" autofocus required style="height:40px;" />
+                <b class="help-block" ng-if="form.LoginName.$error.required">
+                    User Name is Required
+                </b>
+            </div>
+
+
+            <div class="form-group" show-errors>
+                <label class="text-uppercase text-sm">
+                    Password
+                </label>
+                <input name="Password" class="form-control mb" type="password" placeholder="Password" ng-model="Password" required style="height:40px;"  />
+                <b class="help-block" ng-if="form.Password.$error.required">
+                    Password id Required
+                </b>
+            </div>
+
+            <div class="form-group" ng-hide="true">
+                <label class="text-uppercase text-sm">
+                    Language
+                </label>
+                <div class="btn-group fullwidth" role="group" style="padding-bottom: 10px;">
+
+                    <button type="button" class="btn btn-default lang-btn" style="padding-top: 10px;"
+                            ng-click="toggleResponseValue(en)"
+                            ng-class="{'checked':checkedEn}"
+                            ng-model="en">
+                        <img src="~/Content/Images/English.svg" width="auto" height="10" style="display: inline-block;" /> &nbsp;&nbsp;
+                        English
+                    </button>
+                    <button type="button" class="btn btn-default lang-btn" style="padding-top: 10px;"
+                            ng-click="toggleResponseValue(zh)"
+                            ng-class="{'checked':checkedZh}"
+                            ng-model="zh">
+                        <img src="~/Content/Images/chineese.svg" width="auto" height="10" style="display: inline-block;" /> &nbsp;&nbsp;
+                        Chinese
+                    </button>
+                </div>
+
+
+
+            </div>
+
+            <button class="btn btn-primary btn-block" ng-click="userLogin()" style="height: 40px; background: #707bd6;">LogIn</button>
+
+        </form>
+    </div>
+</div>
+
+
+<modal title='Message' visible="showModalforSearch">
+    <alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
+    <form name="form.update" role="form">
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <span>{{messageModalObj.message}}</span>
+            </div>
+        </div>
+    </form>
+</modal>
+
+
+
+
+
+@section scripts{
+    <script type="text/javascript">
+
+
+        $('.btn-toggle').click(function() {
+            $(this).find('.btn').toggleClass('active');
+
+            if ($(this).find('.btn-primary').size() > 0) {
+                $(this).find('.btn').toggleClass('btn-primary');
+            }
+            if ($(this).find('.btn-danger').size() > 0) {
+                $(this).find('.btn').toggleClass('btn-danger');
+            }
+            if ($(this).find('.btn-success').size() > 0) {
+                $(this).find('.btn').toggleClass('btn-success');
+            }
+            if ($(this).find('.btn-info').size() > 0) {
+                $(this).find('.btn').toggleClass('btn-info');
+            }
+
+            $(this).find('.btn').toggleClass('btn-default');
+
+        });
+
+        var myEl = angular.element(document.querySelector('#body'));
+        myEl.addClass('login-background');
+
+        $(".input").focusin(function() {
+            $(this).find("span").animate({ "opacity": "0" }, 200);
+        });
+
+        $(".input").focusout(function() {
+            $(this).find("span").animate({ "opacity": "1" }, 300);
+        });
+
+        $(".login").submit(function() {
+            $(this).find(".submit i").removeAttr('class').addClass("fa fa-check").css({ "color": "#fff" });
+            $(".submit").css({ "background": "#2ecc71", "border-color": "#2ecc71" });
+            $(".feedback").show().animate({ "opacity": "1", "bottom": "-80px" }, 400);
+            $("input").css({ "border-color": "#2ecc71" });
+            return false;
+        });
+
+        // var ip = '<%= Request.UserHostAddress %>';
+
+        app.factory('loginService',
+            [
+                '$http', function($http) {
+                    return {
+                        checkLogin: function(user, timeZoneOffset, language) {
+                            var parameters = { user: user, timeZoneOffset: timeZoneOffset, language: language };
+                            return $http({
+                                url: '/Account/CheckLogin',
+                                method: 'POST',
+                                dataType: "json",
+                                data: JSON.stringify(parameters)
+                            });
+                        },
+
+                        SetTimeZoneOffset: function(timeZoneOffset) {
+                            var parameters = { timeZoneOffset: timeZoneOffset };
+                            return $http({
+                                url: '/Account/SetTimeZoneOffset',
+                                method: 'POST',
+                                dataType: "json",
+                                data: JSON.stringify(parameters)
+                            });
+                        }
+                    };
+                }
+            ]);
+
+        app.controller('loginCtrl',
+            function($scope, loginService, $timeout, $ngBootbox) {
+
+                $scope.language = "en";
+                $scope.en = "en";
+                $scope.zh = "zh";
+                $scope.checkedEn = true;
+                $scope.checkedZh = false;
+
+                $scope.showModalforLogIn = false;
+                $scope.Roles = {};
+
+                $scope.messageModalObj = {};
+                $scope.showModalforSearch = false;
+
+                $scope.toggleResponseValue = function(lng) {
+                    $scope.language = lng;
+
+                    if (lng == "en") {
+                        $scope.checkedEn = true;
+                        $scope.checkedZh = false;
+                    }
+
+                    if (lng == "zh") {
+                        $scope.checkedEn = false;
+                        $scope.checkedZh = true;
+                    }
+                }
+
+                $scope.userLogin = function() {
+                    $scope.$broadcast('show-errors-check-validity');
+                    if ($scope.form.$valid) {
+                        var login = {};
+                        login["LoginName"] = $scope.LoginName;
+                        login["Password"] = $scope.Password;
+
+                        var dateObj = new Date();
+                        var timeZoneOffset = -(dateObj.getTimezoneOffset());
+                        var language = $scope.language;
+                        loginService.checkLogin(login, timeZoneOffset, language)
+                            .then(function onSuccess(response) {
+                                if (response.data.isSuccess == true) {
+                                    if (response.data.isAdmin)
+                                        window.location = "/AdminDashboard/Homepage";
+                                    else
+                                        window.location = "/User/Dashboard";
+                                }
+                                else {
+                                    $scope.showModalforSearch = true;
+                                    $scope.messageModalObj.message = response.data.message;
+                                    $timeout(function() { $scope.showModalforSearch = false; }, 3000);
+                                }
+                            });
+                    }
+                };
+
+                loadTimeZone();
+
+                function loadTimeZone() {
+                    var dateObj = new Date();
+                    var timeZoneOffset = -(dateObj.getTimezoneOffset());
+                    loginService.SetTimeZoneOffset(timeZoneOffset)
+                        .then(function onSuccess(response) {
+                        });
+                }
+            });
+    </script>
+}
+
+
+    
+

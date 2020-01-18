@@ -1,0 +1,7 @@
+﻿
+
+app.controller('homePageCtrl', function () {
+
+
+
+});

@@ -1,0 +1,310 @@
+﻿
+@{
+	ViewBag.Title = "Admin Dashboard";
+	Layout = "~/Views/Shared/_AdminViewLayout.cshtml";
+}
+
+<style>
+	.btn-refresh-icon {
+		padding: 0 10px;
+		font-size: 13px;
+		height: 25px;
+	}
+
+	.report-date-block {
+		background: #8cca8c;
+		color: #0a420e;
+		font-weight: 600;
+		border-radius: 0 0 30px 30px;
+	}
+
+	.attendance-summary-content .panel-heading {
+		font-size: .9rem;
+		text-align: center;
+	}
+
+	.attendance-summary-content .panel-body {
+		font-size: 1.2rem;
+		font-weight: bolder;
+		padding: 5px 0;
+		text-align: center;
+	}
+</style>
+
+<div class="adminDashboard" ng-controller="adminDashboardController">
+
+	<div class="alert alert-success text-center mb-0">
+		<div class="form-inline">
+			<div class="form-group pr-2">
+				<label class="pr-1">Division: </label>
+				<select data-ng-model="DivisionId" class="form-control"
+				        data-ng-options="c.Id as c.Name for c in divisionList | orderBy: 'Name'" name="DivisionId" 
+				        ng-change="GetAllDistrict(DivisionId)">
+					<option value="">@Resources.ResourceCommon.LblSelectDivision</option>
+				</select>
+			</div>
+
+			<div class="form-group pr-2">
+				<label class="pr-1">District: </label>
+				<select data-ng-model="DistrictId" class="form-control"
+				        data-ng-options="c.Id as c.Name for c in districtList | orderBy: 'Name'" name="DistrictId" 
+				        ng-change="GetAllThana(DistrictId)">
+					<option value="">@Resources.ResourceCommon.LblSelectDistrict</option>
+				</select>
+				
+			</div>
+
+			<div class="form-group pr-2">
+				<label class="pr-1">Thana: </label>
+				<select data-ng-model="UpazilaId" class="form-control"
+				        data-ng-options="c.Id as c.Name for c in thanaList | orderBy: 'Name'" name="UpazilaId">
+					<option value="">Select @Resources.ResourceCommon.LblUpazilaName</option>
+				</select>
+			</div>
+
+			<button type="submit" ng-click="loadSchoolAttendanceSummery(DivisionId, DistrictId, UpazilaId)" class="btn btn-success btn-sm btn-refresh-icon">
+				Refresh
+			</button>
+		</div>
+	</div>
+	<div class="row p-0">
+		<div class="col-md-4 col-md-offset-4 text-center">
+			<div class="p-1 report-date-block">
+				Report on: {{currentDate | date : "d MMMM, y"}}
+			</div>
+		</div>
+	</div>
+
+	<div class="row gutter-sm p-1">
+		<table class="table table-borderless attendance-summary-content mb-0">
+			<tbody>
+				<tr>
+					<td>
+						<div class="panel panel-success">
+							<div class="panel-heading">Total School</div>
+                            <div class="panel-body">{{TotalSchool}}</div>
+						</div>
+					</td>
+
+					<td>
+						<div class="panel panel-success">
+							<div class="panel-heading">Total Emp.</div>
+                            <div class="panel-body">{{TotalEmployee}}</div>
+						</div>
+					</td>
+
+					<td>
+						<div class="panel panel-success">
+							<div class="panel-heading">Total Male</div>
+                            <div class="panel-body">{{MaleEmployee}}</div>
+						</div>
+					</td>
+
+					<td>
+						<div class="panel panel-success">
+							<div class="panel-heading">Total Female</div>
+                            <div class="panel-body">{{FemaleEmployee}}</div>
+						</div>
+					</td>
+
+					<td>
+						<div class="panel panel-success">
+							<div class="panel-heading">Total Present</div>
+                            <div class="panel-body">{{TotalPresent}}</div>
+						</div>
+					</td>
+
+					<td>
+						<div class="panel panel-success">
+							<div class="panel-heading">Total Absent</div>
+                            <div class="panel-body">{{TotalAbsent}}</div>
+						</div>
+					</td>
+
+					<td>
+						<div class="panel panel-success">
+							<div class="panel-heading">Total Late</div>
+                            <div class="panel-body">{{TotalLatePresent}}</div>
+						</div>
+					</td>
+
+					<td>
+						<div class="panel panel-success">
+							<div class="panel-heading">Early Out</div>
+                            <div class="panel-body">{{TotalEarlyOut}}</div>
+						</div>
+					</td>
+
+					<td>
+						<div class="panel panel-success">
+							<div class="panel-heading">In Leave</div>
+                            <div class="panel-body">{{TotalLeave}}</div>
+						</div>
+					</td>
+
+					<td>
+						<div class="panel panel-success">
+							<div class="panel-heading">In Training</div>
+                            <div class="panel-body">{{TotalInTraining}}</div>
+						</div>
+					</td>
+
+					<td>
+						<div class="panel panel-success">
+							<div class="panel-heading">Duty</div>
+                            <div class="panel-body">{{TotalDuty}}</div>
+						</div>
+					</td>
+
+					<td>
+						<div class="panel panel-success">
+							<div class="panel-heading">Present %</div>
+                            <div class="panel-body">{{PresentPercent}}</div>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<div class="row p-1">
+		<table class="table table-bordered table-striped m-0">
+			<thead>
+				<tr>
+					<th>SL</th>
+					<th>School Name</th>
+					<th>Total Emp.</th>
+					<th>Present</th>
+					<th>Absent</th>
+					<th>Late Present</th>
+					<th>Early Out</th>
+					<th>In Leave</th>
+					<th>Training</th>
+					<th>Duty</th>
+					<th>Present (%)</th>
+					<th>Action</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="school in schoolList">
+					<td>{{$index + 1}}</td>
+					<td>{{school.Name}}</td>
+                    <td>{{school.TotalEmployee}}</td>
+                    <td>{{school.PresentEmployee}}</td>
+                    <td>{{school.AbsentEmployee}}</td>
+                    <td>{{school.LatePresentEmployee}}</td>
+                    <td>{{school.EarlyOutEmployee}}</td>
+                    <td>{{school.LeaveEmployee}}</td>
+                    <td>{{school.InTrainingEmployee}}</td>
+                    <td>{{school.OnDutyEmployee}}</td>
+                    <td>{{school.PresentPercent}}</td>
+					<td>
+						<a class="btn btn-sm btn-primary" href="/AdminDashboard/DashboardPage?schoolId={{school.SchoolId}}">
+							Detail View
+						</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+@section scripts
+{
+	<script type="text/javascript">
+
+		app.factory('focus',
+			function ($rootScope, $timeout) {
+				return function (name) {
+					$timeout(function () {
+						$rootScope.$broadcast('focusOn', name);
+					});
+				};
+			});
+
+		app.factory('adminDashboardService',
+			[
+				'$http', function ($http) {
+					return {
+						getAllDivision: function () {
+							return $http.get('/UserPermission/GetAllDivisionByUserPermission');
+						},
+						getAllDistrictListByDivision: function (id) {
+							return $http.get('/UserPermission/GetAllDistrictByUserPermission/' + id);
+						},
+						getAllUpazilaListByDistrict: function (id) {
+							return $http.get('/UserPermission/GetAllUpazilaByUserPermission/' + id);
+						},
+                        getSchoolAttendanceSummery: function (divisionId, districtId, upazilaId) {
+                            return $http.get('/EmployeeAttendance/SchoolAttendanceSummary?divisionId=' + divisionId + '&districtId=' + districtId + '&upazilaId=' + upazilaId);
+                        }
+					};
+				}
+            ]);
+
+		app.controller('adminDashboardController',
+			function ($scope, $timeout, $http, focus, $location, $anchorScroll, adminDashboardService, $log) {
+
+                $scope.TotalSchool = 0;
+                $scope.currentDate = new Date();
+
+                $scope.loadSchoolAttendanceSummery = function (divisionId, districtId, upazilaId) {
+                    $scope.schoolList = [];
+                    if (!divisionId)
+                        divisionId = 0;
+                    if (!districtId)
+                        districtId = 0;
+                    if (!upazilaId)
+                        upazilaId = 0;
+                    adminDashboardService.getSchoolAttendanceSummery(divisionId, districtId, upazilaId)
+                        .then(function onSuccess(response) {
+                            $scope.schoolList = response.data.SchoolList;
+                            $scope.TotalSchool = $scope.schoolList.length;
+                            $scope.TotalEmployee = response.data.TotalEmployee;
+                            $scope.MaleEmployee = response.data.MaleEmployee;
+                            $scope.FemaleEmployee = response.data.FemaleEmployee;
+                            $scope.TotalPresent = response.data.PresentEmployee;
+                            $scope.TotalLatePresent = response.data.LatePresentEmployee;
+                            $scope.TotalPresent += $scope.TotalLatePresent;
+                            $scope.TotalAbsent = response.data.AbsentEmployee;
+                            $scope.TotalEarlyOut = response.data.EarlyOutEmployee;
+                            $scope.TotalEarlyOut += response.data.EarlyOutLatePresentEmployee;
+                            $scope.TotalPresent += $scope.TotalEarlyOut;
+                            $scope.TotalLeave = response.data.LeaveEmployee;
+                            $scope.TotalDuty = response.data.OnDutyEmployee;
+                            $scope.TotalInTraining = response.data.InTrainingEmployee;
+                            $scope.PresentPercent = response.data.PresentPercent;
+                        });
+                }
+                $scope.loadSchoolAttendanceSummery();
+
+				$scope.loadAllDivision = function() {
+					$scope.divisionList = [];
+					adminDashboardService.getAllDivision()
+						.then(function onSuccess(response) {
+							$scope.divisionList = response.data;
+						});
+				}
+				$scope.loadAllDivision();
+
+                $scope.GetAllDistrict = function (divisionId) {
+                    if (!divisionId)
+                        divisionId = 0;
+					$scope.districtList = [];
+					adminDashboardService.getAllDistrictListByDivision(divisionId)
+						.then(function onSuccess(response) {
+							$scope.districtList = response.data;
+						});
+				}
+
+                $scope.GetAllThana = function ( districtId) {
+                    if (!districtId)
+                        districtId = 0;
+					$scope.thanaList = [];
+                    adminDashboardService.getAllUpazilaListByDistrict(districtId)
+						.then(function onSuccess(response) {
+							$scope.thanaList = response.data;
+						});
+				}
+			});
+	</script>
+}

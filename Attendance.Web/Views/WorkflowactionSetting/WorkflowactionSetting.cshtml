@@ -1,0 +1,307 @@
+﻿@{
+    ViewBag.Title = "WorkflowactionSetting";
+    Layout = "~/Views/Shared/_AdminViewLayout.cshtml";
+}
+
+<div class="col-xs-12 col-sm-12" ng-controller="workflowactionSettingCtrl">
+    <div class="panel panel-default">
+        <div class="panel-heading text-lg text-bold text-uppercase">
+            Workflow Action Setting
+        </div>
+        <div class="panel-body  border-green pt pb">
+
+            <div class="row">
+                <div class="col-md-12">
+                    <select class="form-control" data-ng-model="WorkflowactionId" autofocus ng-change="loadAllUsresForUrlDropDown()"
+                            data-ng-options="doc.Id as doc.Name for doc in allWorkflowactionFromDb | orderBy:'Name'">
+                        <option value="">Select Workflow Action</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <select class="form-control" data-ng-model="SubModuleItemId" ng-disabled="WorkflowactionId==null" @*ng-change="loadAllUsresForUrlDropDown()"*@
+                            data-ng-options="doc.Id as doc.Name for doc in allSubModuleItemFromDb | orderBy:'Name'">
+                        <option value="">Select SubModule Item</option>
+                    </select>
+                </div>
+            </div>
+            <div style="border: 2px solid gray; padding: 15px; margin: 15px; border-radius: 5px;">
+                <form name="form" novalidate>
+                    @*<div class="row">
+                        <div class="col-sm-8 padding-left-right-zero">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">
+                                    FilterInAvailableEmp
+                                </label>
+                                <div class="col-sm-4 padding-left-right-zero">
+                                    <select data-ng-model="DepartmentId" class="form-control" ng-disabled="SubModuleItemId==null"
+                                            data-ng-options="c.Id as c.Name for c in allDepartmentFromDb | orderBy: 'Name'" ng-change="getDesignation()" name="DepartmentId">
+                                        <option value="">Select Department</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-4 padding-left-right-zero">
+                                    <select data-ng-model="DesignationId" class="form-control" ng-disabled="DepartmentId==null ||SubModuleItemId==null" ng-change="loadAllUsresForUrlDropDown()"
+                                            data-ng-options="c.Id as c.Name for c in allDesignationByDepartment | orderBy: 'Name'">
+                                        <option value="">
+                                            Select Desgi
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>*@
+                    <div class="row">
+                        <div class="col-md-offset-1 col-md-10 form-horizontal">
+                            <div class="col-md-5">
+                                <label for="aUser">Available User</label>
+                                <select size="20" class="form-control" multiple ng-model="available" ng-disabled="NotPermission" ng-options="u as u.Name for user in availableUsers | orderBy: 'Name'" ng-dblclick="moveItem(available[0], availableUsers,selectedUsers)"></select>
+                            </div>
+                            <div class="col-md-2 center form-group">
+                                <br/><br/><br/><br/><br/>
+                                <button id="moverightall" class="col-md-12 btn btn-info form-control" ng-click="moveAll(availableUsers,selectedUsers)" title="Add all to right" style="margin-top: 10px;"> >> </button>
+                                <button id="moveright" class="col-md-12 col-md-12 btn btn-info form-control" ng-click="moveItem(available[0], availableUsers,selectedUsers)" title="Add to right" style="margin-top: 10px;"> > </button>
+                                <button id="moveleft" class="col-md-12 btn btn-info form-control" ng-click="moveItem(selected[0], selectedUsers,availableUsers)" title="Add to left" style="margin-top: 10px;"> < </button>
+                                <button id="moveleftall" class="col-md-12 btn btn-info form-control" ng-click="moveAll(selectedUsers,availableUsers)" title="Add all to left" style="margin-top: 10px;"> << </button>
+                            </div>
+                            <div class="col-md-5 padding-right-zero">
+                                <label for="sUser">Selected User</label>
+                                <select size="20" class="form-control" multiple ng-model="selected" ng-options="u as u.Name for user in selectedUsers | orderBy: 'Name'" ng-dblclick="moveItem(selected[0], selectedUsers,availableUsers)" focus-on="focusMe"></select>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <div class="col-md-offset-7 col-md-5">
+                            <input type="submit" ng-disabled="SubModuleItemId==null" ng-click="addWorkflowactionSettingList()" class="btn btn-primary col-md-7" value="Submit"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <modal title="Success Message" visible="showModalforSubmitMessage">
+                        <alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
+                        <form name="form.update" role="form">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <span>{{messageModalObj.message}}</span>
+                                </div>
+                            </div>
+
+                        </form>
+                    </modal>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script type="text/javascript">
+
+        app.factory('focus',
+            function($rootScope, $timeout) {
+                return function(name) {
+                    $timeout(function() {
+                        $rootScope.$broadcast('focusOn', name);
+                    });
+                };
+            });
+        app.factory('workflowactionSettingService',
+            [
+                '$http', function($http) {
+
+                    return {
+                        saveWorkflowactionSettingList: function(workflowactionSettingList,
+                            subModuleItemId,
+                            workflowactionId) {
+                            var parameters = {
+                                workflowactionSettingList: workflowactionSettingList,
+                                subModuleItemId: subModuleItemId,
+                                workflowactionId: workflowactionId
+                            };
+                            return $http({
+                                url: '/WorkflowactionSetting/CreateWorkflowactionSettingList',
+                                method: 'POST',
+                                type: "json",
+                                data: JSON.stringify(parameters)
+                            })
+                        },
+                        /*getAllAvaiableUserForASubModuleItem: function (id) {
+                            return $http.get('/User/GetAllAvaiableUserForASubModuleItem/' + id);
+                        },*/
+                        getAllAvaiableUserForASubModuleItemByDeptDesignation: function(workflowactionId,
+                            subModuleItemId,
+                            departmentId,
+                            designationId) {
+                            var parameters = {
+                                workflowactionId: workflowactionId,
+                                subModuleItemId: subModuleItemId,
+                                departmentId: departmentId,
+                                designationId: designationId
+                            };
+                            return $http({
+                                url:
+                                    '/User/GetAllAvaiableUserForASubModuleItemFilterByDeptDesignation', //(int subModuleItemId, int? departmentId, int? designationId)// int id) //subModuleItem
+                                method: 'POST',
+                                type: "json",
+                                data: JSON.stringify(parameters)
+                            })
+                        },
+                        getAllSubModuleItem: function() {
+                            return $http.get('/SubModuleItem/GetBaseSubModuleItemList');
+                        },
+                        //getAllDepartment: function() {
+                        //    return $http.get('/Department/GetDepartmentList');
+                        //},
+                        getAllWorkflowaction: function() {
+                            return $http.get('/Workflowaction/GetWorkflowactionList');
+                        },
+                        //getAllDesignationByDept: function(id) { // But Here All Designation are geted
+                        //    return $http.get('/Designation/GetDesignationListByDepartmentId/' + id);
+                        //},
+                    };
+                }
+            ]);
+        app.controller('workflowactionSettingCtrl',
+            function($scope,
+                $http,
+                focus,
+                $location,
+                $anchorScroll,
+                $timeout,
+                workflowactionSettingService,
+                $log,
+                $ngBootbox) {
+                $scope.messageModalObj = {};
+                //$scope.messageModalObj.message = '';
+                $scope.showModalforSubmitMessage = false;
+                // loadAllMedicine();
+
+                // Add a new workflowactionSetting
+                $scope.addWorkflowactionSettingList = function() {
+                    $scope.$broadcast('show-errors-check-validity');
+                    if ($scope.form.$valid) {
+
+                        $scope.WorkflowactionSettingList = [];
+                        //alert("Doctor Id: "+doctorIdToBeSaved)
+
+                        if ($scope.SubModuleItemId == null ||
+                            $scope.SubModuleItemId == undefined ||
+                            $scope.SubModuleItemId == "") {
+                            $scope.messageModalObj.message = 'Please Select Url';
+                            $scope.showModalforSubmitMessage = true;
+                            $timeout(function() { $scope.showModalforSubmitMessage = false; }, 3000);
+                            return;
+                        }
+
+                        for (var i = 0; i < $scope.selectedUsers.length; i++) {
+                            $scope.WorkflowactionSettingList.push({
+                                Id: '',
+                                SubMouduleItemId: $scope.SubModuleItemId,
+                                UserId: $scope.selectedUsers[i].Id,
+                                WorkflowactionId: $scope.WorkflowactionId
+                            });
+                        }
+
+                        workflowactionSettingService.saveWorkflowactionSettingList($scope.WorkflowactionSettingList,
+                                $scope.SubModuleItemId,
+                                $scope.WorkflowactionId)
+                            .then(function onSuccess(response) {
+                                loadAllUsresForUrlDropDown();
+                                $scope.messageModalObj.message = response.data.message;
+                                $scope.showModalforSubmitMessage = true;
+                                $timeout(function() { $scope.showModalforSubmitMessage = false; }, 3000);
+                            })
+                            .catch(function onError(response) {
+                                //$ngBootbox.alert('Error in saving data');
+                            });
+                    }
+                };
+
+                function loadAllUsresForUrlDropDown() {
+
+                    if (($scope.WorkflowactionId == null || $scope.WorkflowactionId == undefined) &&
+                        ($scope.SubModuleItemId == null || $scope.SubModuleItemId == undefined)) return;
+                    $scope.availableUsers = [];
+                    $scope.selectedUsers = [];
+
+                    if ($scope.SubModuleItemId != null)
+                        workflowactionSettingService.getAllAvaiableUserForASubModuleItemByDeptDesignation($scope.WorkflowactionId, $scope.SubModuleItemId, $scope.DepartmentId, $scope.DesignationId)
+                            .then(function onSuccess(response) {
+                                $scope.availableUsers = response.data.availableUsers;
+                                $scope.selectedUsers = response.data.selectedUsers;
+                            })
+                            .catch(function onError(response) {
+                                $ngBootbox.alert('Error in loading available User');
+                            });
+                }
+
+                $scope.loadAllUsresForUrlDropDown = function () {
+                    if (($scope.WorkflowactionId == null || $scope.WorkflowactionId == undefined) && ($scope.SubModuleItemId == null || $scope.SubModuleItemId == undefined)) return;
+                    $scope.availableUsers = [];
+                    $scope.selectedUsers = [];
+
+                    if ($scope.SubModuleItemId != null)
+                        workflowactionSettingService.getAllAvaiableUserForASubModuleItemByDeptDesignation($scope.WorkflowactionId, $scope.SubModuleItemId, $scope.DepartmentId, $scope.DesignationId)
+                            .then(function onSuccess(response) {
+                                $scope.availableUsers = response.data.availableUsers;
+                                $scope.selectedUsers = response.data.selectedUsers;
+                            })
+                            .catch(function onError(response) {
+                                $ngBootbox.alert('Error in loading available User');
+                            });
+                }
+
+                loadAllSubModuleItem();
+                function loadAllSubModuleItem() {
+                    $scope.allSubModuleItemFromDb = [];
+                    workflowactionSettingService.getAllSubModuleItem()
+                        .then(function onSuccess(response) {
+                            $scope.allSubModuleItemFromDb = response.data;
+                        })
+                        .catch(function onError(response) {
+                            $ngBootbox.alert('Error In Loading Sub Module Item');
+                        });
+                }
+
+
+                loadAllWorkflowaction();
+                function loadAllWorkflowaction() {
+                    workflowactionSettingService.getAllWorkflowaction()
+                        .then(function onSuccess(response) {
+                            $scope.allWorkflowactionFromDb = response.data;
+                        })
+                        .catch(function onError(response) {
+                            $ngBootbox.alert('Error In Loading');
+                        });
+                }
+
+                $scope.moveItem = function(item, from, to) {
+                    //console.log('Move item   Item: ' + item + ' From:: ' + from + ' To:: ' + to);
+                    //Here from is returned as blank and to as undefined
+                    var idx = from.indexOf(item);
+                    if (idx != -1) {
+                        from.splice(idx, 1);
+                        to.push(item);
+                    }
+                };
+                $scope.moveAll = function(from, to) {
+                    //console.log('Move all  From:: ' + from + ' To:: ' + to);
+                    //Here from is returned as blank and to as undefined
+                    angular.forEach(from,
+                        function(item) {
+                            to.push(item);
+                        });
+                    from.length = 0;
+                };
+
+
+            });
+
+    </script>
+}

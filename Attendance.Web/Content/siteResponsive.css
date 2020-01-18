@@ -1,0 +1,554 @@
+﻿
+
+@media only screen and (min-width: 1281px) {
+
+    .main-logo-sm {
+        visibility: hidden;
+    }
+
+    .main-logo {
+        display: block;
+    }
+
+    .user-nav-item {
+        display: none;
+    }
+
+    .mobile-menu-btn {
+        display: none;
+    }
+}
+
+@media only screen and (min-width: 992px) and (max-width: 1280px) {
+
+    .main-logo-sm {
+        visibility: hidden;
+    }
+
+    .main-logo {
+        display: block;
+    }
+
+    .user-nav-item {
+        display: none;
+    }
+}
+
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+    body {
+        font-size: 12px;
+    }
+
+    #header {
+        padding: 4px 4px 4px 15px;
+        height: 70px;
+    }
+
+    #mobile-nav-toggle {
+        display: inline
+    }
+
+    #mobile-nav-toggle {
+        top: 12px;
+    }
+
+    #nav-menu-container {
+        display: none
+    }
+
+    .mobile-menu-btn {
+        display: block;
+    }
+
+    #render-body-section {
+        margin-top: 60px !important;
+    }
+
+    .page-header {
+        margin: 10px 0 10px 0 !important;
+    }
+
+    .player-block {
+        padding: 0 !important;
+        overflow: hidden;
+        margin-bottom: 20px;
+    }
+
+    .eleven-players-block {
+        padding: 0 !important;
+    }
+
+    .player-table td {
+        font-size: 11px;
+    }
+
+
+    .selected-player-table .save-block {
+        padding: 10px !important;
+    }
+
+
+    .selected-player-table {
+        height: 650px !important;
+    }
+
+    .all-players-block {
+        margin: 0;
+        padding: 0;
+    }
+
+    table.type-select-table th {
+        padding: 0 10px !important;
+        vertical-align: middle !important;
+    }
+
+    .all-players-block {
+        padding: 0 !important;
+    }
+
+    .main-logo {
+        visibility: hidden;
+    }
+
+    .main-logo-sm {
+        display: block;
+    }
+
+        .main-logo-sm img {
+            height: 75px;
+        }
+
+    .logo-img .mobile-image img {
+        height: 300px !important;
+    }
+
+    .mobile-image {
+        display: block !important;
+    }
+}
+
+@media only screen and (min-width: 481px) and (max-width: 767px) {
+
+    body {
+        font-size: 12px;
+    }
+
+    #header {
+        height: 70px;
+    }
+
+    #mobile-nav-toggle {
+        display: block;
+    }
+
+    #mobile-nav-toggle {
+        top: 12px;
+    }
+
+    #render-body-section {
+        margin-top: 60px !important;
+    }
+
+
+
+    .page-header {
+        margin: 10px 0 10px 0 !important;
+    }
+
+    .player-block {
+        padding: 0 !important;
+        overflow: hidden;
+        margin-bottom: 20px;
+    }
+
+    .eleven-players-block {
+        padding: 0 !important;
+    }
+
+    .player-table td {
+        font-size: 11px;
+    }
+
+
+    .selected-player-table .save-block {
+        padding: 10px !important;
+    }
+
+
+    .selected-player-table {
+        height: 650px !important;
+    }
+
+    .all-players-block {
+        margin: 0;
+        padding: 0;
+    }
+
+    table.type-select-table th {
+        padding: 0 10px !important;
+        vertical-align: middle !important;
+    }
+
+    .all-players-block {
+        padding: 0 !important;
+    }
+
+    .main-logo {
+        visibility: hidden;
+    }
+
+    .main-logo-sm {
+        display: block;
+    }
+
+        .main-logo-sm img {
+            margin: 10px 0 0 10px;
+            height: 60px;
+        }
+
+    .logo-img {
+        margin-top: -200px;
+    }
+
+        .logo-img .mobile-image {
+            float: right;
+        }
+
+            .logo-img .mobile-image img {
+                height: 250px;
+            }
+
+    .sceen {
+        flex-wrap: nowrap;
+    }
+
+    .full-bg-image {
+        padding: 3rem 0 0 0;
+    }
+}
+
+
+
+@media only screen and (max-width: 992px) {
+    .player-type-filter-btn-lg {
+        display: block;
+    }
+
+    .player-type-filter-btn-sm {
+        display: none;
+    }
+}
+
+
+
+@media only screen and (max-width: 767px) {
+    .player-type-filter-btn-lg {
+        display: none;
+    }
+
+    .player-type-filter-btn-sm {
+        display: block;
+    }
+
+    .player-filter-section {
+        padding-bottom: 5px;
+    }
+
+    .team-filter {
+        margin-bottom: 5px !important;
+    }
+
+        .team-filter .input-group {
+            margin-bottom: 5px;
+            padding-top: 5px;
+        }
+
+    .all-players-block {
+        margin: 0 !important;
+        height: auto;
+    }
+
+        .all-players-block .player-select-table {
+            height: auto !important; 
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .all-players-block .header {
+            display: none;
+        }
+
+    .eleven-players-block {
+        height: auto !important;
+    }
+
+    .eleven-players-block .header {
+        display: none;
+    }
+
+    .selected-player-table {
+        display: none;
+    }
+
+    .tournament-player-selection-box {
+        min-height: 0 !important;
+    }
+
+    .modal-body .selected-player-table {
+        display: block;
+    }
+
+    .player-block:first-child {
+        margin-bottom: 0px;
+    }
+
+    .selection-status-block {
+        padding: 5px 12px !important;
+    }
+
+    .message-block {
+        height: auto !important;
+    }
+
+    .btn-auto-select {
+        font-size: 12px;
+    }
+
+    .up-coming-match-block {
+        display: none;
+    }
+
+    .tournament-player-select-section .page-header .col-md-6:first-child {
+        padding: 0;
+    }
+
+    .fab {
+        display: inline-block;
+        bottom: 15px;
+        right: 20px;
+    }
+
+    .view-team-btn {
+        display: block;
+    }
+
+    .tournament-player-select-section .page-header .header {
+        font-size: 20px;
+    }
+
+    .tournament-player-select-section .page-header .deadline-block {
+        font-size: 15px;
+        padding: 2px 0;
+    }
+
+    .tournament-player-select-section .page-header .match-name {
+        padding: 2px 0;
+        display: inline-block;
+        font-size: 11px;
+        margin-right: 5px;
+    }
+
+        .tournament-player-select-section .page-header .match-name:last-child {
+            color: black;
+        }
+
+
+        #selectedTeamModal .modal-dialog {
+            margin-top: 85px;
+        }
+
+            #selectedTeamModal .modal-dialog .modal-header {
+                padding: 5px 15px;
+            }
+                #selectedTeamModal .modal-dialog .modal-header .modal-title {
+                    padding-top: 3px;
+                }
+
+            #selectedTeamModal .modal-dialog .modal-body {
+                height: calc(100vh - 135px);
+                overflow-y: auto;
+            }
+
+                #selectedTeamModal .modal-dialog .modal-body .selected-player {
+                    margin-bottom: 10px;
+                }
+
+    .bootbox .modal-dialog {
+        margin-top: 80px;
+        -webkit-box-shadow: 0px 0px 10px 15px rgba(0,0,0,0.75);
+        -moz-box-shadow: 0px 0px 10px 15px rgba(0,0,0,0.75);
+        box-shadow: 0px 0px 10px 15px rgba(0,0,0,0.75);
+    }
+
+    .fixture-list {
+        display: none;
+    }
+
+    .team-selection-msg {
+        padding: 0 30px;
+    }
+
+    .post-summary .summary-info .title {
+        font-size: 12px;
+    }
+
+    .player-table th {
+        padding: 9px 3px !important;
+    }
+
+    .match-select-tab .nav-link {
+        font-size: 15px !important;
+    }
+
+    .matchSchedule-matchList-page .team-info {
+        padding: 0;
+    }
+
+        .matchSchedule-matchList-page .team-info .actions a {
+            font-size: 11px;
+            margin: 2px;
+            padding: 4px;
+            padding: 3px;
+        }
+
+    .responsive-image {
+        width: 80%;
+    }
+
+    .rule-body {
+        padding: 10px 0;
+    }
+
+}
+
+
+
+@media only screen and (max-width: 480px) {
+    body {
+        font-size: 10px;
+    }
+
+    #header {
+        height: 70px;
+        z-index: 9999;
+    }
+
+    #mobile-nav-toggle {
+        display: block;
+    }
+
+    #mobile-nav-toggle {
+        top: 10px;
+    }
+
+    #render-body-section {
+        margin-top: 60px !important;
+    }
+
+    .page-header {
+        margin: 5px 0 0px 0 !important;
+        padding: 5px 0;
+    }
+
+    .player-block {
+        padding: 0 !important;
+        overflow: hidden;
+        margin-bottom: 20px;
+    }
+
+    .eleven-players-block {
+        padding: 0 !important;
+    }
+
+    .player-table td {
+        font-size: 11px;
+    }
+
+
+    .selected-player-table .save-block {
+        position: relative !important;
+        padding: 10px !important;
+    }
+
+
+    .selected-player-table {
+        height: auto !important;
+    }
+
+    .all-players-block {
+        margin: 0;
+        padding: 0;
+    }
+
+    table.type-select-table th {
+        padding: 0 10px !important;
+        vertical-align: middle !important;
+    }
+
+    .all-players-block {
+        padding: 0 !important;
+    }
+
+    .main-logo {
+        visibility: hidden;
+    }
+
+    .main-logo-sm {
+        display: block;
+    }
+
+    .main-logo-sm img {
+        height: 60px;
+        margin: 10px 10px 0;
+    }
+
+    .logo-img {
+        margin-top: -200px;
+    }
+
+    .logo-img .mobile-image {
+        float: right;
+    }
+
+    .logo-img .mobile-image img {
+        height: 150px;
+    }
+
+    .sceen {
+        flex-wrap: nowrap;
+    }
+
+    .full-bg-image {
+        padding: 3rem 0 0 0;
+    }
+
+    .matchlist-container {
+        padding: 1.2em;
+    }
+
+    .sports-container {
+        width: 200px;
+    }
+
+    .match-select-tab .nav-link {
+        font-size: 15px !important;
+    }
+
+    .matchSchedule-matchList-page .team-info {
+        padding: 0;
+    }
+    .matchSchedule-matchList-page .team-info .actions a {
+        font-size: 11px;
+        margin: 2px;
+        padding: 4px;
+        padding: 3px;
+    }
+
+    .responsive-image {
+        width: 90%;
+    }
+
+    .rule-body {
+        padding: 10px 0;
+    }
+}

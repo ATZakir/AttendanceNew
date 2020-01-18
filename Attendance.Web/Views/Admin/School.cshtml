@@ -1,0 +1,226 @@
+﻿@using Attendance.Web.Helpers
+
+@{
+	ViewBag.Title = @Resources.ResourceSchool.LblSchool;
+	Layout = "~/Views/Shared/_AdminViewLayout.cshtml";
+}
+<style>
+	.panel-heading {
+		font-size: 1.1rem;
+		font-weight: 700;
+	}
+
+	.panel-body {
+	}
+
+	.description-section {
+		padding: 10px;
+		margin-bottom: 10px;
+	}
+
+	.infortant-info-section {
+		padding: 10px;
+	}
+
+		.infortant-info-section .title {
+			font-size: 1.3rem;
+			font-weight: 700;
+			margin-bottom: 10px
+		}
+
+	.list-group-item {
+		padding: 5px 12px;
+	}
+
+	.table tbody > tr > td .fa {
+		font-size: 9px;
+		padding-top: 3px;
+	}
+
+	.table tbody > tr > td {
+		padding: 3px 5px;
+		vertical-align: top;
+		font-size: 13px
+	}
+
+	.emp-img {
+		height: 100px;
+	}
+	.emp-info-table {
+		margin-bottom: 0;
+	}
+
+	td.emp-img-container {
+		height: 120px;
+		width: 120px;
+		padding: 10px !important;
+		text-align: center !important;
+		vertical-align: middle !important;
+	}
+
+	td.emp-desc-container {
+		padding: 10px !important;
+		vertical-align: middle !important;
+	}
+</style>
+<section class="schoolHomepageContent" ng-controller="schoolHomepageController">
+
+	<div class="row p-2">
+		<div class="panel panel-primary">
+			<div class="panel-body p-1">
+				<table class="table table-borderless emp-info-table">
+					<tbody>
+						<tr>
+							<td class="emp-img-container" ng-if="employee.PhotoPath">
+								<img alt="User Pic" 
+								     ng-src="/Files/EmployeeImage/{{employee.PhotoPath}}" 
+								     id="profile-image1" class="img-circle img-responsive emp-img">
+							</td>
+							<td class="emp-desc-container">
+								<div >
+									<h4>{{employee.FullName}}</h4>
+								    <p>@Resources.ResourceDepartment.LblDepartment: 
+                                    <b> {{employee.Department}}</b></p>
+								    <p>@Resources.ResourceDesignation.LblDesignation: 
+                                    <b> {{employee.Designation}}</b></p>
+								</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+
+				
+			</div>
+		</div>
+	</div>
+
+
+	<div class="row">
+		<div class="col-md-6">
+			<div class="panel panel-default">
+				<div class="panel-heading">{{landingData.header}}</div>
+				<div class="panel-body">
+					<div class="description-section">
+						<p ng-repeat="description in landingData.descriptions">
+							{{description}}
+						</p>
+					</div>
+
+					<div class="infortant-info-section">
+						<div class="title">
+							{{landingData.list.heading}}
+						</div>
+						<div class="list-items">
+							<table class="table">
+								<tbody>
+									<tr ng-repeat="item in landingData.list.items">
+										<td><i class="fa fa-circle" aria-hidden="true"></i></td>
+										@*<td>{{$index+1}}.</td>*@
+										<td>{{item}}</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-6">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+				    @Resources.ResourceCommon.LblLatestNews
+					<span ng-show="allNoticeFromDb.length == 0">(0)</span>
+					<span ng-show="allNoticeFromDb.length > 0">({{allNoticeFromDb.length}})</span>
+				</div>
+				<div class="panel-body p-1">
+
+					<ul class="list-group mb-0" ng-show="allNoticeFromDb.length > 0">
+						<li class="list-group-item" ng-repeat="notice in allNoticeFromDb">
+							<h4 class="list-group-item-heading">{{notice.Title}}</h4>
+							<table class="table table-borderless table-condensed mb-0">
+								<tbody>
+								<tr>
+									<td>
+										<p class="list-group-item-text">
+											{{ notice.Description | limitTo: 150 }}{{notice.Description > 150 ? '...' : ''}}
+										</p>
+									</td>
+									<td style="text-align: right; vertical-align: bottom;"><a ng-href="/Notice/Detail/{{notice.Id}}">Details</a></td>
+								</tr>
+								</tbody>
+							</table>
+
+						</li>
+					</ul>
+                    <div class="alert alert-danger p-1 pl-2" role="alert"
+                         ng-if="allNoticeFromDb.length == 0"> @Resources.ResourceCommon.MsgRecordNotFound </div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+@section scripts
+{
+	<script type="text/javascript">
+
+		app.factory('focus',
+			function($rootScope, $timeout) {
+				return function(name) {
+					$timeout(function() {
+						$rootScope.$broadcast('focusOn', name);
+					});
+				};
+			});
+
+		app.factory('schoolHomepageService',
+			[
+				'$http', function($http) {
+					return {
+						getAllInfo: function () {
+							return $http.get('/Content/staticData/SchoolAdminHomePageData.json');
+						},
+						getAllNotice: function () {
+							return $http.get('/Notice/GetNoticeList');
+						},
+						getEmployeeInfo: function(empId) {
+							return $http.get('/Employee/GetEmployee?id=' + empId);
+						}
+					};
+				}
+			]);
+		app.controller('schoolHomepageController',
+			function($scope, $timeout, $http, focus, $location, $anchorScroll, schoolHomepageService, $log, $ngBootbox) {
+
+				loadAllData();
+				function loadAllData() {
+					schoolHomepageService.getAllInfo()
+						.then(function onSuccess(response) {
+							$scope.landingData = response.data;
+						});
+				}
+
+				loadEmployeeInfo();
+				function loadEmployeeInfo() {
+					var empId = @UserSession.GetUserFromSession().EmployeeId;
+					schoolHomepageService.getEmployeeInfo(empId)
+						.then(function onSuccess(response) {
+							$scope.employee = response.data;
+						});
+				}
+
+				loadAllNotice();
+				function loadAllNotice() {
+					$scope.allNoticeFromDb = [];
+					schoolHomepageService.getAllNotice()
+						.then(function onSuccess(response) {
+							$scope.allNoticeFromDb = response.data;
+						})
+						.catch(function onError(response) {
+							$ngBootbox.alert('@Resources.ResourceCommon.MsgErrorInLoading');
+						});
+				}
+			});
+	</script>
+}
+

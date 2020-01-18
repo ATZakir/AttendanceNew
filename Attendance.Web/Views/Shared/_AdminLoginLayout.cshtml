@@ -1,0 +1,36 @@
+﻿<!DOCTYPE html>
+<html ng-app="app"  ng-cloak  lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher's Attendance</title>
+    @* <link href="~/Content/Site.css" rel="stylesheet"/> *@
+    @Styles.Render("~/Content/vendorCSS")
+    @Styles.Render("~/Content/adminCSS")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body ng-controller="loginCtrl">
+
+    @*<div class="login-page bk-img">
+            <div class="form-content">
+                <div class="container " style="vertical-align: middle !important;">
+                    <div class="row">
+                        @RenderBody()
+                    </div>
+                </div>
+            </div>
+        </div>*@
+
+    <div class="container bk-img login-container" style="position: relative;">
+        @RenderBody()
+    </div>
+
+
+    @Scripts.Render("~/bundles/mainScripts")
+    @Scripts.Render("~/bundles/angularScripts")
+    @*@Scripts.Render("~/bundles/appScript")*@
+    <script src="~/Scripts/App/app.js"></script>
+    <script src="~/Scripts/App/Directive/CommonDirective.js"></script>
+    @RenderSection("scripts", required: false)
+</body>
+</html>

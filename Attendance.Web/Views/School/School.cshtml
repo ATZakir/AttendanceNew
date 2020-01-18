@@ -1,0 +1,399 @@
+﻿
+@{
+    ViewBag.Title = @Resources.ResourceSchool.LblSchool;
+    Layout = "~/Views/Shared/_AdminViewLayout.cshtml";
+}
+
+<div class="col-xs-12 col-sm-12" ng-controller="schoolCtrl">
+
+    @* ************ FORM - SECTION (Start)*************** *@
+    <div class="panel panel-default">
+        <div class="panel-heading text-lg text-bold text-uppercase">@Resources.ResourceSchool.LblSchool</div>
+        <div class="panel-body  border-green pt pb">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12">
+                    <div class="form-horizontal">
+                        <form name="form" novalidate>
+
+                            <div class="form-group" show-errors>
+                                <div class=" padding-right-zero">
+                                    <label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+                                        <b class="starStyle">*</b> @Resources.ResourceSchool.LblSchool
+                                    </label>
+                                </div>
+                                <div class="col-xs-12 col-sm-5 col-md-5">
+                                    <input class="form-control" type="text" name="Name" ng-model="Name" required ng-maxlength="250" />
+                                    <b class="help-block" ng-if="form.Name.$error.required">
+                                        @string.Format(Resources.ResourceCommon.VMsgRequired_Name, Resources.ResourceSchool.LblSchool)
+                                    </b>
+                                    <b class="help-block" ng-if="form.Name.$error.maxlength">@Resources.ResourceCommon.VMsgToo_Large</b>
+                                </div>
+                            </div>
+                            <div class="form-group" show-errors>
+                                <div class=" padding-right-zero">
+                                    <label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+                                        <b class="starStyle">*</b> @Resources.ResourceSchool.LblCode
+                                    </label>
+                                </div>
+                                <div class="col-xs-12 col-sm-5 col-md-5">
+                                    <input class="form-control" type="text" name="Code" ng-model="Code" required ng-maxlength="20" />
+                                    <b class="help-block" ng-if="form.Code.$error.required">
+                                        @string.Format(Resources.ResourceCommon.VMsgRequired_Name, Resources.ResourceSchool.LblCode)
+                                    </b>
+                                    <b class="help-block" ng-if="form.Code.$error.maxlength">@Resources.ResourceCommon.VMsgToo_Large</b>
+                                </div>
+                            </div>
+                            <div class="form-group" show-errors>
+                                <div class=" padding-right-zero">
+                                    <label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+                                        <b class="starStyle">*</b> @Resources.ResourceSchool.LblEIN
+                                    </label>
+                                </div>
+                                <div class="col-xs-12 col-sm-5 col-md-5">
+                                    <input class="form-control" type="text" name="EIN" ng-model="EIN" required ng-maxlength="50" />
+                                    <b class="help-block" ng-if="form.EIN.$error.required">
+                                        @string.Format(Resources.ResourceCommon.VMsgRequired_Name, Resources.ResourceSchool.LblEIN)
+                                    </b>
+                                    <b class="help-block" ng-if="form.EIN.$error.maxlength">@Resources.ResourceCommon.VMsgToo_Large</b>
+                                </div>
+                            </div>
+                            <div class="form-group" show-errors>
+                                <div class=" padding-right-zero">
+                                    <label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+                                        <b class="starStyle">*</b> @Resources.ResourceSchool.LblEmail
+                                    </label>
+                                </div>
+                                <div class="col-xs-12 col-sm-5 col-md-5">
+                                    <input class="form-control" type="text" name="Email" ng-model="Email" required ng-maxlength="100" />
+                                    <b class="help-block" ng-if="form.Email.$error.required">
+                                        @string.Format(Resources.ResourceCommon.VMsgRequired_Name, Resources.ResourceSchool.LblEmail)
+                                    </b>
+                                    <b class="help-block" ng-if="form.Email.$error.maxlength">@Resources.ResourceCommon.VMsgToo_Large</b>
+                                </div>
+                            </div>
+                            <div class="form-group" show-errors>
+                                <div class=" padding-right-zero">
+                                    <label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+                                        <b class="starStyle">*</b> @Resources.ResourceSchool.LblMobile
+                                    </label>
+                                </div>
+                                <div class="col-xs-12 col-sm-5 col-md-5">
+                                    <input class="form-control" type="text" name="Mobile" ng-model="Mobile" required ng-maxlength="50" />
+                                    <b class="help-block" ng-if="form.Mobile.$error.required">
+                                        @string.Format(Resources.ResourceCommon.VMsgRequired_Name, Resources.ResourceSchool.LblMobile)
+                                    </b>
+                                    <b class="help-block" ng-if="form.Mobile.$error.maxlength">@Resources.ResourceCommon.VMsgToo_Large</b>
+                                </div>
+                            </div>
+                            <div class="form-group" show-errors>
+                                <div class=" padding-right-zero">
+                                    <label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+                                        <b class="starStyle">*</b> @Resources.ResourceSchool.LblPhone
+                                    </label>
+                                </div>
+                                <div class="col-xs-12 col-sm-5 col-md-5">
+                                    <input class="form-control" type="text" name="Phone" ng-model="Phone" required ng-maxlength="50" />
+                                    <b class="help-block" ng-if="form.Phone.$error.required">
+                                        @string.Format(Resources.ResourceCommon.VMsgRequired_Name, Resources.ResourceSchool.LblPhone)
+                                    </b>
+                                    <b class="help-block" ng-if="form.Phone.$error.maxlength">@Resources.ResourceCommon.VMsgToo_Large</b>
+                                </div>
+                            </div>
+
+                            <div class="form-group" show-errors>
+                                <div class=" padding-right-zero">
+                                    <label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+                                        <b class="starStyle">*</b> @Resources.ResourceSchool.LblAddress
+                                    </label>
+                                </div>
+                                <div class="col-xs-12 col-sm-5 col-md-5">
+                                    <textarea class="form-control" ng-maxlength="250" ng-model="Address" name="Address"></textarea>
+                                    <b class="help-block" ng-if="form.Address.$error.required">
+                                        @string.Format(Resources.ResourceCommon.VMsgRequired_Name, Resources.ResourceSchool.LblAddress)
+                                    </b>
+                                    <b class="help-block" ng-if="form.Address.$error.maxlength">@Resources.ResourceCommon.VMsgToo_Large</b>
+                                </div>
+                            </div>
+                            <div class="form-group" show-errors id="searchdivid">
+                                <div class=" padding-right-zero">
+                                    <label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+                                        <b class="starStyle">*</b> @Resources.ResourceSchool.LblDivisionName
+                                    </label>
+                                </div>
+                                <div class="col-xs-12 col-sm-5 col-md-5">
+                                    <select data-ng-model="DivisionId" class="form-control"
+                                            data-ng-options="c.Id as c.Name for c in allDivisionFromDb | orderBy: 'Name'" name="DivisionId" ng-required="true" ng-change="GetAllDistrict(DivisionId)">
+                                        <option value="">@Resources.ResourceSchool.LblSelectDivision</option>
+                                    </select>
+                                    <b class="help-block" ng-if="form.DivisionId.$error.required">
+                                        @string.Format(Resources.ResourceCommon.VMsgRequired_Name, Resources.ResourceSchool.LblDivisionName)
+                                    </b>
+                                </div>
+                            </div>
+                            <div class="form-group" show-errors id="searchdivid">
+                                <div class=" padding-right-zero">
+                                    <label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+                                        <b class="starStyle">*</b> @Resources.ResourceSchool.LblDistrictName
+                                    </label>
+                                </div>
+                                <div class="col-xs-12 col-sm-5 col-md-5">
+                                    <select data-ng-model="DistrictId" class="form-control"
+                                            data-ng-options="c.Id as c.Name for c in allDistrictFromDb | orderBy: 'Name'" name="DistrictId" ng-required="true" ng-change="GetAllUpazila(DistrictId)">
+                                        <option value="">@Resources.ResourceSchool.LblSelectDistrict</option>
+                                    </select>
+                                    <b class="help-block" ng-if="form.DistrictId.$error.required">
+                                        @string.Format(Resources.ResourceCommon.VMsgRequired_Name, Resources.ResourceSchool.LblDistrictName)
+                                    </b>
+                                </div>
+                            </div>
+                            <div class="form-group" show-errors id="searchdivid">
+                                <div class=" padding-right-zero">
+                                    <label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+                                        <b class="starStyle">*</b> @Resources.ResourceSchool.LblUpazilaName
+                                    </label>
+                                </div>
+                                <div class="col-xs-12 col-sm-5 col-md-5">
+                                    <select data-ng-model="UpazilaId" class="form-control"
+                                            data-ng-options="c.Id as c.Name for c in allUpazilaFromDb | orderBy: 'Name'" name="UpazilaId" ng-required="true">
+                                        <option value="">@Resources.ResourceSchool.LblSelectUpazila</option>
+                                    </select>
+                                    <b class="help-block" ng-if="form.DistrictId.$error.required">
+                                        @string.Format(Resources.ResourceCommon.VMsgRequired_Name, Resources.ResourceSchool.LblUpazilaName)
+                                    </b>
+                                </div>
+                            </div>
+
+                            <div class="form-group" ng-hide="true">
+                                <div class="padding-right-zero">
+                                    <label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+                                        @Resources.ResourceCommon.LblIsActive
+                                    </label>
+                                </div>
+                                <div class="col-xs-12 col-sm-5 col-md-5">
+                                    <input class="form-control" type="checkbox" ng-model="IsActive" checked />
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-md-offset-3 col-sm-offset-3 col-xs-12 col-sm-8 col-md-8  padding-right-zero">
+                                    <input type="button" ng-click="addSchool()" class="btn btn-primary" value=@Resources.ResourceCommon.LblSave />
+                                    <input type="button" ng-click="reset()" class="btn btn-default" value=@Resources.ResourceCommon.LblReset />
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @* ************ FORM - SECTION (End)*************** *@
+
+
+
+    @* ************ POP-UP MODEL (Start)*************** *@
+    <div class="row">
+        <div class="col-xs-12 col-sm-3 col-md-3">
+            <modal title='@Resources.ResourceCommon.MsgHeaderSuccess' visible="showModalforSearch">
+                <alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
+                <form name="form.update" role="form">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-12">
+                            <span>{{messageModalObj.message}}</span>
+                        </div>
+                    </div>
+                </form>
+            </modal>
+        </div>
+    </div>
+    @* ************ POP-UP MODEL (End)*************** *@
+
+</div>
+
+
+@section scripts{
+    <script type="text/javascript">
+    app.filter('startFrom', function () {
+        return function (input, start) {
+            if (input) {
+                start = +start; //parse to int
+                return input.slice(start);
+            }
+            return [];
+        }
+    });
+    app.factory('focus', function ($rootScope, $timeout) {
+        return function (name) {
+            $timeout(function () {
+                $rootScope.$broadcast('focusOn', name);
+            });
+        };
+    });
+    app.factory('schoolService', ['$http', function ($http) {
+
+        return {
+            saveSchool: function (school) {
+                return $http({
+                    url: '/School/CreateSchool',
+                    method: 'POST',
+                    data: school
+                })
+            },
+            getSchool: function (id) {
+                return $http.get('/School/GetSchool/' + id);
+            },
+            getAllSchool: function () {
+                return $http.get('/School/GetSchoolList2');
+            },
+            getAllDivision: function () {
+                return $http.get('/UserPermission/GetAllDivisionByUserPermission');
+            },
+            getAllDistrictListByDivision: function (id) {
+                return $http.get('/UserPermission/GetAllDistrictByUserPermission/' + id);
+            },
+            getAllUpazilaListByDistrict: function (id) {
+                return $http.get('/UserPermission/GetAllUpazilaByUserPermission/' + id);
+            }
+        };
+        }]);
+
+        app.controller('schoolCtrl', function ($scope, $timeout, $http, focus, $location, $anchorScroll, schoolService, $log, $ngBootbox) {
+        $scope.messageModalObj = {};
+        $scope.messageModalObj.message = '';
+        $scope.SchoolId = '@ViewBag.SchoolId';
+
+        loadSchool();
+        $scope.showModalforSearch = false;
+        // Add a new school
+        $scope.addSchool = function () {
+            $scope.$broadcast('show-errors-check-validity');
+            if ($scope.form.$valid) {
+                var school = {};
+                school["Id"] = $scope.Id;
+                school["Name"] = $scope.Name;
+                school["Address"] = $scope.Address;
+                school["Code"] = $scope.Code;
+                school["EIN"] = $scope.EIN;
+                school["Email"] = $scope.Email;
+                school["Mobile"] = $scope.Mobile;
+                school["Phone"] = $scope.Phone;
+                school["UpazilaId"] = $scope.UpazilaId;
+                school["IsActive"] = $scope.IsActive;
+
+                schoolService.saveSchool(school)
+                .then(function onSuccess(response) {
+                    loadSchool();
+                    $scope.messageModalObj.message = response.data.message;
+                    $scope.showModalforSearch = true;
+                    $timeout(function () { $scope.showModalforSearch = false; }, 3000);
+                    $scope.reset();
+
+                })
+                .catch(function onError(response) {
+                    $ngBootbox.alert('@Resources.ResourceCommon.MsgErrorInSaving');
+                });
+            }
+        };
+        // Populate school        
+        $scope.populateSchool = function (school) {
+            $scope.selectedRow = school;
+            $scope.Id = school.Id;
+            $scope.Name = school.Name;
+            $scope.Address = school.Address;
+            $scope.Code = school.Code;
+            $scope.EIN = school.EIN;
+            $scope.Email = school.Email;
+            $scope.Mobile = school.Mobile;
+            $scope.Phone = school.Phone;
+            $scope.DivisionId = school.DivisionId;
+            $scope.DistrictId1 = school.DistrictId;
+            $scope.UpazilaId1 = school.UpazilaId;
+            $scope.GetAllDistrict($scope.DivisionId);
+            $scope.GetAllUpazila($scope.DistrictId1);
+
+            $scope.IsActive = school.IsActive;
+            $location.hash('searchDivId');
+            $anchorScroll();
+            focus('focusMe');
+        }
+
+        $scope.reset = function () {
+            $scope.$broadcast('show-errors-reset');
+            loadSchool();
+        }
+
+        
+        // Load school
+        function loadSchool() {
+            $scope.allSchoolFromDb = [];
+            schoolService.getSchool($scope.SchoolId)
+                .then(function onSuccess(response) {
+                    $scope.populateSchool(response.data);
+                })
+                .catch(function onError(response) {
+                    $ngBootbox.alert('@Resources.ResourceCommon.MsgErrorInLoading');
+                });
+            }
+
+        loadAllDivision();
+            function loadAllDivision() {
+                $scope.allDivisionFromDb = [];
+                
+                schoolService.getAllDivision()
+                    .then(function onSuccess(response) {
+                        $scope.allDivisionFromDb = response.data;
+                    })
+                    .catch(function onError(response) {
+                        $ngBootbox.alert('@Resources.ResourceCommon.MsgErrorInLoading');
+                    });
+            }
+
+        $scope.GetAllDistrict = function (divisionId) { 
+            $scope.allDistrictFromDb = [];
+            if (divisionId == undefined) return;
+
+                schoolService.getAllDistrictListByDivision(divisionId)
+                .then(function onSuccess(response) {
+                    $scope.allDistrictFromDb = response.data;
+                    $scope.DistrictId = $scope.DistrictId1;
+                })
+                .catch(function onError(response) {
+                    $ngBootbox.alert('@Resources.ResourceCommon.MsgErrorInLoading');
+                });
+        }
+        
+            $scope.GetAllUpazila = function (districtId) { 
+                $scope.allUpazilaFromDb = [];
+                if (districtId == undefined) return;
+
+                schoolService.getAllUpazilaListByDistrict(districtId)
+                .then(function onSuccess(response) {
+                    $scope.allUpazilaFromDb = response.data;
+                    $scope.UpazilaId = $scope.UpazilaId1;
+                })
+                .catch(function onError(response) {
+                    $ngBootbox.alert('@Resources.ResourceCommon.MsgErrorInLoading');
+                });
+        }
+        
+        $scope.currentPage = 1; //current page
+        $scope.entryLimit = 10; //max no of items to display in a page
+        $scope.filteredItems = $scope.allSchoolFromDb.length; //Initially for no filter
+        $scope.totalItems = $scope.allSchoolFromDb.length;
+        //$scope.maxSize = 15;
+
+        $scope.setPage = function (pageNo) {
+            $scope.currentPage = pageNo;
+        };
+        $scope.filter = function () {
+            $timeout(function () {
+                $scope.filteredItems = $scope.filtered.length;
+            }, 9000);
+        };
+        $scope.sort_by = function (predicate) {
+            $scope.predicate = predicate;
+            $scope.reverse = !$scope.reverse;
+        };
+        });
+    </script>
+    
+}

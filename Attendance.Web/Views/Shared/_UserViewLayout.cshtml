@@ -1,0 +1,208 @@
+﻿@using Resources;
+<!DOCTYPE html>
+<html ng-app="app" ng-cloak lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    @*<link href="~/Content/Site.css" rel="stylesheet" />*@
+    @Styles.Render("~/Content/userMainCSS")
+    @Scripts.Render("~/bundles/modernizr")
+    <style>
+        .navbar-brand {
+            padding: 0px;
+        }
+
+            .navbar-brand > img {
+                height: 100%;
+                padding: 15px;
+                width: auto;
+            }
+    </style>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-154149083-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-154149083-1');
+    </script>
+
+</head>
+<body>
+    <header id="header">
+        <div class="header-top">
+            <div class="container">
+                <div class="row align-items-center" style="height: 60px;">
+                    <div class="col-lg-6 col-sm-6 col-4 header-top-left no-padding">
+                    </div>
+                    <div class="col-lg-6 col-sm-6 col-8 header-top-right no-padding">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="main-menu">
+            <div class="container-fluid">
+                @if (Attendance.Web.Helpers.UserSession.GetUserFromSession() != null)
+                {
+                    <a href="/User/Dashboard" class="float-left main-logo" style="margin-top: -75px;">
+                        <img src="~/Content/Images/Logo.png" height="100" style="margin-right: 20px;" />
+                    </a>
+                }
+                else
+                {
+                    <a href="/" class="float-left main-logo" style="margin-top: -75px;">
+                        <img src="~/Content/Images/Logo.png" height="100" style="margin-right: 20px;" />
+                    </a>
+                }
+                <div class="row align-items-center justify-content-between d-flex">
+                    <nav id="nav-menu-container">
+                        <ul class="nav-menu">
+
+                            @if (Attendance.Web.Helpers.UserSession.GetUserFromSession() != null)
+                            {
+                                <li class="menu-active">
+                                    @Html.ActionLink("Home", "Dashboard", "User")
+                                </li>
+
+                            }
+                            else
+                            {
+                                <li class="menu-active"><a href="/">Home</a></li>
+                            }
+
+                            <li class="menu-has-children">
+                                <a href="">
+                                    Rules
+                                </a>
+                                <ul>
+                                    <li><a href="/QuickLinks/TeamFormation">Team Formation</a></li>
+                                    <li><a href="/QuickLinks/Rules">Point Calculation</a></li>
+                                </ul>
+                            </li>
+
+                            <li class="">
+                                <a href="/News">Fantasy Tips</a>
+                            </li>
+
+                            @if (Attendance.Web.Helpers.UserSession.GetUserFromSession() != null)
+                            {
+                                <li class="menu-has-children user-nav-item">
+                                    <a href="">
+                                        @Attendance.Web.Helpers.UserSession.GetUserFullNameFromSession()
+                                    </a>
+                                    <ul>
+                                        <li><a href="/Account/ViewChangePassword">Change Password</a></li>
+                                        <li>@Html.ActionLink("Logout", "Logout", "Account")</li>
+                                    </ul>
+                                </li>
+                            }
+
+                        </ul>
+                    </nav><!-- #nav-menu-container -->
+
+                    @if (Attendance.Web.Helpers.UserSession.GetUserFromSession() != null)
+                    {
+                        <div class="user-info">
+                            <ul class="nav-menu">
+                                <li class="menu-has-children">
+                                    <a href="">
+                                        <i class="fa fa-user ts-avatar" aria-hidden="true" style="padding: 0 5px;"></i>
+                                        @Attendance.Web.Helpers.UserSession.GetUserFullNameFromSession()
+                                    </a>
+                                    <ul>
+                                        <li><a href="/Account/ViewChangePassword">Change Password</a></li>
+                                        <li class="divider"></li>
+                                        <li>@Html.ActionLink("Logout", "Logout", "Account")</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+        <a href="/" class="float-left main-logo-sm" style="margin-top: -75px;">
+            <img src="~/Content/Images/Logo.png" height="100" style="margin-right: 20px;" />
+        </a>
+    </header><!-- #header -->
+    <!-- #Render Body -->
+    <div id="render-body-section">
+
+        @RenderSection("Breadcrumbs", required: false)
+
+        @RenderBody()
+    </div>
+
+    <!-- #Render Body -->
+    <!-- start footer Area -->
+    <footer class="site-footer ">
+        <div class="container">
+            <div class="row">
+                <div class="col">
+
+                    <ul class="social-icons">
+                        <li>
+                            Visit Us:<br /> <a class="facebook" href="https://www.facebook.com/super11social/"><i class="fa fa-facebook"></i></a>
+                        </li>
+                    </ul>
+
+                </div>
+
+                <div class="col">
+                    <ul class="footer-links">
+                        @* <li><a href="#">Download App</a></li> *@
+                        <li><a href="/QuickLinks/PrivacyPolicy">Privacy Policy</a></li>
+                        <li><a href="/QuickLinks/TermsofService">Terms of Service</a></li>
+                        <li><a id="inviteFriend" href="#">Invite Friends</a></li>
+                    </ul>
+                </div>
+
+                <div class="col">
+                    <ul class="footer-links">
+                        <li><a href="/QuickLinks/AboutUs">About Us</a></li>
+                        <li><a href="/QuickLinks/Contact">Contact</a></li>
+                        <li><a href="/QuickLinks/HowToPlay">How To Play</a></li>
+                        <li><a href="/QuickLinks/Rules">Rules</a></li>
+                    </ul>
+                </div>
+            </div>
+            <hr>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8 col-sm-6 col-xs-12">
+                    <p class="copyright-text">
+                        Developed By:
+                        <a href="http://accentechltd.com/">Accentech (Pvt.) Limited</a>.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- End footer Area -->
+
+    @Scripts.Render("~/bundles/userMainScripts")
+    @Scripts.Render("~/bundles/angularScripts")
+    <script src="~/Scripts/App/app.js"></script>
+    <script src="~/Scripts/App/Directive/CommonDirective.js"></script>
+    <script src="//connect.facebook.net/en_US/all.js"></script>
+    <script>
+        var url = '@System.Configuration.ConfigurationManager.AppSettings["siteUrl"]';
+        var fbId = '@System.Configuration.ConfigurationManager.AppSettings["FBAppliedId"]';
+        var fbFunc;
+        var fbFuncPlain;
+    </script>
+
+    <script src="~/App/fbScript.js"></script>
+    <script>
+        document.getElementById("inviteFriend").addEventListener("click",
+            function () {
+                fbFuncPlain();
+            });
+    </script>
+    @RenderSection("scripts", required: false)
+</body>
+</html>

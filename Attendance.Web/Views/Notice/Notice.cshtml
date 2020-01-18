@@ -1,0 +1,439 @@
+﻿
+@{
+    ViewBag.Title = @Resources.ResourceNotice.LblNotice;
+    Layout = "~/Views/Shared/_AdminViewLayout.cshtml";
+}
+
+<div class="col-xs-12 col-sm-12" ng-controller="noticeCtrl">
+
+    @* ************ FORM - SECTION (Start)*************** *@
+    <div class="panel panel-default">
+        <div class="panel-heading text-lg text-bold text-uppercase">@Resources.ResourceNotice.LblNotice</div>
+        <div class="panel-body  border-green pt pb">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12">
+                    <div class="form-horizontal">
+                        <form name="form" novalidate>
+                            
+                            @*<div class="form-group">
+                                <div class="padding-right-zero">
+                                    <label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+                                        @Resources.ResourceNotice.LblId
+                                    </label>
+                                </div>
+                                <div class="col-xs-12 col-sm-5 col-md-5">
+                                    <input class="form-control" type="text" name="Id" ng-model="Id"
+                                           ng-disabled="true"/>
+                                </div>
+                            </div>*@
+
+                            <div class="form-group">
+                                <div class=" padding-right-zero">
+                                    <label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+                                        @Resources.ResourceNotice.LblNotice
+                                    </label>
+                                </div>
+                                <div class="col-xs-12 col-sm-5 col-md-5">
+                                    <input class="form-control" type="text" name="Title" ng-model="Title"
+                                           ng-maxlength="50"/>
+                                    <b class="help-block" ng-if="form.Title.$error.maxlength">@Resources.ResourceCommon.VMsgToo_Large</b>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="padding-right-zero">
+                                    <label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+                                        @Resources.ResourceNotice.LblDescription
+                                    </label>
+                                </div>
+                                <div class="col-xs-12 col-sm-5 col-md-5">
+                                    <textarea class="form-control" type="text" name="Description"
+                                                      ng-model="Description" ng-maxlength="200"
+                                                      rows="3"style="resize: none;"></textarea>
+                                    <b class="help-block" ng-if="form.Description.$error.maxlength">@Resources.ResourceCommon.VMsgToo_Large</b>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class=" padding-right-zero">
+                                    <label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+                                        @Resources.ResourceNotice.LblValidity
+                                    </label>
+                                </div>
+                                <div class="col-xs-12 col-sm-5 col-md-5">
+                                    <input type="text" class="form-control" ng-model="Validity"
+                                           data-date-format="dd-MMM-yyyy" data-autoclose="1"
+                                           data-container="body" bs-datepicker>
+                                </div>
+                            </div>
+
+                            <div class="form-group" show-errors>
+                                <div class=" padding-right-zero">
+                                    <label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+                                        @Resources.ResourceNotice.LblAttachFile
+                                    </label>
+                                </div>
+                                <div class="col-xs-12 col-sm-5 col-md-5">
+                                    <input type="file" name="photo_file" id="imgInp" 
+                                           ng-model="photo_file" data-autoclose="true" accept=".pdf,.png">
+
+                                    <a target="_self" ng-show="editmode" class="ui right floated btn btn-link 
+                                       pt-2 pl-1" ng-href="/Files/Notice/{{AttachFile}}">Download File</a>
+                                </div>
+                                <div>
+                                    <label style="color: red; margin-left: -129px;">
+                                        * Only PDF or PNG
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-md-offset-3 col-sm-offset-3 col-xs-12 col-sm-8 col-md-8  padding-right-zero">
+                                    <input type="button" ng-click="addNotice()" class="btn btn-primary" value="@Resources.ResourceCommon.LblSave"/>
+                                    <input type="button" ng-click="reset()" class="btn btn-default" value="@Resources.ResourceCommon.LblReset"/>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @* ************ FORM - SECTION (End)*************** *@
+
+
+
+    @* ************ POP-UP MODEL (Start)*************** *@
+    <div class="row">
+        <div class="col-xs-12 col-sm-3 col-md-3">
+            <modal title='@Resources.ResourceCommon.MsgHeaderSuccess' visible="showModalforSearch">
+                <alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
+                <form name="form.update" role="form">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-12">
+                            <span>{{messageModalObj.message}}</span>
+                        </div>
+                    </div>
+                </form>
+            </modal>
+        </div>
+    </div>
+    @* ************ POP-UP MODEL (End)*************** *@
+
+
+
+    @* ************ TABLE - SECTION (Start)*************** *@
+    <div class="panel panel-default">
+        <div class="panel-heading text-lg text-bold text-uppercase">@Resources.ResourceNotice.LblNotice @Resources.ResourceCommon.lblList</div>
+        <div class="panel-body border-green  pt pb">
+            <div class="row mb">
+                <div class="col-sm-8 padding-left-zero">
+                    <div class="col-sm-4">
+                        <input type="text" ng-model="SearchText"placeholder='@Resources.ResourceCommon.TextBoxSearch_Watermark' class="form-control" />
+                    </div>
+                    <div class="col-sm-8 text-center-vertical">
+                        @Resources.ResourceCommon.lblFiltered <b>{{ filtered.length }}</b> of <b>{{ allNoticeFromDb.length}}</b> @Resources.ResourceNotice.LblTotalNotice
+                    </div>
+                </div>
+
+                <div class="col-sm-4">
+                    <div class="form-group pull-right">
+                        <label>@Resources.ResourceCommon.lblPageSize:</label>
+                        <label>
+                            <select ng-model="itemsPerPage" class="form-control">
+                                <option ng-value="1">1</option>
+                                <option ng-value="5">5</option>
+                                <option ng-value="10">10</option>
+                                <option ng-value="15">15</option>
+                                <option ng-value="30">30</option>
+                                <option ng-value="50">50</option>
+                                <option ng-value="100">100</option>
+                            </select>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12" ng-show="filtered.length > 0">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>@Resources.ResourceNotice.LblTitle <a ng-click="sort_by('DivisionName');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                    <th>@Resources.ResourceNotice.LblDescription <a ng-click="sort_by('DistrictName');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                    <th>@Resources.ResourceNotice.LblValidity <a ng-click="sort_by('Name');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                    <th>@Resources.ResourceNotice.LblAttachFile <a ng-click="sort_by('IsActive');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                    <th>@Resources.ResourceCommon.LblEdit </th>
+                                    <th>@Resources.ResourceCommon.LblDelete </th>
+                                </tr>
+                            </thead>
+                            <tfoot>
+                                <tr>
+                                    <th>@Resources.ResourceNotice.LblTitle <a ng-click="sort_by('Title');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                    <th>@Resources.ResourceNotice.LblDescription <a ng-click="sort_by('Description');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                    <th>@Resources.ResourceNotice.LblValidity <a ng-click="sort_by('Validity');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                    <th>@Resources.ResourceNotice.LblAttachFile <a ng-click="sort_by('AttachFile');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                    <th>@Resources.ResourceCommon.LblEdit </th>
+                                    <th>@Resources.ResourceCommon.LblDelete </th>
+                                </tr>
+                            </tfoot>
+                            <tbody>
+                                <tr ng-class="{'selected':data == selectedRow}" ng-repeat="data in filtered = (allNoticeFromDb  | filter:SearchText | orderBy : predicate :reverse) | startFrom:(currentPage-1)*entryLimit |  limitTo: itemsPerPage : (currentPage - 1) * itemsPerPage">
+                                    <td style="width: 300px">{{data.Title }}</td>
+                                    <td style="width: 300px">{{data.Description }}</td>
+                                    <td style="width: 150px">{{data.Validity }}</td>
+                                    <td style="width: 150px">{{data.AttachFile }}</td>
+
+                                    <td><input type="button" value=@Resources.ResourceCommon.LblEdit                     class="btn btn-info btn-sm" ng-click="populateNotice(data)"/></td>
+                                <td>
+                                    <input type="button" value=@Resources.ResourceCommon.LblDelete class="btn btn-danger btn-sm" ng-bootbox-confirm='@Resources.ResourceCommon.MsgConfirm_Delete'
+                                           ng-bootbox-confirm-action="deleteNotice(data)" ng-bootbox-confirm-action-cancel="confirmCallbackCancel(attr1, attr2)" />
+                                </td>
+                                    </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="pull-left">
+                        <br/>
+                        <pre>Page: {{currentPage}}/{{numPages}}</pre>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="pull-right">
+                        <ul uib-pagination total-items="filtered.length" items-per-page="itemsPerPage" 
+                            ng-model="currentPage" max-size="5" boundary-links="true" num-pages="numPages" boundary-link-numbers="true" rotate="false"></ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-12" ng-show="filtered.length == 0">
+                <div class="col-xs-12 col-sm-12 col-md-12 alert alert-danger">
+                    @Resources.ResourceNotice.LblNoNoticeFound
+                </div>
+            </div>
+        </div>
+    </div>
+    @* ************ TABLE - SECTION (End)*************** *@
+
+</div>
+
+
+@section scripts{
+    <script type="text/javascript">
+    app.filter('startFrom', function () {
+        return function (input, start) {
+            if (input) {
+                start = +start; //parse to int
+                return input.slice(start);
+            }
+            return [];
+        }
+    });
+    app.factory('focus', function ($rootScope, $timeout) {
+        return function (name) {
+            $timeout(function () {
+                $rootScope.$broadcast('focusOn', name);
+            });
+        };
+    });
+    app.factory('noticeService', ['$http', function ($http) {
+
+        return {
+            saveNotice: function (notice) {
+           
+                    var fdata = new FormData();
+                    var url = '/Notice/CreateNotice';
+                    for(var key in notice) {
+                    if (notice.hasOwnProperty(key)) {
+                        fdata.append(key, notice[key] ? notice[key] : '');
+                    }
+                }
+                return $http.post(url,
+                    fdata,
+                    {
+                        transformRequest: angular.identity,
+                        headers: { 'Content-Type': undefined }
+                    });
+                
+            },
+            getNotice: function (id) {
+                return $http.get('/Notice/GetNotice/' + id);
+            },
+            getAllNotice: function () {
+                return $http.get('/Notice/GetNoticeList');
+            },
+            //getLastId: function () {
+            //    return $http.get('/Notice/GetLastId');
+            //},
+            uploadFile: function (notice, file) {
+                var fdata = new FormData();
+                var url = '/Notice/UpoladFile';
+                fdata.append('notice', notice);
+                fdata.append('file', file);
+
+                return $http.post(url,
+                    fdata,
+                    {
+                        transformRequest: angular.identity,
+                        headers: { 'Content-Type': undefined }
+                    });
+
+            },
+
+            deleteNotice: function (notice) {
+                return $http({
+                    url: '/Notice/DeleteNotice',
+                    method: 'POST',
+                    data: notice
+                })
+            }
+        };
+    }]);app.controller('noticeCtrl', function ($scope, $timeout, $http, focus, $location, $anchorScroll, noticeService, $log, $ngBootbox) {
+        $scope.messageModalObj = {};
+        $scope.messageModalObj.message = '';
+        $scope.Validity = new Date();
+        loadAllNotice();
+        $scope.showModalforSearch = false;
+        $scope.editmode = false;
+        // Add a new notice
+        $scope.addNotice = function () {
+            $scope.$broadcast('show-errors-check-validity');
+            if ($scope.form.$valid) {
+                var notice = {};
+                notice["Id"] = $scope.Id;
+                notice["Title"] = $scope.Title;
+                notice["Description"] = $scope.Description;
+                notice["Validity"] = moment($scope.Validity).format();
+                notice["AttachFile"] = $scope.AttachFile;
+                if ($scope.editmode === false) {
+                    if ($scope.file != null) {
+                        notice["file"] = $scope.file;
+                    } else {
+                        $ngBootbox.alert({ message: 'Please upload AttachFile ', title: 'Warning' });
+                        return; 
+                    }
+                }
+                if ($scope.editmode === true) {
+                    if ($scope.file != null) {
+                        notice["file"] = $scope.file;
+                    } 
+                }
+               
+
+                noticeService.saveNotice(notice)
+                .then(function onSuccess(response) {
+                    loadAllNotice();
+                    //loadLastId();
+                    $scope.messageModalObj.message = response.data.message;
+                    $scope.showModalforSearch = true;
+                    $timeout(function () { $scope.showModalforSearch = false; }, 3000);
+                    $scope.reset();
+
+                })
+                .catch(function onError(response) {
+                    $ngBootbox.alert('@Resources.ResourceCommon.MsgErrorInSaving');
+                });
+            }
+        };
+        // Populate notice
+        $scope.selectedRow = null;
+        $scope.populateNotice = function (notice) {
+            $scope.selectedRow = notice;
+            $scope.editmode = true;
+            $scope.Id = notice.Id;
+            $scope.Title = notice.Title;
+            $scope.Description = notice.Description;
+            $scope.Validity = notice.Validity;
+            $scope.AttachFile = notice.AttachFile;
+            $location.hash('searchDivId');
+            $anchorScroll();
+            focus('focusMe');
+        }
+
+        $scope.reset = function () {
+            $scope.$broadcast('show-errors-reset');
+            //$scope.Id = '';
+            $scope.editmode = false;
+            $scope.Title = '';
+            $scope.Description = '';
+            $scope.Validity = '';
+            $scope.AttachFile = '';
+            $scope.selectedRow = null;
+            angular.element("input[type='file']").val(null);
+            $('#imgshowField').attr('src', "");
+        }
+
+        $scope.deleteNotice = function (notice) {
+            noticeService.deleteNotice(notice)
+            .then(function onSuccess(response) {
+                $scope.messageModalObj.message = response.data.message;
+                $scope.showModalforSearch = true;
+                $timeout(function () { $scope.showModalforSearch = false; }, 3000);
+                loadAllNotice();
+                //loadLastId();
+            })
+            .catch(function onError(response) {
+                $ngBootbox.alert('@Resources.ResourceCommon.MsgNot_deleted');
+            });
+        }
+        // Load notice
+        function loadAllNotice() {
+            $scope.allNoticeFromDb = [];
+            noticeService.getAllNotice()
+                .then(function onSuccess(response) {
+                    $scope.allNoticeFromDb = response.data;
+                })
+                .catch(function onError(response) {
+                    $ngBootbox.alert('@Resources.ResourceCommon.MsgErrorInLoading');
+                });
+        }
+
+        @*loadLastId();
+        function loadLastId() {
+            $scope.allNoticeFromDb = [];
+            noticeService.getLastId()
+                .then(function onSuccess(response) {
+                    $scope.LastIdFromDb = response.data;
+                    $scope.Id = parseInt($scope.LastIdFromDb) + 1;
+                })
+                .catch(function onError(response) {
+                    $ngBootbox.alert('@Resources.ResourceCommon.MsgErrorInLoading');
+                });
+        }*@
+
+        $("#imgInp").change(function () {
+            files = this.files;
+            $scope.file = files[0];
+
+            if (files && files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $('#imgshowField').attr('src', e.target.result);
+                }
+                reader.readAsDataURL(files[0]);
+            }
+        });
+
+        $scope.currentPage = 1; //current page
+        $scope.itemsPerPage = 5; //max no of items to display in a page
+        $scope.filteredItems = $scope.allNoticeFromDb.length; //Initially for no filter
+        $scope.totalItems = $scope.allNoticeFromDb.length;
+        //$scope.maxSize = 15;
+
+        $scope.setPage = function (pageNo) {
+            $scope.currentPage = pageNo;
+        };
+        $scope.filter = function () {
+            $timeout(function () {
+                $scope.filteredItems = $scope.filtered.length;
+            }, 9000);
+        };
+        $scope.sort_by = function (predicate) {
+            $scope.predicate = predicate;
+            $scope.reverse = !$scope.reverse;
+        };
+    });</script>
+    }

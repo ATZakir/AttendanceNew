@@ -1,0 +1,694 @@
+﻿@using Attendance.Web.Helpers
+@using Resources
+
+@{
+	ViewBag.Title = @Resources.ResourceDutyEntry.LblDutyEntry;
+	Layout = "~/Views/Shared/_AdminViewLayout.cshtml";
+}
+
+<div class="col-xs-12 col-sm-12" ng-controller="dutyEntry2Ctrl">
+
+	@* ************ FORM - SECTION (Start)*************** *@
+	<div class="panel panel-default">
+		<div class="panel-heading text-lg text-bold text-uppercase">@Resources.ResourceDutyEntry.LblDutyEntry</div>
+		<div class="panel-body  border-green pt pb">
+			<div class="row">
+				<div class="col-md-3 col-sm-4 col-xs-4 left-selection-column">
+					<div class="selector-container-div shadow">
+						<div class="panel panel-default selector-container">
+							<div class="panel-body" style="padding: 0;">
+								<div class="form-group">
+									<div class=" padding-right-zero">
+										<label class=" control-label default-color">
+											Division
+										</label>
+									</div>
+									<div class="">
+										<select data-ng-model="filterDivisionId" class="form-control"
+												data-ng-options="c.Id as c.Name for c in divisionList |
+                                    orderBy: 'Name'"  ng-change="GetAllDistrictFilter(filterDivisionId)">
+											<option value="">@Resources.ResourceUpazila.LblSelectDivision</option>
+										</select>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<div class=" padding-right-zero">
+										<label class=" control-label default-color">
+											District
+										</label>
+									</div>
+									<div class="">
+										<select data-ng-model="filterDistrictId" class="form-control"
+												data-ng-options="c.Id as c.Name for c in districtListForFilter |
+                                    orderBy: 'Name'"  ng-change="GetAllThanaFilter(filterDistrictId)">
+											<option value="">@Resources.ResourceUpazila.LblSelectDistrict</option>
+										</select>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<div class=" padding-right-zero">
+										<label class=" control-label default-color">
+											Thana
+										</label>
+									</div>
+									<div class="">
+										<select data-ng-model="filterUpazilaId" class="form-control"
+										        data-ng-options="c.Id as c.Name for c in thanaListForFilter | orderBy: 'Name'" 
+										        ng-change="GetAllSchoolFilter(filterUpazilaId)">
+											<option value="">@Resources.ResourceCommon.LblUpazilaName</option>
+										</select>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<div class=" padding-right-zero">
+										<label class=" control-label default-color">
+											School
+										</label>
+									</div>
+									<div class="">
+										<select data-ng-model="filterSchoolId" class="form-control"
+										        data-ng-options="c.Id as c.Name for c in schoolListForFilter | orderBy: 'Name'">
+											<option value="">Select school</option>
+										</select>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<div class=" padding-right-zero">
+										<label class=" control-label default-color">
+											Month - Year
+										</label>
+									</div>
+									<div class="">
+										<input type="text" class="form-control" ng-model="filterMonth" name="filterMonth" data-date-format="MMM, yyyy"
+											   bs-datepicker data-container='body' data-min-view="1" data-start-view="1" data-autoclose="true">
+									</div>
+								</div>
+								<div class="form-group">
+									<div class=" padding-right-zero">
+										<label class=" control-label default-color">
+											<b class="starStyle"></b> @Resources.ResourceEmployee.LblName
+										</label>
+									</div>
+									<div class="">
+										<input type="text" ng-model="SearchText" placeholder='@Resources.ResourceCommon.TextBoxSearch_Watermark' class="form-control" />
+									</div>
+								</div>
+								<button type="submit" ng-click="loadAllEmployeeListBySchool()" class="btn btn-success btn-sm btn-refresh-icon">
+									Refresh
+								</button>
+								<div class="form-group">
+									<label class="control-label">@Resources.ResourceEmployee.LblAllEmployeeList</label>
+									<div class="list-group" style="height: 300px; overflow: auto; background: #fff;">
+										<button type="button" class="list-group-item" style="padding: 4px 10px;font-size: 13px;"
+												ng-class="{'selected':data == selectedRow}" ng-click="getDutyEntryDetail(data);"
+												ng-repeat="data in dutyEntryListBySchoolandMonthFromDb| orderBy: 'Name'">
+											{{data.Name}}
+										</button>
+									</div>
+								</div>
+							</div>
+							<div class="panel-footer">
+								<ul uib-pagination boundary-links="false" total-items="pagingInfo.totalItems"
+									items-per-page="pagingInfo.itemsPerPage" ng-change="selectPage(pagingInfo.page)"
+									max-size="4" force-ellipses="true"
+									ng-model="pagingInfo.page" class="pagination-sm" previous-text="&lsaquo;" next-text="&rsaquo;"></ul>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-9 col-sm-8 col-xs-8">
+					<div class="form-horizontal">
+						<form name="form" novalidate>
+							<div class="col-md-6">
+								<div ng-show="level">
+									<div class="form-group" show-errors id="searchdivid">
+										<label class="col-md-4 control-label">
+											<b class="starStyle">*</b> @Resources.ResourceCommon.LblDivisionName
+										</label>
+										<div class="col-md-8">
+											<select data-ng-model="DivisionId" class="form-control"
+													data-ng-options="c.Id as c.Name for c in allDivisionFromDb | orderBy: 'Name'" name="DivisionId" ng-required="true" ng-change="GetAllDistrict(DivisionId)">
+												<option value="">@Resources.ResourceCommon.LblSelectDivision</option>
+											</select>
+											<b class="help-block" ng-if="form.DivisionId.$error.required">
+												@string.Format(Resources.ResourceCommon.VMsgRequired_Name, Resources.ResourceCommon.LblDivisionName)
+											</b>
+										</div>
+									</div>
+									<div class="form-group" show-errors id="searchdivid">
+
+										<label class="col-md-4 control-label">
+											<b class="starStyle">*</b> @Resources.ResourceCommon.LblDistrictName
+										</label>
+										<div class="col-md-8">
+											<select data-ng-model="DistrictId" class="form-control"
+													data-ng-options="c.Id as c.Name for c in allDistrictFromDb | orderBy: 'Name'" name="DistrictId" ng-required="true" ng-change="GetAllUpazila(DistrictId)">
+												<option value="">@Resources.ResourceCommon.LblSelectDistrict</option>
+											</select>
+											<b class="help-block" ng-if="form.DistrictId.$error.required">
+												@string.Format(Resources.ResourceCommon.VMsgRequired_Name, Resources.ResourceCommon.LblDistrictName)
+											</b>
+										</div>
+									</div>
+									<div class="form-group" show-errors id="searchdivid">
+										<label class="col-md-4 control-label">
+											<b class="starStyle">*</b> @Resources.ResourceCommon.LblUpazilaName
+										</label>
+										<div class="col-md-8">
+											<select data-ng-model="UpazilaId" class="form-control"
+													data-ng-options="c.Id as c.Name for c in allUpazilaFromDb | orderBy: 'Name'" name="UpazilaId" ng-required="true" ng-change="GetAllSchool(UpazilaId)">
+												<option value="">@Resources.ResourceCommon.LblSelectUpazila</option>
+											</select>
+											<b class="help-block" ng-if="form.DistrictId.$error.required">
+												@string.Format(Resources.ResourceCommon.VMsgRequired_Name, Resources.ResourceCommon.LblUpazilaName)
+											</b>
+										</div>
+									</div>
+									<div class="form-group" show-errors id="searchdivid">
+
+										<label class="col-md-4 control-label">
+											<b class="starStyle">*</b> @Resources.ResourceCommon.LblSchoolName
+										</label>
+										<div class="col-md-8">
+											<select data-ng-model="SchoolId" class="form-control"
+													data-ng-options="c.Id as c.Name for c in allSchoolFromDb | orderBy: 'Name'" name="SchoolId" ng-required="true" ng-change="loadAllEmployee(SchoolId)">
+												<option value="">@Resources.ResourceCommon.LblSelectSchool</option>
+											</select>
+											<b class="help-block" ng-if="form.SchoolId.$error.required">
+												@string.Format(Resources.ResourceCommon.VMsgRequired_Name, Resources.ResourceCommon.LblSchoolName)
+											</b>
+										</div>
+									</div>
+								</div>
+
+
+								<div class="form-group" show-errors>
+									<label class="col-md-4 control-label">
+										@ResourceDutyEntry.LblEmployee
+									</label>
+									<div class="col-md-8">
+										<select data-ng-model="EmployeeId" class="form-control"
+												data-ng-options="c.Id as c.FullName for c in allEmployeeFromDb | orderBy: 'Name'" name="EmployeeId" ng-required="true"
+												ng-change="setEmployeeInfo(EmployeeId)">
+											<option value="">
+												@string.Format(ResourceCommon.PlsSelect, ResourceEmployee.LblEmployee)
+											</option>
+										</select>
+										<b class="help-block" ng-if="form.EmployeeId.$error.required">
+											@string.Format(ResourceCommon.VMsgRequired_Name, ResourceEmployee.LblEmployee)
+										</b>
+									</div>
+
+
+								</div>
+
+								<div class="form-group">
+									<label class="col-md-4 control-label">
+										@ResourceDepartment.LblDepartment
+									</label>
+									<div class="col-xs-12 col-sm-5 col-md-5">
+										<input class="form-control" type="text" name="DepartmentName" ng-model="Department" ng-disabled="true" />
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-4 control-label">
+										@ResourceDesignation.LblDesignation
+									</label>
+
+									<div class="col-xs-12 col-sm-5 col-md-5">
+										<input class="form-control" type="text" name="DesignationName" ng-model="Designation" ng-disabled="true" />
+
+									</div>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label class="col-md-4 control-label">
+										@ResourceDutyEntry.LblDutyReason
+									</label>
+									<div class="col-md-8">
+										<select data-ng-model="ReasonId" class="form-control"
+												data-ng-options="c.Id as c.Name for c in allDutyReasonFromDb | orderBy: 'Name'" name="ReasonId">
+											<option value="">
+												@string.Format(ResourceCommon.PlsSelect, ResourceDutyEntry.LblDutyReason)
+											</option>
+										</select>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label class="col-md-4 control-label">
+										@ResourceDutyEntry.LblInTime
+									</label>
+									<div class="col-md-8">
+										<input type="text" class="form-control" ng-model="InTime" name="InTime" data-time-format="h:mm a"
+											   data-container='body' data-autoclose="true" data-use-native="true" ng-required="true"
+											   bs-timepicker>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label class="col-md-4 control-label">
+										@ResourceDutyEntry.LblOutTime
+									</label>
+									<div class="col-md-8">
+										<input type="text" class="form-control" ng-model="OutTime" name="OutTime" data-time-format="h:mm a"
+											   data-container='body' data-autoclose="true" data-use-native="true" ng-required="true"
+											   bs-timepicker>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label class="col-md-4 control-label">
+										@ResourceDutyEntry.LblStartDate
+									</label>
+									<div class="col-md-8">
+										<input type="text" class="form-control" ng-model="StartDate" name="StartDate" data-date-format="dd-MMM-yyyy"
+											   bs-datepicker data-container='body' data-min-view="0" data-autoclose="true">
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label class="col-md-4 control-label">
+										@ResourceDutyEntry.LblEndDate
+									</label>
+									<div class="col-md-8">
+										<input type="text" class="form-control" ng-model="EndDate" name="EndDate" data-date-format="dd-MMM-yyyy"
+											   bs-datepicker data-container='body' data-min-view="0" data-autoclose="true">
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label class="col-md-4 control-label">
+										@ResourceDutyEntry.LblRemarks
+									</label>
+									<div class="col-md-8">
+										<textarea class="form-control" type="text" name="Remarks" ng-model="Remarks" rows="3" maxlength="250"></textarea>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label class="col-md-4 control-label">
+										@ResourceDutyEntry.LblLocation
+									</label>
+									<div class="col-md-8">
+										<textarea class="form-control" type="text" name="Location" ng-model="Location" rows="3" maxlength="250"></textarea>
+									</div>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<div class="col-md-offset-3 col-sm-offset-3 col-xs-12 col-sm-8 col-md-8  padding-right-zero">
+									<input type="button" ng-click="addDutyEntry()" class="btn btn-primary" value=@ResourceCommon.LblSave />
+									<input type="button" ng-click="reset()" class="btn btn-default" value=@ResourceCommon.LblReset />
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	@* ************ FORM - SECTION (End)*************** *@
+
+
+
+	@* ************ POP-UP MODEL (Start)*************** *@
+	<div class="row">
+		<div class="col-xs-12 col-sm-3 col-md-3">
+			<modal title='@Resources.ResourceCommon.MsgHeaderSuccess' visible="showModalforSearch">
+				<alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
+				<form name="form.update" role="form">
+					<div class="row">
+						<div class="col-xs-12 col-sm-12 col-md-12">
+							<span>{{messageModalObj.message}}</span>
+						</div>
+					</div>
+				</form>
+			</modal>
+		</div>
+	</div>
+	@* ************ POP-UP MODEL (End)*************** *@
+
+
+</div>
+
+
+@section scripts{
+	<script type="text/javascript">
+    app.filter('startFrom', function () {
+        return function (input, start) {
+            if (input) {
+                start = +start; //parse to int
+                return input.slice(start);
+            }
+            return [];
+        }
+    });
+    app.factory('focus', function ($rootScope, $timeout) {
+        return function (name) {
+            $timeout(function () {
+                $rootScope.$broadcast('focusOn', name);
+            });
+        };
+    });
+    app.factory('dutyEntry2Service', ['$http', function ($http) {
+
+        return {
+            saveDutyEntry: function (dutyEntry) {
+	            return $http({
+		            url: '/DutyEntry/CreateDutyEntry',
+		            method: 'POST',
+		            data: dutyEntry
+	            });
+            },
+            getDutyEntryDetail: function (id) {
+	            return $http.get('/DutyEntry/GetDutyEntry/' + id);
+            },
+            getAllDutyEntry: function () {
+                return $http.get('/DutyEntry/GetDutyEntryList2');
+            },
+            getAllDivision: function () {
+                return $http.get('/UserPermission/GetAllDivisionByUserPermission');
+            },
+            getAllDistrictListByDivision: function (id) {
+                return $http.get('/UserPermission/GetAllDistrictByUserPermission/' + id);
+            },
+            getAllUpazilaListByDistrict: function (id) {
+                return $http.get('/UserPermission/GetAllUpazilaByUserPermission/' + id);
+            },
+            getAllSchoolListByUpazila: function (id) {
+                return $http.get('/UserPermission/GetAllSchoolByUserPermission/' + id);
+            },
+            getAllEmployeeFromDb: function (id) {
+	            return $http.get('/Employee/GetEmployeeSimpleListBySchool/' + id);
+            },
+            deleteDutyEntry: function (dutyEntry) {
+	            return $http({
+		            url: '/DutyEntry/DeleteDutyEntry',
+		            method: 'POST',
+		            data: dutyEntry
+	            });
+			},
+            getEmployeeListBySchool: function (pagingInfo) {
+	            return $http.get('/DutyEntry/GetDutyEntryListBySchoolAndMonth2/', { params: pagingInfo });
+            },
+            getAllDivisionFilter: function () {
+	            return $http.get('/UserPermission/GetAllDivisionByUserPermission');
+            },
+            getAllDistrictListByDivisionFilter: function (id) {
+	            return $http.get('/UserPermission/GetAllDistrictByUserPermission/' + id);
+            },
+            getAllUpazilaListByDistrictFilter: function (id) {
+	            return $http.get('/UserPermission/GetAllUpazilaByUserPermission/' + id);
+			},
+            getAllSchoolListByUpazilaFilter: function (id) {
+	            return $http.get('/UserPermission/GetAllSchoolByUserPermission/' + id);
+            },
+        };
+    }]);app.controller('dutyEntry2Ctrl', function ($scope, $timeout, $http, focus, $location, $anchorScroll, dutyEntry2Service, $log, $ngBootbox, $filter) {
+        $scope.messageModalObj = {};
+        $scope.messageModalObj.message = '';
+		$scope.level = true;
+		$scope.filterMonth = new Date();
+
+        $scope.getDutyEntryDetail = function(dutyEntry) {
+	        $scope.selectedRow = dutyEntry;
+	        dutyEntry2Service.getDutyEntryDetail(dutyEntry.Id)
+		        .then(function onSuccess(response) {
+			        $scope.dutyEntryDetail = response.data;
+			        if ($scope.dutyEntryDetail != null) {
+				        $scope.populateDutyEntry($scope.dutyEntryDetail);
+				        $log.log($scope.dutyEntryDetail);
+			        }
+		        })
+		        .catch(function onError(response) {
+			        $ngBootbox.alert('@Resources.ResourceCommon.MsgErrorInLoading');
+		        });
+        }
+
+
+        $scope.pagingInfo = {
+	        page: 1,
+	        itemsPerPage: 10,
+	        searchText:"",
+	        totalItems: 0,
+	        schoolIds: []
+		};
+
+        $scope.loadAllEmployeeListBySchool = function() {
+	        $scope.pagingInfo.searchText = $scope.SearchText;
+			$scope.pagingInfo.filterMonth = $scope.filterMonth;
+	        $scope.pagingInfo.schoolIds = [];
+			$scope.pagingInfo.schoolIds.push($scope.filterSchoolId);
+	        $scope.dutyEntryListBySchoolandMonthFromDb = [];
+	        dutyEntry2Service.getEmployeeListBySchool($scope.pagingInfo)
+		        .then(function onSuccess(response) {
+			        $scope.dutyEntryListBySchoolandMonthFromDb = response.data.EmployeeList;
+			        $scope.pagingInfo.totalItems = response.data.RecordCount;
+		        })
+		        .catch(function onError(response) {
+			        $ngBootbox.alert('@Resources.ResourceCommon.MsgErrorInLoading');
+		        });
+        }
+        $scope.loadAllEmployeeListBySchool();
+
+        $scope.loadAllDivisionFilter = function () {
+	        $scope.divisionList = [];
+	        dutyEntry2Service.getAllDivisionFilter()
+		        .then(function onSuccess(response) {
+			        $scope.divisionList = response.data;
+		        });
+        }
+        $scope.loadAllDivisionFilter();
+
+        $scope.GetAllDistrictFilter = function (divisionId) {
+	        if (!divisionId)
+		        divisionId = 0;
+	        $scope.districtList = [];
+	        dutyEntry2Service.getAllDistrictListByDivisionFilter(divisionId)
+		        .then(function onSuccess(response) {
+			        $scope.districtListForFilter = response.data;
+		        });
+        }
+
+        $scope.GetAllThanaFilter = function (districtId) {
+	        if (!districtId)
+		        districtId = 0;
+	        $scope.thanaList = [];
+	        dutyEntry2Service.getAllUpazilaListByDistrictFilter(districtId)
+		        .then(function onSuccess(response) {
+			        $scope.thanaListForFilter = response.data;
+		        });
+		}
+
+		$scope.GetAllSchoolFilter = function (upazilaId) {
+			if (!upazilaId)
+				upazilaId = 0;
+			dutyEntry2Service.getAllSchoolListByUpazilaFilter(upazilaId)
+				.then(function onSuccess(response) {
+					$scope.schoolListForFilter = response.data;
+				})
+				.catch(function onError(response) {
+					$ngBootbox.alert('@Resources.ResourceCommon.MsgErrorInLoading');
+				});
+		}
+
+        $scope.$watch('EmployeeId', function (empId) {
+	        if (empId > 0) {
+		        $scope.setEmployeeInfo(empId);
+	        } else {
+		        $scope.Designation = "";
+		        $scope.Department = "";
+	        }
+        });
+
+        $scope.setEmployeeInfo = function (empId) {
+	        var obj = $filter('filter')($scope.allEmployeeFromDb, { Id: empId }, true)[0];
+	        if (obj) {
+		        $scope.Designation = obj.Designation;
+		        $scope.Department = obj.Department;
+	        }
+
+		}
+
+
+
+        loadAllDutyEntry();
+        $scope.showModalforSearch = false;
+        // Add a new dutyEntry
+        $scope.addDutyEntry = function () {
+            $scope.$broadcast('show-errors-check-validity');
+            if ($scope.form.$valid) {
+                var dutyEntry = {};
+                dutyEntry["Id"] = $scope.Id;
+                dutyEntry["Name"] = $scope.Name;
+                dutyEntry["EmployeeId"] = $scope.EmployeeId;
+                dutyEntry["IsActive"] = $scope.IsActive;
+                dutyEntry["SchoolId"] = $scope.SchoolId;
+                dutyEntry["StartDate"] = $scope.StartDate;
+                dutyEntry["EndDate"] = $scope.EndDate;
+
+                dutyEntry2Service.saveDutyEntry(dutyEntry)
+                .then(function onSuccess(response) {
+                    loadAllDutyEntry();
+                    $scope.messageModalObj.message = response.data.message;
+                    $scope.showModalforSearch = true;
+                    $timeout(function () { $scope.showModalforSearch = false; }, 3000);
+                    $scope.reset();
+
+                })
+                .catch(function onError(response) {
+                    $ngBootbox.alert('@Resources.ResourceCommon.MsgErrorInSaving');
+                });
+            }
+        };
+        // Populate dutyEntry
+        $scope.selectedRow = null;
+        $scope.populateDutyEntry = function (dutyEntry) {
+	        $scope.Id = dutyEntry.Id;
+	        $scope.SchoolId = dutyEntry.SchoolId;
+	        $scope.EmployeeId = dutyEntry.EmployeeId;
+	        $scope.ReasonId = dutyEntry.ReasonId;
+	        $scope.InTime = new Date(moment(dutyEntry.InTimeString, "hh:mm a"));
+	        $scope.OutTime = new Date(moment(dutyEntry.OutTimeString, "hh:mm a")) ;
+	        $scope.StartDate = new Date(moment(dutyEntry.StartDate, "DD/MM/YYYY"));
+	        $scope.EndDate = new Date(moment(dutyEntry.EndDate, "DD/MM/YYYY")) ;
+	        $scope.Remarks = dutyEntry.Remarks;
+	        $scope.Location = dutyEntry.Location;
+        }
+
+        $scope.reset = function () {
+            $scope.$broadcast('show-errors-reset');
+            $scope.Id = '';
+            $scope.Name = '';
+            $scope.DivisionId = null;
+            $scope.DistrictId = null;
+            $scope.UpazilaId = null;
+            $scope.SchoolId = null;
+            $scope.EmployeeId = null;
+            $scope.DistrictId1 = null;
+            $scope.UpazilaId1 = null;
+            $scope.SchoolId1 = null;
+            $scope.EmployeeId1 = null;
+            $scope.IsActive = true;
+            $scope.selectedRow = null;
+        }
+
+        $scope.deleteDutyEntry = function (dutyEntry) {
+            dutyEntry2Service.deleteDutyEntry(dutyEntry)
+            .then(function onSuccess(response) {
+                $scope.messageModalObj.message = response.data.message;
+                $scope.showModalforSearch = true;
+                $timeout(function () { $scope.showModalforSearch = false; }, 3000);
+                loadAllDutyEntry();
+            })
+            .catch(function onError(response) {
+                $ngBootbox.alert('@Resources.ResourceCommon.MsgNot_deleted');
+            });
+        }
+        // Load duty entry
+        function loadAllDutyEntry() {
+            $scope.allDutyEntryFromDb = [];
+            dutyEntry2Service.getAllDutyEntry()
+                .then(function onSuccess(response) {
+                    $scope.allDutyEntryFromDb = response.data;
+                })
+                .catch(function onError(response) {
+                    $ngBootbox.alert('@Resources.ResourceCommon.MsgErrorInLoading');
+                });
+        }
+        loadAllDivision();
+        function loadAllDivision() {
+            $scope.allDivisionFromDb = [];
+            dutyEntry2Service.getAllDivision()
+                .then(function onSuccess(response) {
+                    $scope.allDivisionFromDb = response.data;
+                })
+                .catch(function onError(response) {
+                    $ngBootbox.alert('@Resources.ResourceCommon.MsgErrorInLoading');
+                });
+        }
+
+            $scope.GetAllDistrict = function (divisionId) {
+                $scope.allDistrictFromDb = [];
+                if (divisionId == undefined) return;
+
+                dutyEntry2Service.getAllDistrictListByDivision(divisionId)
+                .then(function onSuccess(response) {
+                    $scope.allDistrictFromDb = response.data;
+                    $scope.DistrictId = $scope.DistrictId1;
+                })
+                .catch(function onError(response) {
+                    $ngBootbox.alert('@Resources.ResourceCommon.MsgErrorInLoading');
+                });
+        }
+
+            $scope.GetAllUpazila = function (districtId) {
+                $scope.allUpazilaFromDb = [];
+                if (districtId == undefined) return;
+
+                dutyEntry2Service.getAllUpazilaListByDistrict(districtId)
+                .then(function onSuccess(response) {
+                    $scope.allUpazilaFromDb = response.data;
+                    $scope.UpazilaId = $scope.UpazilaId1;
+                })
+                .catch(function onError(response) {
+                    $ngBootbox.alert('@Resources.ResourceCommon.MsgErrorInLoading');
+                });
+        }
+
+            $scope.GetAllSchool = function (upazilaId) {
+                $scope.allSchoolFromDb = [];
+                if (upazilaId == undefined) return;
+
+                dutyEntry2Service.getAllSchoolListByUpazila(upazilaId)
+                    .then(function onSuccess(response) {
+                        $scope.allSchoolFromDb = response.data;
+                        $scope.SchoolId = $scope.SchoolId1;
+                    })
+                    .catch(function onError(response) {
+                        $ngBootbox.alert('@Resources.ResourceCommon.MsgErrorInLoading');
+                    });
+            }
+
+        // Load employee
+        $scope.loadAllEmployee= function(schoolId) {
+            $scope.allEmployeeFromDb = [];
+            if (schoolId == undefined) return;
+
+            dutyEntry2Service.getAllEmployeeFromDb(schoolId)
+                .then(function onSuccess(response) {
+                    $scope.allEmployeeFromDb = response.data;
+                    $scope.EmployeeId = $scope.EmployeeId1;
+                })
+                .catch(function onError(response) {
+                    $ngBootbox.alert('@Resources.ResourceCommon.MsgErrorInLoading');
+                });
+        }
+
+        $scope.currentPage = 1; //current page
+        $scope.entryLimit = 10; //max no of items to display in a page
+        $scope.filteredItems = $scope.allDutyEntryFromDb.length; //Initially for no filter
+        $scope.totalItems = $scope.allDutyEntryFromDb.length;
+        //$scope.maxSize = 15;
+
+        $scope.setPage = function (pageNo) {
+            $scope.currentPage = pageNo;
+        };
+        $scope.filter = function () {
+            $timeout(function () {
+                $scope.filteredItems = $scope.filtered.length;
+            }, 9000);
+        };
+        $scope.sort_by = function (predicate) {
+            $scope.predicate = predicate;
+            $scope.reverse = !$scope.reverse;
+        };
+	});
+	</script>
+}

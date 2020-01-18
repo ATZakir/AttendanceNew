@@ -1,0 +1,30 @@
+﻿.Landing-page-navbar {
+	background: #5cc72f;
+	border-bottom: 4px solid #b50000;
+	height: 80px;
+}
+
+	.Landing-page-navbar .title {
+		font-size: 1.1rem;
+		font-weight: 700;
+		color: #fff;
+	}
+
+.Landing-page-navbar .title-block {
+	text-align: right;
+}
+
+.at-landing-page-header {
+	width: 100%;
+}
+
+	.at-landing-page-header .banner-image {
+		width: 100%;
+	}
+.landing-page-main-section {
+	padding-top: 20px;
+	padding-bottom: 20px;
+	background: #ebfaff;
+}
+
+

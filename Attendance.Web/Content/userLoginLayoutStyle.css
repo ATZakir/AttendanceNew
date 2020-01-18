@@ -1,0 +1,215 @@
+﻿
+.form-group.has-error .help-block {
+    display: block;
+    font-size: 12px;
+}
+
+.form-group .help-block {
+    display: none;
+}
+
+body {
+    background-image: linear-gradient(to bottom, rgba(66, 27, 82, 0.8), rgba(59, 21, 15, .8)), url(/Content/Images/cricket-bg.jpg);
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+    background-color: #464646;
+    margin: 0;
+    padding: 0;
+}
+
+
+
+.sports-background-photo {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.sports-background-photo_header {
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    height: 85px;
+    z-index: 999;
+    position: fixed;
+}
+
+.sports-background-photo_picture {
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+.registration-form-section {
+    display: table;
+    padding-top: 100px;
+    width: 100%;
+}
+
+.registration-form-block {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.registration-page {
+    font-size: 15px;
+    line-height: 1.5rem;
+}
+.registration-page .form-control {
+    border-radius: 0px;
+    padding: 10px 10px;
+}
+
+.sports-background-photo__image {
+    width: 100%;
+    height: 100%;
+    display: block;
+    -o-object-fit: cover;
+    object-fit: cover;
+    -o-object-position: center;
+    object-position: center;
+    opacity: .5;
+    transition: opacity .5s ease;
+}
+
+
+.sports-container {
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    left: 50%;
+    width: 400px;
+    z-index: 50;
+    margin-top: 50px;
+}
+
+.sports-background-photo__logo {
+    filter: drop-shadow(1px 2px 1px rgba(0,0,0,.3));
+    padding: 10px 0 0 15px;
+    display: inline-block;
+}
+
+.sports-background-photo__logo img {
+    height: 70px;
+}
+
+
+.logo-sports {
+    width: 250px;
+    height: 50px;
+}
+
+
+.sports-right-button {
+    position: relative;
+    right: 15px;
+    display: inline-block;
+    float: right;
+    padding-top: 15px;
+}
+
+    .sports-right-button a {
+        color: #ffffff;
+        padding: 12px 40px;
+        border-radius: 50px;
+        background-color: rgba(255, 255, 255, 0.3);
+        display: inline-block;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        font-weight: 700;
+        font-size: 14px;
+    }
+
+.login-Screen-header {
+    color: #001036;
+    font-size: 1.3rem;
+    padding: 20px 0;
+}
+
+    .login-Screen-header .main-action {
+        font-size: 2.3rem;
+        font-weight: 700;
+    }
+
+    .login-Screen-header .secondary-action a {
+        color: #087ac0;
+        text-decoration: underline;
+    }
+
+.sports-container .well {
+    background: #fff;
+    padding: 30px;
+}
+
+.sports-container label {
+    font-size: 1.3rem;
+    height: 15px;
+    line-height: 15px;
+    font-weight: 500;
+    color: #0064bd;
+}
+
+
+.sports-container .help-block {
+    height: 15px;
+    font-size: 1.2rem;
+    line-height: 15px;
+    margin-bottom: 5px;
+    text-align: right;
+}
+
+
+.sports-container input, .sports-container select {
+    padding: 10px;
+}
+
+
+.login-btn {
+    box-shadow: 0 2px 5px 0 #acacac;
+    padding: 5px 20px;
+    font-size: 15px;
+    text-transform: uppercase;
+    font-weight: bold;
+    background: #ed563c !important;
+    border-color: #ed563c !important;
+    font-family: 'Oswald', sans-serif;
+    letter-spacing: 0.15rem;
+}
+
+
+.login-Screen-footer {
+    padding: 10px 0;
+    font-size: 1.3rem;
+}
+
+.login-Screen-footer a {
+    color: #087ac0;
+    text-decoration: underline;
+}
+
+
+
+/* =================================== */
+
+
+.registration-section, .registration-section .panel-body {
+    padding: 0;
+    margin-top: 20px;
+}
+
+.registration-section-header {
+    padding: 10px;
+    text-align: center;
+    font-size: 2rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+.registration-steps {
+    padding: 20px;
+}
+

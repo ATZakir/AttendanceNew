@@ -1,0 +1,204 @@
+﻿
+@{
+    ViewBag.Title = "Country";
+    Layout = "~/Views/Shared/_AdminViewLayout.cshtml";
+}
+
+<div class="col-xs-12 col-sm-12" ng-controller="countryCtrl">
+    <span ng-init="init(@ViewBag.permission)" style="visibility: hidden" > something </span>
+
+    @* ************ FORM - SECTION (Start) *************** *@
+    <div class="panel panel-default">
+        <div class="panel-heading text-lg text-bold text-uppercase">Country</div>
+        <div class="panel-body  border-green pt pb">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12">
+                    <div class="form-horizontal">
+                        <form name="form" novalidate>
+                            <div class="form-group" show-errors>
+                                <div class="padding-right-zero">
+                                    <label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+                                        <b class="starStyle">*</b> Code
+                                    </label>
+                                </div>
+                                <div class="col-xs-12 col-sm-5 col-md-5">
+                                    <input class="form-control" type="text" name="Id" ng-model="Id" required ng-maxlength="5" focus-on="focusMe" @*ng-disabled="desableIdField"*@ />
+                                    <b class="help-block" ng-if="form.Id.$error.required">
+                                        Code is Required
+                                    </b>
+
+                                    <b class="help-block" ng-if="form.Id.$error.maxlength">Too large</b>
+
+                                </div>
+                            </div>
+                            <div class="form-group" show-errors id="searchdivid">
+                                <div class=" padding-right-zero">
+                                    <label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+                                        <b class="starStyle">*</b>Name
+                                    </label>
+                                </div>
+                                <div class="col-xs-12 col-sm-5 col-md-5">
+                                    <input class="form-control" type="text" name="Name" ng-model="Name" required ng-maxlength="50" focus-on="focusMe" />
+                                    <b class="help-block" ng-if="form.Name.$error.required">
+                                        Name is required
+                                    </b>
+
+                                    <b class="help-block" ng-if="form.Name.$error.maxlength">Too large</b>
+
+                                </div>
+                            </div>
+                            <div class="form-group" show-errors>
+                                <div class=" padding-right-zero">
+                                    <label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+                                        <b class="starStyle">*</b> Dialing Code
+                                    </label>
+                                </div>
+                                <div class="col-xs-12 col-sm-5 col-md-5">
+                                    <input class="form-control" type="text" name="CountryCode" ng-model="CountryCode" required ng-maxlength="50" />
+                                    <b class="help-block" ng-if="form.CountryCode.$error.required">Dialing Code is required</b>
+                                    <b class="help-block" ng-if="form.CountryCode.$error.maxlength">Dialing Code too large</b>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-md-offset-3 col-sm-offset-3 col-xs-12 col-sm-8 col-md-8  padding-right-zero">
+                                    <input type="button" ng-click="addCountry()" class="btn btn-primary" value=@Resources.ResourceCommon.LblSave />
+                                    <input type="button" ng-click="reset()" class="btn btn-default" value=@Resources.ResourceCommon.LblReset />
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @* ************ FORM - SECTION (End)*************** *@
+
+
+
+    @* ************ POP-UP MODEL (Start)*************** *@
+    <div class="row">
+        <div class="col-xs-12 col-sm-3 col-md-3">
+            <modal title='Success' visible="showModalforSearch">
+                <alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
+                <form name="form.update" role="form">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-12">
+                            <span>{{messageModalObj.message}}</span>
+                        </div>
+                    </div>
+                </form>
+            </modal>
+        </div>
+    </div>
+    @* ************ POP-UP MODEL (End)*************** *@
+
+
+
+
+
+    @* ************ TABLE - SECTION (Start)*************** *@
+
+    <div class="panel panel-default">
+        <div class="panel-heading text-lg text-bold text-uppercase">Country List</div>
+        <div class="panel-body border-green  pt pb">
+            <div class="row mb">
+                <div class="col-sm-8 padding-left-zero">
+                    <div class="col-sm-4">
+                        <input type="text" ng-model="SearchText" placeholder='Search Here' class="form-control"/>
+                    </div>
+                    <div class="col-sm-8 text-center-vertical">
+                        Filtered <b>{{ filtered.length }}</b> of <b>{{ allCountryFromDb.length}}</b> country
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group pull-right">
+                        page size:
+                        <label>
+                            <select ng-model="itemsPerPage" class="form-control">
+                                <option ng-value="1">1</option>
+                                <option ng-value="5">5</option>
+                                <option ng-value="10">10</option>
+                                <option ng-value="15">15</option>
+                                <option ng-value="30">30</option>
+                                <option ng-value="50">50</option>
+                                <option ng-value="100">100</option>
+                            </select>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12" ng-show="filtered.length > 0">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Code <a ng-click="sort_by('Name');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                    <th>Name <a ng-click="sort_by('Code');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                    <th>Dialing Code <a ng-click="sort_by('Code');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                    <th>@Resources.ResourceCommon.LblEdit </th>
+                                    <th>@Resources.ResourceCommon.LblDelete </th>
+                                </tr>
+                            </thead>
+                           
+                            <tbody>
+                            <tr ng-class="{'selected':data == selectedRow}" 
+                                ng-repeat="data in filtered = (allCountryFromDb  | filter:SearchText | orderBy : predicate :reverse) | limitTo: itemsPerPage : (currentPage - 1) * itemsPerPage">
+                               
+                                <td>{{data.Id }}</td>
+                                <td>{{data.Name }}</td>
+                                <td>{{data.Code }}</td>
+                                <td><input type="button" value="Edit" class="btn btn-info btn-sm" ng-click="populateCountry(data)"/></td>
+                                <td>
+                                    <input type="button" value="Delete" class="btn btn-danger btn-sm" 
+                                           ng-bootbox-confirm='Are you sure to delete this record?'
+                                           ng-bootbox-confirm-action="deleteCountry(data.Id)" 
+                                           ng-bootbox-confirm-action-cancel/>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="pull-left">
+                                <br />
+                                <pre>Page: {{currentPage}}/{{numPages}}</pre>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="pull-right">
+                                <ul uib-pagination total-items="filtered.length" items-per-page="itemsPerPage" ng-model="currentPage" max-size="5" boundary-links="true" num-pages="numPages" boundary-link-numbers="true" rotate="false"></ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-xs-12 col-sm-12 col-md-12" ng-show="filtered.length == 0">
+                <div class="col-xs-12 col-sm-12 col-md-12 alert alert-danger">
+                    No Country Found
+                </div>
+            </div>
+        </div>
+    </div>
+    @* ************ TABLE - SECTION (End)*************** *@
+    
+    
+    @*<button class="btn btn-primary" ng-click="showForm()">Create Account</button>*@
+
+</div>
+
+
+@* ************ SCRIPT - SECTION (Start) *************** *@
+
+
+
+
+@section scripts{
+    
+    <script src="~/App/services/CountryService.js"></script>
+    <script src="~/App/Controller/CountryController.js"></script>
+
+}

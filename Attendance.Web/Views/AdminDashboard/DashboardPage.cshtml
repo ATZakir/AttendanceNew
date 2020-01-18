@@ -1,0 +1,327 @@
+﻿
+@{
+	ViewBag.Title = "Homepage";
+	Layout = "~/Views/Shared/_AdminViewLayout.cshtml";
+}
+<style>
+	.attendance-summary-content .panel-heading {
+		font-size: .9rem;
+		text-align: center;
+	}
+
+	.attendance-summary-content .panel-body {
+		font-size: 1.5rem;
+		font-weight: bolder;
+		padding: 5px 0;
+		text-align: center;
+	}
+
+	.btn-refresh-icon {
+		padding: 0 10px;
+		font-size: 13px;
+		height: 25px;
+	}
+
+	.table.attandance-table thead > tr > th {
+		padding: 3px 0px;
+		font-size: 12px;
+		text-align: center;
+		font-family: 'Oswald', sans-serif;
+		font-weight: 600;
+	}
+
+	.table.attandance-table tbody > tr > td {
+		padding: 3px 0px;
+		font-size: 12px;
+		text-align: center;
+		/*font-family: 'Oswald', sans-serif;*/
+		font-weight: 500;
+	}
+</style>
+<div class="schoolDashboard" ng-controller="schoolDashboardController">
+
+	<div class="row gutter-sm p-1">
+		<div class="col-md-6">
+			<div class="panel panel-info attendanceSummary-block">
+				<div class="panel-heading">
+					Today's Attendance Summary
+				</div>
+				<div class="panel-body p-0 attendance-summary-content">
+					<div class="container-fluid">
+						<div class="row gutter-sm">
+							<div class="col-md-4">
+								<div class="panel panel-success">
+									<div class="panel-heading">
+										Employee
+									</div>
+                                    <div class="panel-body">
+                                        {{TotalEmployee}}
+                                    </div>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="panel panel-success">
+									<div class="panel-heading">
+										Present
+									</div>
+                                    <div class="panel-body">
+                                        {{PresentEmployee}}
+                                    </div>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="panel panel-success">
+									<div class="panel-heading">
+										In Training
+									</div>
+                                    <div class="panel-body">
+                                        {{InTrainingEmployee}}
+                                    </div>
+								</div>
+							</div>
+						</div>
+						<div class="row gutter-sm">
+							<div class="col-md-4">
+								<div class="panel panel-success">
+									<div class="panel-heading">
+										Absent
+									</div>
+                                    <div class="panel-body">
+                                        {{AbsentEmployee}}
+                                    </div>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="panel panel-success">
+									<div class="panel-heading">
+										Leave
+									</div>
+                                    <div class="panel-body">
+                                        {{LeaveEmployee}}
+                                    </div>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="panel panel-success">
+									<div class="panel-heading">
+										On Duty
+									</div>
+                                    <div class="panel-body">
+                                        {{OnDutyEmployee}}
+                                    </div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-6">
+			<div class="panel panel-info">
+				<div class="panel-heading">
+					Daily Attendance Time Log
+				</div>
+                <div class="panel-body p-0 attendance-summary-content">
+                    <div class="container-fluid">
+                        <div class="row gutter-sm">
+                            <div class="col-md-4" ng-repeat="emp in attendenceLogList">
+                                <div class="panel panel-success">
+                                    <div class="panel-heading">
+                                        {{emp.EmployeeName}}
+                                    </div>
+                                    <div class="panel-body">
+                                        {{emp.InTime}} - {{emp.InTime != emp.OutTime ? emp.OutTime:''}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row p-1">
+		<div class="panel panel-info">
+			<div class="panel-heading">
+				<div class="container-fluid">
+					<div class="row no-gutter">
+						<div class="col-md-6">
+							Monthly Employee Wise Attendance Sheet
+						</div>
+						<div class="col-md-6 text-right">
+							<div class="form-inline">
+								<div class="form-group">
+									<label>Year: </label>
+									<input type="text" class="form-control" placeholder="Year" ng-model="year" style="width: 100px;">
+								</div>
+								<div class="form-group">
+									<label>Month: </label>
+									<input type="text" class="form-control" placeholder="Month" ng-model="month" style="width: 100px;">
+								</div>
+								<button type="submit" ng-click="loadAttendanceSummery()" class="btn btn-primary btn-refresh-icon">
+									<span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="panel-body p-1">
+				<div class="table-responsive-md">
+					<table class="table table-bordered table-striped attandance-table m-0">
+						<thead>
+                            <tr>
+                                <th>Emp.ID</th>
+                                <th>Employee Name</th>
+                                <th>School Name</th>
+                                <th>D1</th>
+                                <th>D2</th>
+                                <th>D3</th>
+                                <th>D4</th>
+                                <th>D5</th>
+                                <th>D6</th>
+                                <th>D7</th>
+                                <th>D8</th>
+                                <th>D9</th>
+                                <th>D10</th>
+                                <th>D11</th>
+                                <th>D12</th>
+                                <th>D13</th>
+                                <th>D14</th>
+                                <th>D15</th>
+                                <th>D16</th>
+                                <th>D17</th>
+                                <th>D18</th>
+                                <th>D19</th>
+                                <th>D20</th>
+                                <th>D21</th>
+                                <th>D22</th>
+                                <th>D23</th>
+                                <th>D24</th>
+                                <th>D25</th>
+                                <th>D26</th>
+                                <th>D27</th>
+                                <th>D28</th>
+                                <th>D29</th>
+                                <th>D30</th>
+                                <th>D31</th>
+                                <th>TP</th>
+                                <th>TA</th>
+                                <th>TL</th>
+                                <th>P%</th>
+                            </tr>
+						</thead>
+						<tbody>
+                            <tr ng-repeat="emp in attendenceList">
+                                <td>{{emp.EmployeeId}}</td>
+                                <td>{{emp.EmployeeName}}</td>
+                                <td>{{emp.SchoolName}}</td>
+                                <td>{{emp.D1}}</td>
+                                <td>{{emp.D2}}</td>
+                                <td>{{emp.D3}}</td>
+                                <td>{{emp.D4}}</td>
+                                <td>{{emp.D5}}</td>
+                                <td>{{emp.D6}}</td>
+                                <td>{{emp.D7}}</td>
+                                <td>{{emp.D8}}</td>
+                                <td>{{emp.D9}}</td>
+                                <td>{{emp.D10}}</td>
+                                <td>{{emp.D11}}</td>
+                                <td>{{emp.D12}}</td>
+                                <td>{{emp.D13}}</td>
+                                <td>{{emp.D14}}</td>
+                                <td>{{emp.D15}}</td>
+                                <td>{{emp.D16}}</td>
+                                <td>{{emp.D17}}</td>
+                                <td>{{emp.D18}}</td>
+                                <td>{{emp.D19}}</td>
+                                <td>{{emp.D20}}</td>
+                                <td>{{emp.D21}}</td>
+                                <td>{{emp.D22}}</td>
+                                <td>{{emp.D23}}</td>
+                                <td>{{emp.D24}}</td>
+                                <td>{{emp.D25}}</td>
+                                <td>{{emp.D26}}</td>
+                                <td>{{emp.D27}}</td>
+                                <td>{{emp.D28}}</td>
+                                <td>{{emp.D29}}</td>
+                                <td>{{emp.D30}}</td>
+                                <td>{{emp.D31}}</td>
+                                <td>{{emp.TP}}</td>
+                                <td>{{emp.TA}}</td>
+                                <td>{{emp.TL}}</td>
+                                <td>{{emp.PP}}</td>
+                            </tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="d-inline">
+					<button class="btn btn-link"> Print</button>
+				</div>
+				<div class="d-inline pull-right pt-1" style="color: #489e70;">
+                    <p> P=Present, A=Absent, LP=Late Present, EO=Early Out, ELP=Early Out with Late Present, LA=Leave, T=In Training, D=Office Duty, HD=Holiday Duty, H=Holiday</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+@section scripts
+{
+	<script type="text/javascript">
+
+		app.factory('focus',
+			function($rootScope, $timeout) {
+				return function(name) {
+					$timeout(function() {
+						$rootScope.$broadcast('focusOn', name);
+					});
+				};
+			});
+
+		app.factory('schoolDashboardService',
+			[
+				'$http', function($http) {
+					return {
+                        getAttendanceSummery: function (schoolId, year, month, day) {
+                            return $http.get('/EmployeeAttendance/AttendanceSummary?schoolId=' + schoolId + '&year=' + year + '&month=' + month + '&day=' + day);
+                        },
+                        getAttendanceLog: function (schoolId) {
+                            return $http.get('/EmployeeAttendance/AttendanceLog?schoolId=' + schoolId);
+                        },
+					};
+				}
+			]);
+		app.controller('schoolDashboardController',
+			function($scope, $timeout, $http, focus, $location, $anchorScroll, schoolDashboardService, $log) {
+                $scope.schoolId = '@ViewBag.schoolId';
+                $scope.year = new Date().getFullYear();
+                $scope.month = new Date().getMonth()+1;
+                $scope.day = new Date().getDate();
+                
+                $scope.loadAttendanceLog = function () {
+                    $scope.attendenceLogList = [];
+                    schoolDashboardService.getAttendanceLog($scope.schoolId)
+                        .then(function onSuccess(response) {
+                            $scope.attendenceLogList = response.data.AttendenceLogList;
+                        });
+                };
+                $scope.loadAttendanceLog();
+
+                $scope.loadAttendanceSummery = function () {
+                    $scope.attendenceList = [];
+                    schoolDashboardService.getAttendanceSummery($scope.schoolId, $scope.year, $scope.month, $scope.day)
+                        .then(function onSuccess(response) {
+                            $scope.TotalEmployee = response.data.TotalEmployee;
+                            $scope.PresentEmployee = response.data.PresentEmployee;
+                            $scope.AbsentEmployee = response.data.AbsentEmployee;
+                            $scope.LeaveEmployee = response.data.LeaveEmployee;
+                            $scope.OnDutyEmployee = response.data.OnDutyEmployee;
+                            $scope.InTrainingEmployee = response.data.InTrainingEmployee;
+                            $scope.attendenceList = response.data.AttendenceList;
+                        });
+                };
+                $scope.loadAttendanceSummery();
+			});
+	</script>
+}

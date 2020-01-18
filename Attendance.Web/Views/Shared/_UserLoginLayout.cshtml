@@ -1,0 +1,72 @@
+﻿@using Resources;
+<!DOCTYPE html>
+<html ng-app="app" lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="author" content="Accentech Pvt. Ltd.">
+	<meta name="description" content="">
+	<meta name="keywords" content="Attendance Software">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Attendance</title>
+	<link rel="shortcut icon" type="image/ico" href="~/favicon.ico" />
+	@Styles.Render("~/Content/userMainCSS")
+	@Scripts.Render("~/bundles/modernizr")
+</head>
+<body class="d-flex flex-column">
+	<!-- Navigation -->
+	<nav class="navbar navbar-expand-lg navbar-light bg-light static-top mb-5 shadow mainmenu-area"
+		 data-spy="affix" data-offset-top="200">
+		<div class="container">
+			<a class="navbar-brand" href="/">Attendance</a>
+			@*<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse" id="navbarResponsive">
+					<ul class="navbar-nav ml-auto">
+						<li class="nav-item active">
+							<a class="nav-link" href="#">
+								Home
+								<span class="sr-only">(current)</span>
+							</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="#">About</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="#">Services</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="#">Contact</a>
+						</li>
+					</ul>
+				</div>*@
+		</div>
+	</nav>
+
+
+	<!-- Reder Sections -->
+
+	<div id="page-content">
+		@RenderBody()
+	</div>
+
+	<!--Reder Sections-End -->
+
+
+	<footer id="sticky-footer" class="py-4 bg-dark text-white-50">
+		<div class="container text-center">
+			<small>
+				Developed By:
+				<a href="http://accentechltd.com/">Accentech (Pvt.) Limited</a>.
+			</small>
+		</div>
+	</footer>
+
+	@Scripts.Render("~/bundles/userMainScripts")
+	@Scripts.Render("~/bundles/angularScripts")
+	<script src="~/Scripts/App/app.js"></script>
+	<script src="~/Scripts/App/Directive/CommonDirective.js"></script>
+	@RenderSection("scripts", required: false)
+</body>
+</html>

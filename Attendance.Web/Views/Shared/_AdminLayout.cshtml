@@ -1,0 +1,149 @@
+﻿@using Attendance.Web.Helpers
+<!DOCTYPE html>
+<html ng-app="app" lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="author" content="Accentech Pvt. Ltd.">
+	<meta name="description" content="">
+	<meta name="keywords" content="Attendance Software">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Attendance</title>
+	<link rel="shortcut icon" type="image/ico" href="~/favicon.ico" />
+	@Styles.Render("~/Content/adminMainCSS")
+	@Scripts.Render("~/bundles/modernizr")
+</head>
+<body class="d-flex flex-column" @*ng-controller="adminViewCtrl"*@>
+	<!-- Navigation -->
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top mb-3 shadow mainmenu-area"
+		 data-spy="affix" data-offset-top="200" ng-controller="navbarCtrl">
+		<div class="container">
+			<a class="navbar-brand" href="/">Attendance</a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarResponsive">
+				<ul class="navbar-nav mr-auto">
+
+					<li class="nav-item active">
+						@if (Attendance.Web.Helpers.UserSession.GetUserFromSession() != null)
+						{
+							var roleId = UserSession.GetUserFromSession().RoleId;
+							if (roleId == 1)
+							{
+								<a class="nav-link" href="/Admin">Home</a>
+							}
+							else
+							{
+								<a class="nav-link" href="/Admin/School">Home</a>
+							}
+						}
+					</li>
+
+					<li class="nav-item">
+						@if (Attendance.Web.Helpers.UserSession.GetUserFromSession() != null)
+						{
+							var roleId = UserSession.GetUserFromSession().RoleId;
+							if (roleId == 1)
+							{
+								@* 								<a class="nav-link" href="/Admin/Dashboard">Dashboard</a> *@
+								<a class="nav-link" href="/AdminDashboard/Homepage">Dashboard</a>
+							}
+							else
+							{
+								@* <a class="nav-link" href="/Admin/School/Dashboard">Dashboard</a> *@
+								<a class="nav-link" href="/AdminDashboard/Homepage">Dashboard</a>
+							}
+						}
+					</li>
+					
+					<li class="nav-item" ng-repeat="aModule in allModuleFromDb"
+						ng-class="{'active': aModule.Id == '@Session["selectedmoduleid"]'}">
+
+						<a class="nav-link" ng-href="/AdminDashboard/SubModules/{{aModule.Id}}">{{aModule.Name}}</a>
+
+					</li>
+				</ul>
+
+				@if (Attendance.Web.Helpers.UserSession.GetUserFromSession() != null)
+				{
+					<ul class="navbar-nav ml-auto">
+						<li class="nav-item dropdown">
+							<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								@Attendance.Web.Helpers.UserSession.GetUserFullNameFromSession()
+							</a>
+							<div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
+								<a class="dropdown-item" href="/Account/ViewChangePassword">Change Password</a>
+								<a class="dropdown-item" href="/Account/Logout">Logout</a>
+							</div>
+						</li>
+					</ul>
+				}
+			</div>
+		</div>
+	</nav>
+
+
+	<!-- Reder Sections -->
+
+	<div id="page-content">
+		<div class="container">
+			<div class="row">
+				@RenderBody()
+			</div>
+		</div>
+
+	</div>
+
+	<!--Reder Sections-End -->
+
+
+	<footer id="sticky-footer" class="py-4 bg-dark text-white-50">
+		<div class="container text-center">
+			<small>
+				Developed By:
+				<a href="http://accentechltd.com/">Accentech (Pvt.) Limited</a>.
+			</small>
+		</div>
+	</footer>
+
+	@Scripts.Render("~/bundles/userMainScripts")
+	@Scripts.Render("~/bundles/angularScripts")
+	<script src="~/Scripts/App/app.js"></script>
+	<script src="~/Scripts/App/Directive/CommonDirective.js"></script>
+
+
+	<script type="text/javascript">
+
+
+	app.factory('dashboardService', ['$http', function ($http) {
+			return {
+				getAllModule: function () {
+					return $http.get('/Module/GetModuleList/');
+				}
+			};
+		}
+	]);
+
+	app.controller('adminViewCtrl', function($scope, $http, dashboardService, $ngBootbox) {
+		var modileIdForStyle = '@Session["selectedmoduleid"]';
+		loadModules();
+
+
+		function loadModules() {
+			$scope.allModuleFromDb = [];
+			dashboardService.getAllModule().then(function onSuccess(response) {
+				$scope.allModuleFromDb = response.data;
+			}).catch(function onError(response) {
+				$ngBootbox.alert("Modules Not Found");
+			});
+
+		}
+	});
+
+	</script>
+
+
+	@RenderSection("scripts", required: false)
+</body>
+</html>

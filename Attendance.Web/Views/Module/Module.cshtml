@@ -1,0 +1,348 @@
+﻿
+@{
+    ViewBag.Title = "Module";
+    Layout = "~/Views/Shared/_AdminViewLayout.cshtml";
+}
+
+<div class="col-xs-12 col-sm-12" ng-controller="moduleCtrl">
+
+    @* ************ FORM - SECTION (Start)*************** *@
+    <div class="panel panel-default">
+        <div class="panel-heading text-lg text-bold text-uppercase">Module</div>
+        <div class="panel-body  border-green pt pb">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12">
+                    <div class="form-horizontal">
+                        <form name="form" novalidate>
+                            <div class="form-group" show-errors id="searchdivid">
+                                <div class=" padding-right-zero">
+                                    <label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+                                        <b class="starStyle">*</b> Module
+                                    </label>
+                                </div>
+                                <div class="col-xs-12 col-sm-5 col-md-5">
+                                    <input class="form-control" type="text" name="Name" ng-model="Name" required ng-maxlength="50" focus-on="focusMe" />
+                                    <b class="help-block" ng-if="form.Name.$error.required">
+                                        Module Required
+                                    </b>
+                                    <b class="help-block" ng-if="form.Name.$error.maxlength">Too Large</b>
+                                </div>
+                            </div>
+
+                            <div class="form-group" show-errors id="searchdivid">
+                                <div class=" padding-right-zero">
+                                    <label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+                                        Image Name
+                                    </label>
+                                </div>
+                                <div class="col-xs-12 col-sm-5 col-md-5">
+                                    <input class="form-control" type="text" name="ImageName" ng-model="ImageName" ng-maxlength="50" focus-on="focusMe" />
+                                    <b class="help-block" ng-if="form.ImageName.$error.maxlength">Too Large</b>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class=" padding-right-zero">
+                                    <label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+                                        Ordering
+                                    </label>
+                                </div>
+                                <div class="col-xs-12 col-sm-5 col-md-5">
+                                    <input class="form-control" type="number" name="Ordering" ng-model="Ordering" min="0" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="padding-right-zero">
+                                    <label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+                                        Active
+                                    </label>
+                                </div>
+                                <div class="col-xs-3 col-sm-9 col-md-9 padding-left-zero">
+                                    <div class="col-xs-12 col-sm-2 col-md-2">
+                                        <input class="form-control" type="checkbox" ng-model="IsActive" checked />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-offset-3 col-sm-offset-3 col-xs-12 col-sm-8 col-md-8  padding-right-zero">
+                                    <input type="button" ng-click="addModule()" class="btn btn-primary" value="Save" /> <input type="button" ng-click="reset()" class="btn btn-default" value="Reset" />
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @* ************ FORM - SECTION (End)*************** *@
+
+
+
+    @* ************ POP-UP MODEL (Start)*************** *@
+    <div class="row">
+        <div class="col-xs-12 col-sm-3 col-md-3">
+            <modal title='Success' visible="showModalforSearch">
+                <alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
+                <form name="form.update" role="form">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-12">
+                            <span>{{messageModalObj.message}}</span>
+                        </div>
+                    </div>
+                </form>
+            </modal>
+        </div>
+    </div>
+    @* ************ POP-UP MODEL (End)*************** *@
+
+
+
+    @* ************ TABLE - SECTION (Start)*************** *@
+    <div class="panel panel-default">
+        <div class="panel-heading text-lg text-bold text-uppercase">Module List</div>
+        <div class="panel-body border-green  pt pb">
+            <div class="row mb">
+                <div class="col-sm-8 padding-left-zero">
+                    <div class="col-sm-4">
+                        <input type="text" ng-model="SearchText" placeholder='Search Here' class="form-control" />
+                    </div>
+                    <div class="col-sm-8 text-center-vertical">
+                        Filtered <b>{{ filtered.length }}</b> of <b>{{ allModuleFromDb.length}}</b> Total Module
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group pull-right">
+                        page size:
+                        <label>
+                            <select ng-model="itemsPerPage" class="form-control">
+                                <option ng-value="1">1</option>
+                                <option ng-value="5">5</option>
+                                <option ng-value="10">10</option>
+                                <option ng-value="15">15</option>
+                                <option ng-value="30">30</option>
+                                <option ng-value="50">50</option>
+                                <option ng-value="100">100</option>
+                            </select>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12" ng-show="filtered.length > 0">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Module <a ng-click="sort_by('Name');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                    <th>Image Name </th>
+                                    <th>Ordering </th>
+                                    <th>Is Active <a ng-click="sort_by('IsActive');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                    <th>@Resources.ResourceCommon.LblEdit </th>
+                                    <th>@Resources.ResourceCommon.LblDelete </th>
+                                </tr>
+                            </thead>
+                            <tfoot>
+                                <tr>
+                                    <th>Module <a ng-click="sort_by('Name');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                    <th>Image Name </th>
+                                    <th>Ordering </th>
+                                    <th>Is Active <a ng-click="sort_by('IsActive');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                    <th>@Resources.ResourceCommon.LblEdit </th>
+                                    <th>@Resources.ResourceCommon.LblDelete </th>
+                                </tr>
+                            </tfoot>
+                            <tbody>
+                            <tr ng-class="{'selected':data == selectedRow}" 
+                                ng-repeat="data in filtered = (allModuleFromDb  | filter:SearchText ) | startFrom:(currentPage-1)*entryLimit |  limitTo: itemsPerPage : (currentPage - 1) * itemsPerPage">
+                                    <td>{{data.Name }}</td>
+                                    <td>{{data.ImageName }}</td>
+                                    <td>{{data.Ordering }}</td>
+                                    <td>{{data.IsActive }}</td>
+
+                                    <td><input type="button" value=Edit class="btn btn-info btn-sm" ng-click="populateModule(data)" /></td>
+                                    <td>
+                                        <input type="button" value=Delete class="btn btn-danger btn-sm" ng-bootbox-confirm='Are you sure to delete this record?'
+                                               ng-bootbox-confirm-action="deleteModule(data)" ng-bootbox-confirm-action-cancel="confirmCallbackCancel(attr1, attr2)" />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="pull-left">
+                        <br />
+                        <pre>Page: {{currentPage}}/{{numPages}}</pre>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="pull-right">
+                        <ul uib-pagination total-items="filtered.length" items-per-page="itemsPerPage" ng-model="currentPage" max-size="5" boundary-links="true" num-pages="numPages" boundary-link-numbers="true" rotate="false"></ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-12" ng-show="filtered.length == 0">
+                <div class="col-xs-12 col-sm-12 col-md-12 alert alert-danger">
+                    No Module Found
+                </div>
+            </div>
+        </div>
+    </div>
+    @* ************ TABLE - SECTION (End)*************** *@
+
+</div>
+
+
+
+@section scripts
+{
+
+    <script type="text/javascript">
+        app.filter('startFrom',
+            function() {
+                return function(input, start) {
+                    if (input) {
+                        start = +start; //parse to int
+                        return input.slice(start);
+                    }
+                    return [];
+                }
+            });
+        app.factory('focus',
+            function($rootScope, $timeout) {
+                return function(name) {
+                    $timeout(function() {
+                        $rootScope.$broadcast('focusOn', name);
+                    });
+                };
+            });
+        app.factory('moduleService',
+            [
+                '$http', function($http) {
+
+                    return {
+                        saveModule: function(module) {
+                            return $http({
+                                url: '/Module/CreateModule',
+                                method: 'POST',
+                                data: module
+                            })
+                        },
+                        getModule: function(id) {
+                            return $http.get('/Module/GetModule/' + id);
+                        },
+                        getAllModule: function() {
+                            return $http.get('/Module/GetAllModuleList');
+                        },
+                        deleteModule: function(module) {
+                            return $http({
+                                url: '/Module/DeleteModule',
+                                method: 'POST',
+                                data: module
+                            })
+                        }
+                    };
+                }
+            ]);
+        app.controller('moduleCtrl',
+            function($scope, $timeout, $http, focus, $location, $anchorScroll, moduleService, $log, $ngBootbox) {
+                $scope.messageModalObj = {};
+                $scope.messageModalObj.message = '';
+                loadAllModule();
+                $scope.showModalforSearch = false;
+                // Add a new module
+                $scope.addModule = function() {
+                    $scope.$broadcast('show-errors-check-validity');
+                    if ($scope.form.$valid) {
+                        var module = {};
+                        module["Id"] = $scope.Id;
+                        //module["DoctorId"] = $scope.Id;
+                        module["Name"] = $scope.Name;
+                        module["ImageName"] = $scope.ImageName;
+                        module["Ordering"] = $scope.Ordering;
+                        module["IsActive"] = $scope.IsActive;
+
+                        moduleService.saveModule(module)
+                            .then(function onSuccess(response) {
+                                loadAllModule();
+                                $scope.messageModalObj.message = response.data.message;
+                                $scope.showModalforSearch = true;
+                                $timeout(function() { $scope.showModalforSearch = false; }, 3000);
+                                $scope.reset();
+
+                            })
+                            .catch(function onError(response) {
+                                $ngBootbox.alert('Error In Saving');
+                            });
+                    }
+                };
+                // Populate module
+                $scope.selectedRow = null;
+                $scope.populateModule = function(module) {
+                    $scope.selectedRow = module;
+                    $scope.Id = module.Id;
+                    $scope.Name = module.Name;
+                    $scope.ImageName = module.ImageName;
+                    $scope.Ordering = module.Ordering;
+                    $scope.IsActive = module.IsActive;
+                    $location.hash('searchDivId');
+                    $anchorScroll();
+                    focus('focusMe');
+                }
+
+                $scope.reset = function() {
+                    $scope.$broadcast('show-errors-reset');
+                    $scope.Id = '';
+                    $scope.Name = '';
+                    $scope.ImageName = '';
+                    $scope.Ordering = '';
+                }
+
+                $scope.deleteModule = function(module) {
+                    moduleService.deleteModule(module)
+                        .then(function onSuccess(response) {
+                            $scope.messageModalObj.message = response.data.message;
+                            $scope.showModalforSearch = true;
+                            $timeout(function() { $scope.showModalforSearch = false; }, 3000);
+                            loadAllModule();
+                        })
+                        .catch(function onError(response) {
+                            $ngBootbox.alert('Error In delete');
+                        });
+                }
+
+                // Load load All Module
+                function loadAllModule() {
+                    $scope.allModuleFromDb = [];
+                    moduleService.getAllModule()
+                        .then(function onSuccess(response) {
+                            $scope.allModuleFromDb = response.data;
+                        })
+                        .catch(function onError(response) {
+                            $ngBootbox.alert('Error In Loading');
+                        });
+                }
+
+
+                $scope.currentPage = 1; //current page
+                $scope.itemsPerPage = 5; //max no of items to display in a page
+                $scope.filteredItems = $scope.allModuleFromDb.length; //Initially for no filter
+                $scope.totalItems = $scope.allModuleFromDb.length;
+                //$scope.maxSize = 15;
+
+                $scope.setPage = function (pageNo) {
+                    $scope.currentPage = pageNo;
+                };
+                $scope.filter = function () {
+                    $timeout(function () {
+                        $scope.filteredItems = $scope.filtered.length;
+                    }, 9000);
+                };
+                $scope.sort_by = function (predicate) {
+                    $scope.predicate = predicate;
+                    $scope.reverse = !$scope.reverse;
+                };
+            });
+    </script>
+}

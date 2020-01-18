@@ -1,0 +1,66 @@
+﻿<!DOCTYPE html>
+<html ng-app="app" lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="author" content="Accentech Pvt. Ltd.">
+	<meta name="description" content="">
+	<meta name="keywords" content="HTML,CSS,XML,JavaScript, ASP.NET MVC">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher's Attendance</title>
+	<link rel="shortcut icon" type="image/ico" href="~/favicon.ico" />
+	@* <link href="~/Content/Site.css" rel="stylesheet"/> *@
+	@Styles.Render("~/Content/userMainCSS")
+	@Scripts.Render("~/bundles/modernizr")
+	<link href="~/Content/landingPage.css" rel="stylesheet" />
+
+</head>
+<body data-spy="scroll" data-target=".mainmenu-area">
+<div id="container">
+		<div id="header">
+			<!-- Navigation -->
+			<nav class="navbar navbar-expand-lg navbar-light static-top shadow Landing-page-navbar"
+			     data-spy="affix" data-offset-top="200">
+				<div class="container-fluid">
+					<div class="row w-100 h-100">
+						<div class="col-md-6">
+							<a class="navbar-brand" href="/">Attendance</a>
+						</div>
+						<div class="col-md-6 m-auto title-block">
+							<span class="title">Teacher's Attendance System</span>
+						</div>
+					</div>
+				</div>
+			</nav>
+			<header class="at-landing-page-header">
+				<img src="~/Content/Images/landing-page-banner.jpg" alt="banner image" class="banner-image" />
+			</header>
+		</div>
+		<div id="body">
+			<!-- Reder Sections -->
+			<div id="page-content">
+				@RenderBody()
+			</div>
+		</div>
+		<div id="footer">
+
+			<footer id="sticky-footer" class="py-4 bg-dark text-white-50">
+				<div class="container text-center">
+					<small>
+						Developed By:
+						<a href="http://accentechltd.com/">Accentech (Pvt.) Limited</a>.
+					</small>
+				</div>
+			</footer>
+		</div>
+	</div>
+
+
+	@Scripts.Render("~/bundles/mainScripts")
+	@Scripts.Render("~/bundles/angularScripts")
+	@* @Scripts.Render("~/bundles/appScript") *@
+	<script src="~/Scripts/App/app.js"></script>
+	<script src="~/Scripts/App/Directive/CommonDirective.js"></script>
+	@RenderSection("scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,403 @@
+﻿
+@{
+    ViewBag.Title = @Resources.ResourceDutyShift.LblDutyShift;
+    Layout = "~/Views/Shared/_AdminViewLayout.cshtml";
+}
+
+<div class="col-xs-12 col-sm-12" ng-controller="dutyShiftCtrl">
+
+    @* ************ FORM - SECTION (Start)*************** *@
+    <div class="panel panel-default">
+        <div class="panel-heading text-lg text-bold text-uppercase">@Resources.ResourceDutyShift.LblDutyShift</div>
+        <div class="panel-body  border-green pt pb">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12">
+                    <div class="form-horizontal">
+                        <form name="form" novalidate>
+                         
+                            <div class="form-group">
+                                <div class=" padding-right-zero">
+                                    <label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+                                        @Resources.ResourceDutyShift.LblDutyShift
+                                    </label>
+                                </div>
+                                <div class="col-xs-12 col-sm-5 col-md-5">
+                                    <select data-ng-model="DutyShiftMasterId" class="form-control"
+                                            data-ng-options="c.Id as c.Name for c in allDutyShiftMasterFromDb
+                                            | orderBy: 'Name'" name="DutyShiftMasterId">
+                                        <option value="">@Resources.ResourceDutyShift.LblSelectDutyShift</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class=" padding-right-zero">
+                                    <label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+                                        @Resources.ResourceDutyShift.LblSchool
+                                    </label>
+                                </div>
+                                <div class="col-xs-12 col-sm-5 col-md-5">
+                                    <select data-ng-model="SchoolId" class="form-control"
+                                            data-ng-options="c.Id as c.Name for c in allSchoolFromDb
+                                            | orderBy: 'Name'" name="SchoolId">
+                                        <option value="">@Resources.ResourceSchool.LblSelectSchool</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class=" padding-right-zero">
+                                    <label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+                                        @Resources.ResourceDutyShift.LblInTime
+                                    </label>
+                                </div>
+                                <div class="col-xs-12 col-sm-5 col-md-5">
+                                    <input type="text" size="8" class="form-control" ng-model="InTime"
+                                           data-time-format="h:mm a" data-autoclose="1" placeholder="In Time"
+                                           data-container="body" bs-timepicker>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class=" padding-right-zero">
+                                    <label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+                                        @Resources.ResourceDutyShift.LblMaxInTime
+                                    </label>
+                                </div>
+                                <div class="col-xs-12 col-sm-5 col-md-5">
+                                    <input type="text" size="8" class="form-control" ng-model="MaxInTime"
+                                           data-time-format="h:mm a" data-autoclose="1"
+                                           placeholder="Max In Time" data-container="body" bs-timepicker>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class=" padding-right-zero">
+                                    <label class="col-xs-12 col-sm-3 col-md-3 control-label default-color">
+                                        @Resources.ResourceDutyShift.LblOutTime
+                                    </label>
+                                </div>
+                                <div class="col-xs-12 col-sm-5 col-md-5">
+                                    <input type="text" size="8" class="form-control" ng-model="OutTime"
+                                           data-time-format="h:mm a" data-autoclose="1" placeholder="Out Time"
+                                           data-container="body" bs-timepicker>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-offset-3 col-sm-offset-3 col-xs-12 col-sm-8 col-md-8  padding-right-zero">
+                                    <input type="button" ng-click="addDutyShift()" class="btn btn-primary" value=@Resources.ResourceCommon.LblSave />
+                                    <input type="button" ng-click="reset()" class="btn btn-default" value=@Resources.ResourceCommon.LblReset />
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @* ************ FORM - SECTION (End)*************** *@
+
+
+
+    @* ************ POP-UP MODEL (Start)*************** *@
+    <div class="row">
+        <div class="col-xs-12 col-sm-3 col-md-3">
+            <modal title='@Resources.ResourceCommon.MsgHeaderSuccess' visible="showModalforSearch">
+                <alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
+                <form name="form.update" role="form">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-12">
+                            <span>{{messageModalObj.message}}</span>
+                        </div>
+                    </div>
+                </form>
+            </modal>
+        </div>
+    </div>
+    @* ************ POP-UP MODEL (End)*************** *@
+
+
+
+    @* ************ TABLE - SECTION (Start)*************** *@
+    <div class="panel panel-default">
+        <div class="panel-heading text-lg text-bold text-uppercase">@Resources.ResourceDutyShift.LblDutyShift @Resources.ResourceCommon.lblList</div>
+        <div class="panel-body border-green  pt pb">
+            <div class="row mb">
+                <div class="col-sm-8 padding-left-zero">
+                    <div class="col-sm-4">
+                        <input type="text" ng-model="SearchText" placeholder='@Resources.ResourceCommon.TextBoxSearch_Watermark' class="form-control" />
+                    </div>
+                    <div class="col-sm-8 text-center-vertical">
+                        @Resources.ResourceCommon.lblFiltered <b>{{ filtered.length }}</b> of <b>{{ allDutyShiftFromDb.length}}</b> @Resources.ResourceDutyShift.LblTotalDutyShift
+                    </div>
+                </div>
+                <div class="col-sm-4 padding-right-zero">
+                    <div class="col-sm-6 text-center-vertical text-right">
+                        <label>@Resources.ResourceCommon.lblPageSize:</label>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <select ng-model="entryLimit" class="form-control">
+                            <option>3</option>
+                            <option>5</option>
+                            <option>10</option>
+                            <option>20</option>
+                            <option>50</option>
+                            <option>100</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12" ng-show="filtered.length > 0">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>@Resources.ResourceDutyShift.LblDutyShift <a ng-click="sort_by('DivisionName');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                    <th>@Resources.ResourceDutyShift.LblSchool <a ng-click="sort_by('DistrictName');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                    <th>@Resources.ResourceDutyShift.LblInTime <a ng-click="sort_by('Name');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                    <th>@Resources.ResourceDutyShift.LblMaxInTime <a ng-click="sort_by('IsActive');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                    <th>@Resources.ResourceDutyShift.LblOutTime <a ng-click="sort_by('IsActive');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                    <th>@Resources.ResourceCommon.LblEdit </th>
+                                    <th>@Resources.ResourceCommon.LblDelete </th>
+                                </tr>
+                            </thead>
+                            <tfoot>
+                            <tr>
+                                 <th>@Resources.ResourceDutyShift.LblDutyShift <a ng-click="sort_by('DutyShiftMasterName');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                <th>@Resources.ResourceDutyShift.LblSchool <a ng-click="sort_by('SchoolName');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                <th>@Resources.ResourceDutyShift.LblInTime <a ng-click="sort_by ('InTime');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                <th>@Resources.ResourceDutyShift.LblMaxInTime <a ng-click="sort_by('MaxInTime');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                <th>@Resources.ResourceDutyShift.LblOutTime <a ng-click="sort_by('OutTime');"><i class="glyphicon glyphicon-sort-by-alphabet"></i></a></th>
+                                <th>@Resources.ResourceCommon.LblEdit </th>
+                                <th>@Resources.ResourceCommon.LblDelete </th>
+                            </tr>
+                            </tfoot>
+                            <tbody>
+                                <tr ng-class="{'selected':data == selectedRow}" ng-repeat="data in filtered = (allDutyShiftFromDb | filter:SearchText | orderBy : predicate :reverse) | startFrom:(currentPage-1)*entryLimit | limitTo:entryLimit">
+                                    <td>{{data.DutyShiftMasterName }}</td>
+                                    <td>{{data.SchoolName }}</td>
+                                    <td>{{data.InTime | date:"hh:mm a"}}</td>
+                                    <td>{{data.MaxInTime | date:"hh:mm a"}}</td>
+                                    <td>{{data.OutTime | date:"hh:mm a"}}</td>
+
+                                    <td><input type="button" value="@Resources.ResourceCommon.LblEdit" class="btn btn-info btn-sm" ng-click="populateDutyShift(data)" /></td>
+                                <td>
+                                    <input type="button" value="@Resources.ResourceCommon.LblDelete" class="btn btn-danger btn-sm" ng-bootbox-confirm='@Resources.ResourceCommon.MsgConfirm_Delete'
+                                           ng-bootbox-confirm-action="deleteDutyShift(data)" ng-bootbox-confirm-action-cancel="confirmCallbackCancel(attr1, attr2)" />
+                                </td>
+                                    </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12" ng-show="filtered.length > 0">
+                    <div pagination="" max-size="15" page="currentPage" on-select-page="setPage(page)" boundary-links="true" total-items="filtered.length" items-per-page="entryLimit" class="pagination-small" previous-text="&laquo;" next-text="&raquo;"></div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-12" ng-show="filtered.length == 0">
+                <div class="col-xs-12 col-sm-12 col-md-12 alert alert-danger">
+                    @Resources.ResourceDutyShift.LblNoDutyShiftFound
+                </div>
+            </div>
+        </div>
+    </div>
+    @* ************ TABLE - SECTION (End)*************** *@
+
+</div>
+
+
+@section scripts{
+    <script type="text/javascript">
+    app.filter('startFrom', function () {
+        return function (input, start) {
+            if (input) {
+                start = +start; //parse to int
+                return input.slice(start);
+            }
+            return [];
+        }
+    });
+    app.factory('focus', function ($rootScope, $timeout) {
+        return function (name) {
+            $timeout(function () {
+                $rootScope.$broadcast('focusOn', name);
+            });
+        };
+    });
+    app.factory('dutyShiftService', ['$http', function ($http) {
+
+        return {
+            saveDutyShift: function (dutyShift) {
+                return $http({
+                    url: '/DutyShift/CreateDutyShift',
+                    method: 'POST',
+                    data: dutyShift
+                });
+            },
+            getDutyShift: function (id) {
+                return $http.get('/DutyShift/GetDutyShift/' + id);
+            },
+            getAllDutyShift: function () {
+                return $http.get('/DutyShift/GetDutyShiftList2');
+            },
+            getAllDutyShiftMaster: function () {
+                return $http.get('/DutyShiftMaster/GetDutyShiftMasterList');
+            },
+            
+            deleteDutyShift: function (dutyShift) {
+                return $http({
+                    url: '/DutyShift/DeleteDutyShift',
+                    method: 'POST',
+                    data: dutyShift
+                });
+            }
+        };
+    }]);app.controller('dutyShiftCtrl', function ($scope, $timeout, $http, focus, $location, $anchorScroll, dutyShiftService, $log, $ngBootbox) {
+        $scope.messageModalObj = {};
+        $scope.messageModalObj.message = '';
+        $scope.SchoolId = '@ViewBag.SchoolId';
+
+        loadAllDutyShift();
+        $scope.InTime = new Date();
+        $scope.MaxInTime = new Date();
+        $scope.OutTime = new Date();
+        $scope.showModalforSearch = false;
+        // Add a new dutyShift
+        $scope.addDutyShift = function () {
+            $scope.$broadcast('show-errors-check-validity');
+            if ($scope.form.$valid) {
+                var dutyShift = {};
+                dutyShift["Id"] = $scope.Id;
+                dutyShift["DutyShiftMasterId"] = $scope.DutyShiftMasterId;
+                dutyShift["SchoolId"] = $scope.SchoolId;
+                dutyShift["InTime"] = moment($scope.InTime).format('YYYY-MM-DD HH:mm:ss');
+                dutyShift["MaxInTime"] = moment($scope.MaxInTime).format('YYYY-MM-DD HH:mm:ss');
+                dutyShift["OutTime"] = moment($scope.OutTime).format('YYYY-MM-DD HH:mm:ss');
+
+                dutyShiftService.saveDutyShift(dutyShift)
+                .then(function onSuccess(response) {
+                    loadAllDutyShift();
+                    $scope.messageModalObj.message = response.data.message;
+                    $scope.showModalforSearch = true;
+                    $timeout(function () { $scope.showModalforSearch = false; }, 3000);
+                    $scope.reset();
+
+                })
+                .catch(function onError(response) {
+                    $ngBootbox.alert('@Resources.ResourceCommon.MsgErrorInSaving');
+                });
+            }
+        };
+        // Populate dutyShift
+        $scope.selectedRow = null;
+        $scope.populateDutyShift = function (dutyShift) {
+            $scope.selectedRow = dutyShift;
+            $scope.Id = dutyShift.Id;
+            $scope.DutyShiftMasterId = dutyShift.DutyShiftMasterId;
+            $scope.SchoolId = dutyShift.SchoolId;
+            $scope.InTime = dutyShift.InTime;
+            $scope.MaxInTime = dutyShift.MaxInTime;
+            $scope.OutTime = dutyShift.OutTime;
+            $location.hash('searchDivId');
+            $anchorScroll();
+            focus('focusMe');
+        }
+
+        $scope.reset = function () {
+            $scope.$broadcast('show-errors-reset');
+            $scope.Id = '';
+            $scope.DutyShiftMasterId = null;
+            $scope.SchoolId = null;
+            $scope.InTime = '';
+            $scope.MaxInTime = '';
+            $scope.OutTime = '';
+            $scope.selectedRow = null;
+        }
+
+        $scope.deleteDutyShift = function (dutyShift) {
+            dutyShiftService.deleteDutyShift(dutyShift)
+            .then(function onSuccess(response) {
+                $scope.messageModalObj.message = response.data.message;
+                $scope.showModalforSearch = true;
+                $timeout(function () { $scope.showModalforSearch = false; }, 3000);
+                loadAllDutyShift();
+            })
+            .catch(function onError(response) {
+                $ngBootbox.alert('@Resources.ResourceCommon.MsgNot_deleted');
+            });
+        }
+        // load AllDutyShift
+        function loadAllDutyShift() {
+            $scope.allDutyShiftFromDb = [];
+            $scope.allDutyShiftFromDbToDate = [];
+            dutyShiftService.getAllDutyShift()
+                .then(function onSuccess(response) {
+                    $scope.allDutyShiftFromDb = response.data;
+                    for (var i = 0; i < $scope.allDutyShiftFromDb.length; i++) {
+                        $scope.allDutyShiftFromDb[i].InTime =
+                            moment($scope.allDutyShiftFromDb[i].InTime, ('YYYY-MM-DD hh:mm a')).toDate();
+                        $scope.allDutyShiftFromDb[i].MaxInTime =
+                            moment($scope.allDutyShiftFromDb[i].MaxInTime, ('YYYY-MM-DD hh:mm a')).toDate();
+                        $scope.allDutyShiftFromDb[i].OutTime =
+                            moment($scope.allDutyShiftFromDb[i].OutTime, ('YYYY-MM-DD hh:mm a')).toDate();
+
+                        //$scope.allDutyShiftFromDbToDate.push({
+                        //    InTime: moment($scope.allDutyShiftFromDb[i].InTime, ('YYYY-MM-DD hh:mm a'))
+                        //        .toDate(),
+                        //    MaxInTime: moment($scope.allDutyShiftFromDb[i].MaxInTime, ('YYYY-MM-DD hh:mm a'))
+                        //        .toDate(),
+                        //    OutTime: moment($scope.allDutyShiftFromDb[i].OutTime, ('YYYY-MM-DD hh:mm a'))
+                        //        .toDate(),
+                        //    Id: $scope.allDutyShiftFromDb[i].PlayerId,
+                        //    DutyShiftMasterId: $scope.allDutyShiftFromDb[i].DutyShiftMasterId,
+                        //    SchoolId: $scope.allDutyShiftFromDb[i].SchoolId,
+                        //    DutyShiftMasterName: $scope.allDutyShiftFromDb[i].DutyShiftMasterName,
+                        //    SchoolName: $scope.allDutyShiftFromDb[i].SchoolName
+                        //});
+                        
+                    
+                    }
+                })
+                .catch(function onError(response) {
+                    $ngBootbox.alert('@Resources.ResourceCommon.MsgErrorInLoading');
+                });
+        }
+
+        // Load DutyShiftMaster
+        loadAllDutyShiftMaster();
+        function loadAllDutyShiftMaster() {
+            $scope.allDutyShiftMasterFromDb = [];
+            dutyShiftService.getAllDutyShiftMaster()
+                .then(function onSuccess(response) {
+                    $scope.allDutyShiftMasterFromDb = response.data;
+                })
+                .catch(function onError(response) {
+                    $ngBootbox.alert('@Resources.ResourceCommon.MsgErrorInLoading');
+                });
+        }
+
+        
+
+        $scope.currentPage = 1; //current page
+        $scope.entryLimit = 10; //max no of items to display in a page
+        $scope.filteredItems = $scope.allDutyShiftFromDb.length; //Initially for no filter
+        $scope.totalItems = $scope.allDutyShiftFromDb.length;
+        //$scope.maxSize = 15;
+
+        $scope.setPage = function (pageNo) {
+            $scope.currentPage = pageNo;
+        };
+        $scope.filter = function () {
+            $timeout(function () {
+                $scope.filteredItems = $scope.filtered.length;
+            }, 9000);
+        };
+        $scope.sort_by = function (predicate) {
+            $scope.predicate = predicate;
+            $scope.reverse = !$scope.reverse;
+        };
+    });</script>
+    }

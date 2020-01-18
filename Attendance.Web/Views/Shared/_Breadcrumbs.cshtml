@@ -1,0 +1,26 @@
+﻿@model List<Attendance.ClientModel.BreadcrumbModel>
+
+<div class="container-fluid">
+	<div class="row pr-3 pl-2">
+		<nav aria-label="breadcrumb" class="w-100">
+			<ol class="breadcrumb">
+				@foreach (var item in Model)
+				{
+					if (item.Link != "")
+					{
+					    <li class="breadcrumb-item">
+								<a href="@item.Link">@item.Name</a>
+					    </li>
+					}
+					else
+					{
+						<li class="breadcrumb-item active" aria-current="page">@item.Name</li>
+					}
+				    
+				}
+			</ol>
+		</nav>
+	</div>
+</div>
+
+

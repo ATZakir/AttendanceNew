@@ -1,0 +1,285 @@
+﻿@using Attendance.Web.Helpers
+@using Resources;
+<!DOCTYPE html>
+<html ng-app="app" ng-cloak lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>@ViewBag.Title</title>
+
+	@* <link href="~/Content/Site.css" rel="stylesheet" /> *@
+	@* @Styles.Render("~/Content/vendorCSS") *@
+	@Styles.Render("~/Content/adminCSS")
+
+	<style>
+		.tooltip {
+			z-index: 9999 !important;
+			display: none;
+			overflow-x: visible;
+		}
+
+		.tooltip-inner {
+			font-size: 15px;
+			background-color: rgb(0, 30, 78);
+			z-index: 9999;
+			height: 40px;
+			line-height: 30px;
+		}
+
+		.modal-header .close {
+			-webkit-appearance: none;
+			padding: 5px;
+			cursor: pointer;
+			background: #d2d2d2;
+			border: 0;
+			border-radius: 50%;
+			width: 30px;
+			height: 30px;
+			line-height: 20px;
+			font-size: 20px;
+		}
+	</style>
+
+	@Scripts.Render("~/bundles/modernizr")
+</head>
+<body ng-controller="adminViewCtrl">
+	@* ================   Top Navbar Start  ================= *@
+	<div class="brand clearfix md-bodr-buttom">
+		<a href="~/" class="logo">
+			<img src="~/Content/Images/Logo.png" class="img-responsive" alt="Digital Attendance" />
+		</a>
+
+		<div class="menu-btn">
+			<div class="btn-group visible-xs visible-sm">
+				<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="height:35px;">
+					<i class="fa fa-bars"></i>
+				</button>
+				<ul class="dropdown-menu pull-right home-menu-button" data-container="body">
+					<li>
+						@if (UserSession.GetUserFromSession() != null)
+						{
+							if (UserSession.GetUserFromSession().RoleId == 6)
+							{
+								<a href="~/Admin/School"> <i class="fa fa-home fa-2x"></i> Home</a>
+							}
+							else
+							{
+								<a href="~/Admin/Index"> <i class="fa fa-home fa-2x"></i> Home</a>
+							}
+						}
+						else
+						{
+							<a href=""> <i class="fa fa-home fa-2x"></i> Home</a>
+						}
+
+					</li>
+					<li>
+						<a href="~/AdminDashboard/DashboardPage"> <i class="fa fa-dashboard fa-2x"></i> Dashboard</a>
+					</li>
+					<li ng-repeat="aModule in allModuleFromDb">
+						<a href="/AdminDashboard/SubModules/{{aModule.Id}}">
+							<i ng-class="aModule.ImageName" class="fa-2x"></i> {{aModule.Name}}
+						</a>
+					</li>
+					<li role="separator" class="divider"></li>
+					<li>
+						<a href="#" style="font-weight:bold;">
+							<i class="fa fa-user ts-avatar" aria-hidden="true"></i>
+							@if (Attendance.Web.Helpers.UserSession.GetUserFromSession() != null)
+							{
+								@Attendance.Web.Helpers.UserSession.GetUserFullNameFromSession()
+
+							}
+							else
+							{
+								<b>[Login]</b>
+							}
+
+						</a>
+					</li>
+					<li><a href="/Account/ViewChangePassword">Change Password</a></li>
+					<li><a href="/Account/Logout">Logout</a></li>
+				</ul>
+			</div>
+		</div>
+
+		<ul class="nav navbar-nav ts-profile-nav">
+			<li class="ts-account">
+				<a href="#">
+					<i class="fa fa-user ts-avatar" aria-hidden="true"></i>
+					@if (Attendance.Web.Helpers.UserSession.GetUserFromSession() != null)
+					{
+						@Attendance.Web.Helpers.UserSession.GetUserFullNameFromSession()
+					}
+					else
+					{
+						<b>[Login]</b>
+					}
+					<i class="fa fa-angle-down hidden-side"></i>
+				</a>
+				<ul>
+					<li><a href="/Account/ViewChangePassword">Change Password</a></li>
+					@*<li><a href="#">Edit Account</a></li>*@
+					<li><a href="/Account/Logout">Logout</a></li>
+				</ul>
+			</li>
+		</ul>
+
+	</div>
+	@* ================   Top Navbar End  ==================== *@
+
+	@* ================   Side Navbar Start  ==================== *@
+	<div class="ts-main-content">
+		<nav class="ts-sidebar hidden-xs hidden-sm">
+			<ul class="ts-sidebar-menu menu">
+				<li title="home"
+					ng-class="{'menu-hover': '@Session["selectedmoduleid"]' == '99'}">
+
+					@if (UserSession.GetUserFromSession() != null)
+					{
+						if (UserSession.GetUserFromSession().RoleId == 6)
+						{
+							<a href="~/Admin/School" class="home" data-tooltip title="Home" data-placement="right"
+							   data-container="body">
+								<i class="fa fa-home fa-2x"></i>
+							</a>
+						}
+						else
+						{
+							<a href="~/Admin/Index" class="home" data-tooltip title="Home" data-placement="right"
+							   data-container="body">
+								<i class="fa fa-home fa-2x"></i>
+							</a>
+						}
+					}
+					else
+					{
+						<a href="" class="home" data-tooltip title="Home" data-placement="right"
+						   data-container="body">
+							<i class="fa fa-home fa-2x"></i>
+						</a>
+					}
+				</li>
+                <li title="dashboard" ng-class="{'menu-hover': '@Session["selectedmoduleid"]' == '98'}">
+                    @if (UserSession.GetUserFromSession().Level != 0)
+                    {
+                        <a href="~/AdminDashboard/DashboardPageAdmin" class="home" data-tooltip title="Dashboard" data-placement="right"
+                           data-container="body">
+                            <i class="fa fa-dashboard"></i>
+                        </a>
+                    }
+                    else
+                    {
+                        <a href="~/AdminDashboard/DashboardPage" class="home" data-tooltip title="Dashboard" data-placement="right"
+                           data-container="body">
+                            <i class="fa fa-dashboard"></i>
+                        </a>
+                    }
+                </li>
+
+				<li class="menu-container" ng-repeat="aModule in allModuleFromDb"
+					ng-class="{'menu-hover': aModule.Id == '@Session["selectedmoduleid"]'}">
+					<a href="/AdminDashboard/SubModules/{{aModule.Id}}"
+					   class="hvr-fade" data-tooltip title="{{aModule.Name}}" data-placement="right" data-container="body">
+						<i ng-class="aModule.ImageName" class="fa-2x"></i>
+					</a>
+				</li>
+
+				<!-- Account from above -->
+				<ul class="ts-profile-nav">
+					<li class="ts-account">
+						<a href="#">
+							<i class="fa fa-user ts-avatar" aria-hidden="true"></i>
+							@if (Attendance.Web.Helpers.UserSession.GetUserFromSession() != null)
+							{
+								@Attendance.Web.Helpers.UserSession.GetUserFromSession().LoginName
+
+							}
+							else
+							{
+								<b>[Login]</b>
+							}
+							<i class="fa fa-angle-down hidden-side"></i>
+						</a>
+						<ul>
+							<li><a href="/Account/ViewChangePassword">Change Password</a></li>
+							@*<li><a href="#">Edit Account</a></li>*@
+							<li><a href="/Account/Logout">Logout</a></li>
+						</ul>
+					</li>
+				</ul>
+			</ul>
+		</nav>
+		@* ================   Side Navbar End  ==================== *@
+
+
+		<div class="content-wrapper md-bodr-right">
+			<div class="container-fluid mt-3x" style="padding-top: 10px;">
+				@RenderBody()
+			</div>
+		</div>
+	</div>
+
+	@* ================   Footer Strat  ==================== *@
+	<div class="footer navbar-fixed-bottom ">
+		<div class="col-sm-6 col-md-7">
+			<p class="copyright-text">Copyright &copy; <a href="http://accentechltd.com/">Accentech (Pvt.) limited</a></p>
+		</div>
+	</div>
+	@* ================   Footer End  ==================== *@
+
+	@Scripts.Render("~/bundles/mainScripts")
+	@Scripts.Render("~/bundles/angularScripts")
+	@*@Scripts.Render("~/bundles/appScript")*@
+	<script src="~/Scripts/App/app.js"></script>
+	<script src="~/Scripts/App/Directive/CommonDirective.js"></script>
+	<script src="~/Scripts/Vendor/jquery.doubleScroll.js"></script>
+
+	<script type="text/javascript">
+
+    var timerStart = Date.now();
+
+    $(document).ready(function () {
+        $('[data-toggle]').tooltip();
+
+        $('input').on('focus',
+            function (e) {
+                $(this)
+                    .one('mouseup',
+                        function () {
+                            $(this).select();
+                            return false;
+                        })
+                    .select();
+            });
+
+        $('.table-responsive').doubleScroll();
+    });
+
+    app.factory('dashboardService', ['$http', function ($http) {
+            return {
+                getAllModule: function () {
+                    return $http.get('/Module/GetModuleList/');
+                }
+            };
+        }
+    ]);
+
+    app.controller('adminViewCtrl', function($scope, $http, dashboardService, $ngBootbox) {
+        var modileIdForStyle = '@Session["selectedmoduleid"]';
+        loadModules();
+
+        function loadModules() {
+            $scope.allModuleFromDb = [];
+            dashboardService.getAllModule().then(function onSuccess(response) {
+                $scope.allModuleFromDb = response.data;
+            }).catch(function onError(response) {
+                $ngBootbox.alert("Modules Not Found");
+            });
+        }
+    });
+	</script>
+
+	@RenderSection("scripts", required: false)
+</body>
+</html>
